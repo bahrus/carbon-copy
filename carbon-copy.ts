@@ -27,18 +27,13 @@ module xtal.elements {
                         CarbonCopy.importHREF(splitHref[0]).then(({link, event}) => {
                             //https://www.html5rocks.com/en/tutorials/webcomponents/imports/
                             const templ = link.import.getElementById(splitHref[1]);
-                            //console.log({ templ: templ });
+                            if(!templ){
+                                debugger;
+                            }
                             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
                             
                             const clone = document.importNode(templ.content, true) as HTMLDocument;
-                            //_this.app
-                            //let target = _this as Element;
-                            // for(let i = 0, ii = clone.childNodes.length; i < ii; i++){
-                            //     const child = clone.childNodes[i];
-                            //     // target.insertAdjacentElement('afterend', child);
-                            //     // target = child;
-                            //     _this.appendChild
-                            // }
+                            
                             this.appendChild(clone);
                             
                         })
