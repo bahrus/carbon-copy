@@ -20,7 +20,7 @@
   <body>
     <div class="vertical-section-container centered">
       <h3>Basic carbon-copy demo</h3>
-      <demo-snippet>
+      <demo-snippet style="width:900px">
         <template>
           <p>Don't look at me</p>
           <p>
@@ -32,7 +32,11 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" dispatch-type-arg="loaded-chorus" bubbles composed subject-is="I'm" pronoun="me"></c-c>
+            <c-c href="./HTMLSnippets.html#chorus" subject-is="I'm" pronoun="me"
+              dispatch-type-arg="loaded-chorus" 
+              bubbles composed 
+              >
+            </c-c>
           </p>
           <p>
             <div>To all your friends you're delirious</div>
@@ -44,9 +48,9 @@
             <div>Ain't that the way it is</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus"
+            <c-c href="./HTMLSnippets.html#chorus" subject-is="You're" pronoun="you"
               dispatch-type-arg="loaded-chorus" bubbles composed
-              data-subject-is="You're" data-pronoun="you"></c-c>
+               ></c-c>
           </p>
           <p>
             <div>No matter what we do (no matter what we do)</div>
@@ -61,7 +65,11 @@
             <div>On the other side</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" dispatch-type-arg="loaded-chorus" bubbles composed subject-is="We're" pronoun="us"></c-c>
+            <c-c href="./HTMLSnippets.html#chorus" subject-is="We're" pronoun="us"
+              dispatch-type-arg="loaded-chorus" 
+              bubbles composed  
+              >
+            </c-c>
           </p>
           <p>
             <div>Oh, oh</div>
@@ -87,7 +95,8 @@
         pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
       }
       const beautifulIncludes = templContent.querySelectorAll('c-c[subject-is]');
-      for(let i = 0, ii = beautifulIncludes.lenth; i < ii; i++){
+      //console.log({beautifulIncludes: beautifulIncludes});
+      for(let i = 0, ii = beautifulIncludes.length; i < ii; i++){
         const beautifulInclude = beautifulIncludes[i];
         beautifulInclude.setAttribute('subject-is', subjectIs);
       }

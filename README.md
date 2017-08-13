@@ -4,7 +4,7 @@ Copy HTML Template into DOM
 
 ## Install the Polymer-CLI
 
-There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is what partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
+There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
 
 >  Think of a template as a content fragment that is being stored for subsequent use in the document. While the parser does process the contents of the \<template\> element while loading the page, it does so only to ensure that those contents are valid; the element's contents are not rendered, however.
 

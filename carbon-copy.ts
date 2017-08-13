@@ -144,6 +144,7 @@ module xtal.elements {
             }
         }
         customElements.define('c-c', CarbonCopy);
+        customElements.define('carbon-ccopy', CarbonCopy);
     }
 
     initCarbonCopy();
