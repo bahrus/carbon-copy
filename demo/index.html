@@ -78,11 +78,27 @@
   <script>
     document.body.addEventListener('loaded-chorus', e =>{
       const pronoun = e.srcElement.getAttribute('pronoun');
+      const subjectIs = e.srcElement.getAttribute('subject-is')
       //debugger;
-      const pronounDivs = e.detail.template.content.querySelectorAll('div[prop-pronoun]');
+      const templContent = e.detail.template.content;
+      const pronounDivs = templContent.querySelectorAll('div[prop-pronoun]');
       for(let i = 0, ii = pronounDivs.length; i < ii; i++){
         const pronounDiv = pronounDivs[i];
         pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
+      }
+      const beautifulIncludes = templContent.querySelectorAll('c-c[subject-is]');
+      for(let i = 0, ii = beautifulIncludes.lenth; i < ii; i++){
+        const beautifulInclude = beautifulIncludes[i];
+        beautifulInclude.setAttribute('subject-is', subjectIs);
+      }
+    })
+    document.body.addEventListener('loaded-beautiful', e =>{
+      const subject = e.srcElement.getAttribute('subject-is');
+      const templContent = e.detail.template.content;
+      const subjectDivs = templContent.querySelectorAll('.subjectIs');
+      for(let i = 0, ii = subjectDivs.length; i < ii; i++){
+        const subjectDiv = subjectDivs[i];
+        subjectDiv.innerHTML = subject;
       }
     })
   </script>
