@@ -10,7 +10,7 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../carbon-copy.html">
+    <script src="../carbon-copy.js"></script>
 
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
@@ -22,8 +22,53 @@
       <h3>Basic carbon-copy demo</h3>
       <demo-snippet>
         <template>
-          <carbon-copy></carbon-copy>
+          <p>Don't look at me</p>
+          <p>
+            <div>Everyday is so wonderful</div>
+            <div>Then suddenly</div>
+            <div>It's hard to breathe</div>
+            <div>Now and then I get insecure</div>
+            <div>From all the pain</div>
+            <div>I'm so ashamed</div>
+          </p>
+          <p>
+            <c-c href="./HTMLSnippets.html#chorus" subject-is="I'm" pronoun="me"></c-c>
+          </p>
+          <p>
+            <div>To all your friends you're delirious</div>
+            <div>So consumed</div>
+            <div>In all your doom, ooh</div>
+            <div>Trying hard to fill the emptiness</div>
+            <div>The pieces gone</div>
+            <div>Left the puzzle undone</div>
+            <div>Ain't that the way it is</div>
+          </p>
+          <p>
+            <c-c href="./HTMLSnippets.html#chorus" when-find dispatch-type-arg="loadedChorus" data-subject-is="You're" data-pronoun="you"></c-c>
+          </p>
+          <p>
+            <div>No matter what we do (no matter what we do)</div>
+            <div>No matter what we say (no matter what we say)</div>
+            <div>We're the song inside the tune (yeah, oh yeah)</div>
+            <div>Full of beautiful mistakes</div>
+          </p>
+          <p>
+            <div>And everywhere we go (and everywhere we go)</div>
+            <div>The sun will always shine (the sun will always, always, shine)</div>
+            <div>And tomorrow we might awake</div>
+            <div>On the other side</div>
+          </p>
+          <p>
+            <c-c href="./HTMLSnippets.html#chorus" subject-is="We're" pronoun="us"></c-c>
+          </p>
+          <p>
+            <div>Oh, oh</div>
+            <div>Don't you bring me down today</div>
+            <div>Don't you bring me down, ooh</div>
+            <div>Today</div>
+          </p>
         </template>
+
       </demo-snippet>
     </div>
   </body>
