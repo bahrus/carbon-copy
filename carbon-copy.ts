@@ -12,9 +12,24 @@ module xtal.elements {
                      * e.g. <c-c href="/my/path/myFile.html#myId"></c-c>
                      * If reference is inside the same document as the referencer, use href="./#myId"
                      */
-                    'href'
+                    'href',
+                    /** @type {string} Name of event to emit when loading complete.  Allows container to modify the template.
+                     * 
+                     */
+                    'dispatch-type-arg',
+                    /**
+                     * @type {boolean} indicates whether dispatching should bubble
+                     */
+                    'bubbles',
+                    /**
+                     * @type {boolean} indicates whether dispatching should extend beyond shadow dom
+                     */
+                    'composed'
                 ];
             }
+            _dispatchTypeArg;
+            _bubbles;
+            _composed;
             attributeChangedCallback(name, oldValue, newValue) {
                 switch (name) {
                     case 'href':
@@ -26,10 +41,22 @@ module xtal.elements {
                         const _this = this;
                         CarbonCopy.importHREF(splitHref[0]).then(({link, event}) => {
                             //https://www.html5rocks.com/en/tutorials/webcomponents/imports/
+                            event.stopPropagation();
                             const templ = link.import.getElementById(splitHref[1]);
-                            if(!templ){
-                                debugger;
+                            if(_this._dispatchTypeArg){
+                                const newEvent = new CustomEvent(_this._dispatchTypeArg, {
+                                    detail: {
+                                        template: templ,
+                                        link: link,
+                                        linkLoadEvent: event,
+                                    },
+                                    bubbles: _this._bubbles,
+                                    composed: _this._composed
+                                } as CustomEventInit);
+                                
+                                _this.dispatchEvent(newEvent);
                             }
+
                             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
                             
                             const clone = document.importNode(templ.content, true) as HTMLDocument;
@@ -37,6 +64,15 @@ module xtal.elements {
                             this.appendChild(clone);
                             
                         })
+                        break;
+                    case 'dispatch-type-arg':
+                        this._dispatchTypeArg = newValue;
+                        break;
+                    case 'bubbles':
+                        this._bubbles = true;
+                        break;
+                    case 'composed':
+                        this._composed = true;
                         break;
                 }
             }
@@ -75,7 +111,6 @@ module xtal.elements {
                         // that it can be used to short-circuit this method in the future when
                         // it is called with the same href param.
                         link['__dynamicImportLoaded'] = true;
-                        console.log('in loadListener');
                         CarbonCopy.whenImportsReady(() => {
                             resolve({link: link, event: event});
                         });

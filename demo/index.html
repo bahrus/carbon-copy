@@ -32,7 +32,7 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" subject-is="I'm" pronoun="me"></c-c>
+            <c-c href="./HTMLSnippets.html#chorus" dispatch-type-arg="loaded-chorus" bubbles composed subject-is="I'm" pronoun="me"></c-c>
           </p>
           <p>
             <div>To all your friends you're delirious</div>
@@ -44,7 +44,9 @@
             <div>Ain't that the way it is</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" when-find dispatch-type-arg="loadedChorus" data-subject-is="You're" data-pronoun="you"></c-c>
+            <c-c href="./HTMLSnippets.html#chorus"
+              dispatch-type-arg="loaded-chorus" bubbles composed
+              data-subject-is="You're" data-pronoun="you"></c-c>
           </p>
           <p>
             <div>No matter what we do (no matter what we do)</div>
@@ -59,7 +61,7 @@
             <div>On the other side</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" subject-is="We're" pronoun="us"></c-c>
+            <c-c href="./HTMLSnippets.html#chorus" dispatch-type-arg="loaded-chorus" bubbles composed subject-is="We're" pronoun="us"></c-c>
           </p>
           <p>
             <div>Oh, oh</div>
@@ -67,9 +69,21 @@
             <div>Don't you bring me down, ooh</div>
             <div>Today</div>
           </p>
+          
         </template>
 
       </demo-snippet>
     </div>
   </body>
+  <script>
+    document.body.addEventListener('loaded-chorus', e =>{
+      const pronoun = e.srcElement.getAttribute('pronoun');
+      //debugger;
+      const pronounDivs = e.detail.template.content.querySelectorAll('div[prop-pronoun]');
+      for(let i = 0, ii = pronounDivs.length; i < ii; i++){
+        const pronounDiv = pronounDivs[i];
+        pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
+      }
+    })
+  </script>
 </html>
