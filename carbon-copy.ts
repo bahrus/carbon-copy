@@ -3,7 +3,14 @@ declare var HTMLImports;
 module xtal.elements {
     function initCarbonCopy() {
         if (customElements.get('c-c')) return;
-
+        /**
+        * `carbon-copy` or `c-c
+        * Allows one to declaratively copy contents from an external HTML template into a sibling of the element 
+        *
+        * @customElement
+        * @polymer
+        * @demo demo/index.html
+        */
         class CarbonCopy extends HTMLElement {
             static get observedAttributes() {
                 return [

@@ -1,3 +1,5 @@
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/bahrus/carbon-copy)
+
 # \<carbon-copy\>
 
 Copy HTML Template into DOM
@@ -12,7 +14,7 @@ Out of the box, the template must be imported programmatically.  This can disrup
 
 Imagine if, in JavaScript, every reference to a constant required retrieving it via a function.
 
-The carbon copy element (c-c) for short, allows one to declaratively copy contents from an HTML template into a sibling of the element.
+The carbon copy element (c-c) for short, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
 
 The syntax for this element, at its simplest level is as follows:
 
