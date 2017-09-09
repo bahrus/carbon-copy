@@ -49,19 +49,24 @@
         getContentFromIFrame(iframe, id, absUrl, url) {
             const cw = iframe.contentWindow;
             const templ = cw.document.getElementById(id);
-            const newEvent = new CustomEvent(this._dispatchTypeArg, {
-                detail: {
-                    template: templ,
-                    absUrl: absUrl,
-                    url: url,
-                    linkLoadEvent: event,
-                },
-                bubbles: this._bubbles,
-                composed: this._composed
-            });
-            this.dispatchEvent(newEvent);
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
-            const clone = document.importNode(templ['content'], true);
+            const clone = document.importNode(templ.content, true);
+            const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
+            console.log('dispatchTypeArg = ' + dispatchTypeArg);
+            if (dispatchTypeArg) {
+                const newEvent = new CustomEvent(dispatchTypeArg, {
+                    detail: {
+                        clone: clone,
+                        absUrl: absUrl,
+                        url: url,
+                        linkLoadEvent: event,
+                    },
+                    bubbles: this.getAttribute('bubbles') !== null,
+                    composed: this.getAttribute('composed') !== null,
+                });
+                console.log(newEvent);
+                this.dispatchEvent(newEvent);
+            }
             this.appendChild(clone);
         }
         attributeChangedCallback(name, oldValue, newValue) {
@@ -83,13 +88,13 @@
                     }
                     else {
                         iframe = document.createElement('iframe'); //resolve relative path for caching
-                        CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
                         iframe.src = splitHref[0];
                         iframe.style.display = 'none';
                         document.body.appendChild(iframe);
                         const _this = this;
                         iframe.onload = () => {
                             templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
+                            CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
                         };
                     }
                     break;

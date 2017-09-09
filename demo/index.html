@@ -18,8 +18,38 @@
     </custom-style>
   </head>
   <body>
+      <script>
+          document.body.addEventListener('loaded-chorus', e =>{
+            const pronoun = e.srcElement.getAttribute('pronoun');
+            const subjectIs = e.srcElement.getAttribute('subject-is')
+            //debugger;
+            const templContent = e.detail.clone
+            const pronounDivs = templContent.querySelectorAll('div[prop-pronoun]');
+            for(let i = 0, ii = pronounDivs.length; i < ii; i++){
+              const pronounDiv = pronounDivs[i];
+              pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
+            }
+            const beautifulIncludes = templContent.querySelectorAll('carbon-copy[subject-is]');
+            //console.log({beautifulIncludes: beautifulIncludes});
+            for(let i = 0, ii = beautifulIncludes.length; i < ii; i++){
+              const beautifulInclude = beautifulIncludes[i];
+              beautifulInclude.setAttribute('subject-is', subjectIs);
+            }
+          })
+          document.body.addEventListener('loaded-beautiful', e =>{
+            const subject = e.srcElement.getAttribute('subject-is');
+            console.log('in loaded beautiful');
+            const templContent = e.detail.clone;
+            const subjectDivs = templContent.querySelectorAll('.subjectIs');
+            for(let i = 0, ii = subjectDivs.length; i < ii; i++){
+              const subjectDiv = subjectDivs[i];
+              subjectDiv.innerHTML = subject;
+            }
+          })
+        </script>
     <div class="vertical-section-container centered">
-      <h3>Basic carbon-copy demo</h3>
+      <h3>Beautiful</h3>
+      <h4>Christina Aguilera</h4>
       <demo-snippet style="width:900px">
         <template>
           <p>Don't look at me</p>
@@ -32,8 +62,7 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            I am here
-            <carbon-copy href="./HTMLSnippets.html#chorus" subject-is="I'm" pronoun="me"
+            <carbon-copy href="./HTMLSnippets.html#chorus" subject-is="I am" pronoun="me"
               dispatch-type-arg="loaded-chorus" 
               bubbles composed 
               >
@@ -50,9 +79,9 @@
             <div>Ain't that the way it is</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" subject-is="You're" pronoun="you"
+            <carbon-copy href="./HTMLSnippets.html#chorus" subject-is="You're" pronoun="you"
               dispatch-type-arg="loaded-chorus" bubbles composed
-               ></c-c>
+               ></carbon-copy>
           </p>
           <p>
             <div>No matter what we do (no matter what we do)</div>
@@ -67,11 +96,11 @@
             <div>On the other side</div>
           </p>
           <p>
-            <c-c href="./HTMLSnippets.html#chorus" subject-is="We're" pronoun="us"
+            <carbon-copy href="./HTMLSnippets.html#chorus" subject-is="We're" pronoun="us"
               dispatch-type-arg="loaded-chorus" 
               bubbles composed  
               >
-            </c-c>
+            </carbon-copy>
           </p>
           <p>
             <div>Oh, oh</div>
@@ -85,32 +114,5 @@
       </demo-snippet>
     </div>
   </body>
-  <script>
-    document.body.addEventListener('loaded-chorus', e =>{
-      const pronoun = e.srcElement.getAttribute('pronoun');
-      const subjectIs = e.srcElement.getAttribute('subject-is')
-      //debugger;
-      const templContent = e.detail.template.content;
-      const pronounDivs = templContent.querySelectorAll('div[prop-pronoun]');
-      for(let i = 0, ii = pronounDivs.length; i < ii; i++){
-        const pronounDiv = pronounDivs[i];
-        pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
-      }
-      const beautifulIncludes = templContent.querySelectorAll('c-c[subject-is]');
-      //console.log({beautifulIncludes: beautifulIncludes});
-      for(let i = 0, ii = beautifulIncludes.length; i < ii; i++){
-        const beautifulInclude = beautifulIncludes[i];
-        beautifulInclude.setAttribute('subject-is', subjectIs);
-      }
-    })
-    document.body.addEventListener('loaded-beautiful', e =>{
-      const subject = e.srcElement.getAttribute('subject-is');
-      const templContent = e.detail.template.content;
-      const subjectDivs = templContent.querySelectorAll('.subjectIs');
-      for(let i = 0, ii = subjectDivs.length; i < ii; i++){
-        const subjectDiv = subjectDivs[i];
-        subjectDiv.innerHTML = subject;
-      }
-    })
-  </script>
+
 </html>
