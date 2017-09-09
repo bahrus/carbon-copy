@@ -66,17 +66,17 @@ declare var HTMLImports;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
-            const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            if (dispatchTypeArg) {
-                const newEvent = new CustomEvent(dispatchTypeArg, {
+            //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
+            if (this._dispatchTypeArg) {
+                const newEvent = new CustomEvent(this._dispatchTypeArg, {
                     detail: {
                         clone: clone,
                         absUrl: absUrl,
                         url: url,
                         linkLoadEvent: event,
                     },
-                    bubbles: this.getAttribute('bubbles') !== null,
-                    composed: this.getAttribute('composed') !== null,
+                    bubbles: this._bubbles,
+                    composed: this._composed,
                 } as CustomEventInit);
                 this.dispatchEvent(newEvent);
             }
@@ -122,10 +122,10 @@ declare var HTMLImports;
                     this._dispatchTypeArg = newValue;
                     break;
                 case 'bubbles':
-                    this._bubbles = true;
+                    this._bubbles = newValue !== null;
                     break;
                 case 'composed':
-                    this._composed = true;
+                    this._composed = newValue !== null;
                     break;
 
 
