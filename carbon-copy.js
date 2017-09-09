@@ -32,7 +32,6 @@
             ];
         }
         connectedCallback() {
-            console.log('connectedCallback');
             this.loadHref();
         }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -56,7 +55,6 @@
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
             const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            console.log('dispatchTypeArg = ' + dispatchTypeArg);
             if (dispatchTypeArg) {
                 const newEvent = new CustomEvent(dispatchTypeArg, {
                     detail: {
@@ -68,9 +66,6 @@
                     bubbles: this.getAttribute('bubbles') !== null,
                     composed: this.getAttribute('composed') !== null,
                 });
-                console.log(newEvent);
-                console.log(location.href);
-                console.log(this.parentElement);
                 this.dispatchEvent(newEvent);
             }
             this.appendChild(clone);

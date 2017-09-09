@@ -36,7 +36,6 @@ declare var HTMLImports;
         }
 
         connectedCallback() {
-            console.log('connectedCallback');
             this.loadHref();
         }
         _dispatchTypeArg;
@@ -68,7 +67,6 @@ declare var HTMLImports;
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
             const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            console.log('dispatchTypeArg = ' + dispatchTypeArg);
             if (dispatchTypeArg) {
                 const newEvent = new CustomEvent(dispatchTypeArg, {
                     detail: {
@@ -80,9 +78,6 @@ declare var HTMLImports;
                     bubbles: this.getAttribute('bubbles') !== null,
                     composed: this.getAttribute('composed') !== null,
                 } as CustomEventInit);
-                console.log(newEvent);
-                console.log(location.href);
-                console.log(this.parentElement);
                 this.dispatchEvent(newEvent);
             }
             this.appendChild(clone);
