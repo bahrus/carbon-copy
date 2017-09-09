@@ -10,17 +10,13 @@ There are a number of scenarios where a snippet of HTML must be copied (repeated
 
 >  Think of a template as a content fragment that is being stored for subsequent use in the document. While the parser does process the contents of the \<template\> element while loading the page, it does so only to ensure that those contents are valid; the element's contents are not rendered, however.
 
-Out of the box, the template must be imported programmatically.  This can disrupt the flow when inspecting a document, especially when it is primarly markup driven, requiring a two-stop navigation jump, rather than a single navigation jump in order to inspect the contents of the source document fragment.
-
-Imagine if, in JavaScript, every reference to a constant required retrieving it via a function.
+Out of the box, the template must be imported programmatically.  This can disrupt the flow when inspecting a document.
 
 The carbon copy element, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
 
 The syntax for this element, at its simplest level is as follows:
 
 ```html
-<template id="myTemplate">
-</template>
 <carbon-copy href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
 </carbon-copy>
 ```
