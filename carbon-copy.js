@@ -31,6 +31,10 @@
                 'composed'
             ];
         }
+        connectedCallback() {
+            console.log('connectedCallback');
+            this.loadHref();
+        }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
         absolute(base, relative) {
             var stack = base.split("/"), parts = relative.split("/");
@@ -65,38 +69,43 @@
                     composed: this.getAttribute('composed') !== null,
                 });
                 console.log(newEvent);
+                console.log(location.href);
+                console.log(this.parentElement);
                 this.dispatchEvent(newEvent);
             }
             this.appendChild(clone);
         }
+        loadHref() {
+            //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+            // const tmpl = document.querySelector(newValue);
+            // const clone = document.importNode(tmpl.content, true);
+            // this.parentElement.insertAdjacentElement('afterend', clone);
+            const splitHref = this._href.split('#');
+            const url = splitHref[0];
+            const absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            const id = splitHref[1];
+            const _this = this;
+            let iframe = CarbonCopy._iFrames[absUrl];
+            let templ = 'hello'; //: HTMLTemplateElement;
+            if (iframe) {
+                templ = this.getContentFromIFrame(iframe, id, absUrl, url);
+            }
+            else {
+                iframe = document.createElement('iframe'); //resolve relative path for caching
+                iframe.src = splitHref[0];
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+                const _this = this;
+                iframe.onload = () => {
+                    templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
+                    CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
+                };
+            }
+        }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
-                    //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
-                    // const tmpl = document.querySelector(newValue);
-                    // const clone = document.importNode(tmpl.content, true);
-                    // this.parentElement.insertAdjacentElement('afterend', clone);
-                    const splitHref = newValue.split('#');
-                    const url = splitHref[0];
-                    const absUrl = this.absolute(location.href, url); //TODO:  baseHref
-                    const id = splitHref[1];
-                    const _this = this;
-                    let iframe = CarbonCopy._iFrames[absUrl];
-                    let templ = 'hello'; //: HTMLTemplateElement;
-                    if (iframe) {
-                        templ = this.getContentFromIFrame(iframe, id, absUrl, url);
-                    }
-                    else {
-                        iframe = document.createElement('iframe'); //resolve relative path for caching
-                        iframe.src = splitHref[0];
-                        iframe.style.display = 'none';
-                        document.body.appendChild(iframe);
-                        const _this = this;
-                        iframe.onload = () => {
-                            templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
-                            CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
-                        };
-                    }
+                    this._href = newValue;
                     break;
                 case 'dispatch-type-arg':
                     this._dispatchTypeArg = newValue;

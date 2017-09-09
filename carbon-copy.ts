@@ -34,9 +34,15 @@ declare var HTMLImports;
                 'composed'
             ];
         }
+
+        connectedCallback() {
+            console.log('connectedCallback');
+            this.loadHref();
+        }
         _dispatchTypeArg;
         _bubbles;
         _composed;
+        _href;
         static _iFrames: { [key: string]: HTMLIFrameElement } = {};
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
         absolute(base, relative) {
@@ -57,13 +63,13 @@ declare var HTMLImports;
         getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
             const cw = iframe.contentWindow;
             const templ = cw.document.getElementById(id) as HTMLTemplateElement;
-            
+
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
             const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
             console.log('dispatchTypeArg = ' + dispatchTypeArg);
-            if(dispatchTypeArg){
+            if (dispatchTypeArg) {
                 const newEvent = new CustomEvent(dispatchTypeArg, {
                     detail: {
                         clone: clone,
@@ -75,40 +81,46 @@ declare var HTMLImports;
                     composed: this.getAttribute('composed') !== null,
                 } as CustomEventInit);
                 console.log(newEvent);
+                console.log(location.href);
+                console.log(this.parentElement);
                 this.dispatchEvent(newEvent);
             }
             this.appendChild(clone);
-            
 
+
+        }
+        loadHref() {
+            //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+            // const tmpl = document.querySelector(newValue);
+            // const clone = document.importNode(tmpl.content, true);
+            // this.parentElement.insertAdjacentElement('afterend', clone);
+            const splitHref = this._href.split('#');
+            const url = splitHref[0];
+            const absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            const id = splitHref[1];
+            const _this = this;
+            let iframe = CarbonCopy._iFrames[absUrl];
+            let templ = 'hello' as any;//: HTMLTemplateElement;
+            if (iframe) {
+                templ = this.getContentFromIFrame(iframe, id, absUrl, url);
+            } else {
+                iframe = document.createElement('iframe') as HTMLIFrameElement;  //resolve relative path for caching
+
+                iframe.src = splitHref[0];
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+                const _this = this;
+                iframe.onload = () => {
+                    templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
+                    CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
+                }
+            }
         }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
-                    //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
-                    // const tmpl = document.querySelector(newValue);
-                    // const clone = document.importNode(tmpl.content, true);
-                    // this.parentElement.insertAdjacentElement('afterend', clone);
-                    const splitHref = newValue.split('#');
-                    const url = splitHref[0];
-                    const absUrl = this.absolute(location.href, url); //TODO:  baseHref
-                    const id = splitHref[1];
-                    const _this = this;
-                    let iframe = CarbonCopy._iFrames[absUrl];
-                    let templ = 'hello' as any;//: HTMLTemplateElement;
-                    if (iframe) {
-                        templ = this.getContentFromIFrame(iframe, id, absUrl, url);
-                    } else {
-                        iframe = document.createElement('iframe') as HTMLIFrameElement;  //resolve relative path for caching
-                        
-                        iframe.src = splitHref[0];
-                        iframe.style.display = 'none';
-                        document.body.appendChild(iframe);
-                        const _this = this;
-                        iframe.onload = () => {
-                            templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
-                            CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
-                        }
-                    }
+                    this._href = newValue;
+
 
                     break;
                 case 'dispatch-type-arg':

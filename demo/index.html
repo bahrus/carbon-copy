@@ -18,35 +18,7 @@
     </custom-style>
   </head>
   <body>
-      <script>
-          document.body.addEventListener('loaded-chorus', e =>{
-            const pronoun = e.srcElement.getAttribute('pronoun');
-            const subjectIs = e.srcElement.getAttribute('subject-is')
-            //debugger;
-            const templContent = e.detail.clone
-            const pronounDivs = templContent.querySelectorAll('div[prop-pronoun]');
-            for(let i = 0, ii = pronounDivs.length; i < ii; i++){
-              const pronounDiv = pronounDivs[i];
-              pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
-            }
-            const beautifulIncludes = templContent.querySelectorAll('carbon-copy[subject-is]');
-            //console.log({beautifulIncludes: beautifulIncludes});
-            for(let i = 0, ii = beautifulIncludes.length; i < ii; i++){
-              const beautifulInclude = beautifulIncludes[i];
-              beautifulInclude.setAttribute('subject-is', subjectIs);
-            }
-          })
-          document.body.addEventListener('loaded-beautiful', e =>{
-            const subject = e.srcElement.getAttribute('subject-is');
-            console.log('in loaded beautiful');
-            const templContent = e.detail.clone;
-            const subjectDivs = templContent.querySelectorAll('.subjectIs');
-            for(let i = 0, ii = subjectDivs.length; i < ii; i++){
-              const subjectDiv = subjectDivs[i];
-              subjectDiv.innerHTML = subject;
-            }
-          })
-        </script>
+
     <div class="vertical-section-container centered">
       <h3>Beautiful</h3>
       <h4>Christina Aguilera</h4>
@@ -110,6 +82,35 @@
           </p>
           
         </template>
+
+        <script>
+            document.body.addEventListener('loaded-chorus', e =>{
+              const pronoun = e.srcElement.getAttribute('pronoun');
+              const subjectIs = e.srcElement.getAttribute('subject-is')
+              //debugger;
+              const templContent = e.detail.clone
+              const pronounDivs = templContent.querySelectorAll('div[prop-pronoun]');
+              for(let i = 0, ii = pronounDivs.length; i < ii; i++){
+                const pronounDiv = pronounDivs[i];
+                pronounDiv.innerHTML = pronounDiv.innerHTML.replace('${pronoun}', pronoun);
+              }
+              const beautifulIncludes = templContent.querySelectorAll('carbon-copy[subject-is]');
+              //console.log({beautifulIncludes: beautifulIncludes});
+              for(let i = 0, ii = beautifulIncludes.length; i < ii; i++){
+                const beautifulInclude = beautifulIncludes[i];
+                beautifulInclude.setAttribute('subject-is', subjectIs);
+              }
+            });
+            document.body.addEventListener('loaded-beautiful', e =>{
+              const subject = e.srcElement.getAttribute('subject-is');
+              const templContent = e.detail.clone;
+              const subjectDivs = templContent.querySelectorAll('.subjectIs');
+              for(let i = 0, ii = subjectDivs.length; i < ii; i++){
+                const subjectDiv = subjectDivs[i];
+                subjectDiv.innerHTML = subject;
+              }
+            })
+          </script>
 
       </demo-snippet>
     </div>
