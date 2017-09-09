@@ -83,17 +83,31 @@
             let iframe = CarbonCopy._iFrames[absUrl];
             let templ = 'hello'; //: HTMLTemplateElement;
             if (iframe) {
-                templ = this.getContentFromIFrame(iframe, id, absUrl, url);
+                if (iframe['finishedLoading']) {
+                    templ = this.getContentFromIFrame(iframe, id, absUrl, url);
+                }
+                else {
+                    if (!iframe['waitingForLoading'])
+                        iframe['waitingForLoading'] = [];
+                    iframe['waitingForLoading'].push({ customEl: this, id: id, absUrl: absUrl, url: url });
+                }
             }
             else {
                 iframe = document.createElement('iframe'); //resolve relative path for caching
+                CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
                 iframe.src = splitHref[0];
                 iframe.style.display = 'none';
                 document.body.appendChild(iframe);
                 const _this = this;
                 iframe.onload = () => {
                     templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
-                    CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
+                    iframe['finishedLoading'] = true;
+                    if (iframe['waitingForLoading']) {
+                        iframe['waitingForLoading'].forEach(pending => {
+                            pending.customEl.getContentFromIFrame(iframe, pending.id, pending.absUrl, pending.url);
+                        });
+                        delete iframe['waitingForLoading'];
+                    }
                 };
             }
         }
