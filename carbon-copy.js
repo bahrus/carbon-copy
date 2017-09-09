@@ -20,7 +20,7 @@
                 /** @type {string} Name of event to emit when loading complete.  Allows container to modify the template.
                  *
                  */
-                'dispatch-type-arg',
+                'event-name',
                 /**
                  * @type {boolean} indicates whether dispatching should bubble
                  */
@@ -55,8 +55,8 @@
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
             //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            if (this._dispatchTypeArg) {
-                const newEvent = new CustomEvent(this._dispatchTypeArg, {
+            if (this._eventName) {
+                const newEvent = new CustomEvent(this._eventName, {
                     detail: {
                         clone: clone,
                         absUrl: absUrl,
@@ -102,8 +102,8 @@
                 case 'href':
                     this._href = newValue;
                     break;
-                case 'dispatch-type-arg':
-                    this._dispatchTypeArg = newValue;
+                case 'event-name':
+                    this._eventName = newValue;
                     break;
                 case 'bubbles':
                     this._bubbles = newValue !== null;

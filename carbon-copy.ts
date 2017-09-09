@@ -23,7 +23,7 @@ declare var HTMLImports;
                 /** @type {string} Name of event to emit when loading complete.  Allows container to modify the template.
                  * 
                  */
-                'dispatch-type-arg',
+                'event-name',
                 /**
                  * @type {boolean} indicates whether dispatching should bubble
                  */
@@ -38,7 +38,7 @@ declare var HTMLImports;
         connectedCallback() {
             this.loadHref();
         }
-        _dispatchTypeArg;
+        _eventName;
         _bubbles;
         _composed;
         _href;
@@ -67,8 +67,8 @@ declare var HTMLImports;
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
             //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            if (this._dispatchTypeArg) {
-                const newEvent = new CustomEvent(this._dispatchTypeArg, {
+            if (this._eventName) {
+                const newEvent = new CustomEvent(this._eventName, {
                     detail: {
                         clone: clone,
                         absUrl: absUrl,
@@ -118,8 +118,8 @@ declare var HTMLImports;
 
 
                     break;
-                case 'dispatch-type-arg':
-                    this._dispatchTypeArg = newValue;
+                case 'event-name':
+                    this._eventName = newValue;
                     break;
                 case 'bubbles':
                     this._bubbles = newValue !== null;
