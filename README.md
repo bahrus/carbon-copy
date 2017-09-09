@@ -14,15 +14,15 @@ Out of the box, the template must be imported programmatically.  This can disrup
 
 Imagine if, in JavaScript, every reference to a constant required retrieving it via a function.
 
-The carbon copy element (c-c) for short, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
+The carbon copy element, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
 
 The syntax for this element, at its simplest level is as follows:
 
 ```html
 <template id="myTemplate">
 </template>
-<c-c href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
-</c-c>
+<carbon-copy href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
+</carbon-copy>
 ```
 
 ## Viewing Your Element
