@@ -46,9 +46,23 @@
             }
             return stack.join("/");
         }
-        getContentFromIFrame(iframe, id) {
+        getContentFromIFrame(iframe, id, absUrl, url) {
             const cw = iframe.contentWindow;
-            return cw.document.getElementById(id);
+            const templ = cw.document.getElementById(id);
+            const newEvent = new CustomEvent(this._dispatchTypeArg, {
+                detail: {
+                    template: templ,
+                    absUrl: absUrl,
+                    url: url,
+                    linkLoadEvent: event,
+                },
+                bubbles: this._bubbles,
+                composed: this._composed
+            });
+            this.dispatchEvent(newEvent);
+            //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+            const clone = document.importNode(templ['content'], true);
+            this.appendChild(clone);
         }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
@@ -57,16 +71,15 @@
                     // const tmpl = document.querySelector(newValue);
                     // const clone = document.importNode(tmpl.content, true);
                     // this.parentElement.insertAdjacentElement('afterend', clone);
-                    debugger;
                     const splitHref = newValue.split('#');
                     const url = splitHref[0];
                     const absUrl = this.absolute(location.href, url); //TODO:  baseHref
                     const id = splitHref[1];
                     const _this = this;
                     let iframe = CarbonCopy._iFrames[absUrl];
-                    let templ;
+                    let templ = 'hello'; //: HTMLTemplateElement;
                     if (iframe) {
-                        templ = this.getContentFromIFrame(iframe, id);
+                        templ = this.getContentFromIFrame(iframe, id, absUrl, url);
                     }
                     else {
                         iframe = document.createElement('iframe'); //resolve relative path for caching
@@ -74,24 +87,11 @@
                         iframe.src = splitHref[0];
                         iframe.style.display = 'none';
                         document.body.appendChild(iframe);
+                        const _this = this;
                         iframe.onload = () => {
-                            templ = this.getContentFromIFrame(iframe, id);
+                            templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
                         };
                     }
-                    const newEvent = new CustomEvent(_this._dispatchTypeArg, {
-                        detail: {
-                            template: templ,
-                            absUrl: absUrl,
-                            url: url,
-                            linkLoadEvent: event,
-                        },
-                        bubbles: _this._bubbles,
-                        composed: _this._composed
-                    });
-                    _this.dispatchEvent(newEvent);
-                    //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
-                    const clone = document.importNode(templ.content, true);
-                    this.appendChild(clone);
                     break;
                 case 'dispatch-type-arg':
                     this._dispatchTypeArg = newValue;
