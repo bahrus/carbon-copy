@@ -14,12 +14,29 @@ Out of the box, the template must be imported programmatically.  This can disrup
 
 The carbon copy element, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
 
-The syntax for this element, at its simplest level is as follows:
+The syntax for this element, at its simplest level, is as follows:
 
 ```html
 <carbon-copy href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
 </carbon-copy>
 ```
+
+Future enhancements:
+
+- [ ] Support HTML Template references within the same document as the consumer
+- [ ] (Possibly) Explore imported templates recursively doing their own HTML Imports
+- [ ] (Possible) Explore integrating with streaming ideas (see below).
+- [ ] (Possible) Add support for url resolving for recusive references. 
+
+
+
+Implementation:  The implementation of this was originally done using HTMLImports (for external files).  In light of recents announcements, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame is now used instead.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).
+
+_carbon-copy_ is not currently doing any fancy streaming, as the article link above suggests doing.  Rather, this implementation is kind of bare-bones simple, sticking to the basics for now.
+
+A quick performance test on Chrome seems to indicate that the performance "hit" from cloning an HTML template from an iframe into the hosting page is neglible, performing roughly the same as doing it all from the same document space. The biggest negative, performance wise, would probably be the memory overhead / start-up cost of creating and holding on to the hidden iFrame, in addition to the overhead of the http request (which would be there for any external resource).  These combine to suggest that, at least in an optimal / production setting, some degree of bundling of multiple templates together into one file might be beneficial, though this would come at the cost of making updates more expensive. 
+
+Care is taken to cache these hidden iFrames, one for each unique base url path.   
 
 ## Viewing Your Element
 
