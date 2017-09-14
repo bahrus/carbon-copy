@@ -3,7 +3,8 @@
   "description": "Copy HTML Template into DOM",
   "main": "carbon-copy.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0"
+    "polymer": "Polymer/polymer#^2.0.0",
+    "xtal-fetch": "bahrus/xtal-fetch#^0.0.14"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",

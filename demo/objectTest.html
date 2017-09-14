@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Object test</title>
+        <style>
+            .test{
+                color:blue;
+            }
+        </style>
+        <link rel="import" href="../../polymer/polymer-element.html">
+        <script async src="../bower_components/xtal-fetch/xtal-fetch.js"></script>
+    </head>
+    <body>
+        <object data="embeddedObject.html" type="text/html">
+        </object>
+        <button onclick="test1()">create lots of objects</button>
+        <button onclick="test2()">create lots of fetches</button>
+        <button onclick="test3()">create lots of fetches</button>
+    </body>
+    <script>
+        var ubound = 500;
+        function test1(){
+            for(var i = 0; i < ubound; i++){
+                var obj = document.createElement('object');
+                obj.data='embeddedObject.html';
+                obj.type = 'text/html';
+                document.body.appendChild(obj);
+            }
+        }
+
+        function test2(){
+            for(var i = 0; i < ubound; i++){
+                var obj = document.createElement('xtal-fetch');
+                obj.fetch = true;
+                obj.as = 'text';
+                obj.insertResults = true;
+                obj.href= 'embeddedObject.html';
+                document.body.appendChild(obj);
+            }
+        }
+
+        function test3(){
+            for(var i = 0; i < ubound; i++){
+                var obj = document.createElement('iframe');
+                obj.src='embeddedObject.html';
+                document.body.appendChild(obj);
+            }
+        }
+    </script>
+</html>
