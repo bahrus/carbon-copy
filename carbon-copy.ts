@@ -65,7 +65,7 @@ declare var HTMLImports;
 
         // }
 
-        getElementInsideShadowRoot(shadowDOM: ShadowRoot, id: string, absUrl: string, url: string) {
+        copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM: ShadowRoot, id: string, absUrl: string, url: string) {
             const templ =  shadowDOM.getElementById(id) as HTMLTemplateElement;
 
         //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
@@ -89,25 +89,15 @@ declare var HTMLImports;
         }
         loadHref() {
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
-            // const tmpl = document.querySelector(newValue);
-            // const clone = document.importNode(tmpl.content, true);
-            // this.parentElement.insertAdjacentElement('afterend', clone);
             const splitHref = this._href.split('#');
             const url = splitHref[0];
             const absUrl = this.absolute(location.href, url); //TODO:  baseHref
             const id = splitHref[1];
             const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
-            let templ = 'hello' as any;//: HTMLTemplateElement;
+            //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
-                this.getElementInsideShadowRoot(shadowDOM, id, absUrl, url);
-                // if(shadowDOM['finishedLoading']){
-                //      //this.getContentFromIFrame(shadowDOM, id, absUrl, url);
-                // }else{
-                //     if(!shadowDOM['waitingForLoading']) shadowDOM['waitingForLoading'] = [];
-                //     shadowDOM['waitingForLoading'].push({customEl: this, id: id, absUrl: absUrl, url: url});
-                // }
-                
+                this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
             } else {
                 fetch(absUrl).then(resp =>{
                     resp.text().then(txt =>{
@@ -117,21 +107,11 @@ declare var HTMLImports;
                        const shadowRoot = container.attachShadow({mode: 'open'});
                        CarbonCopy._shadowDoms[absUrl]  = shadowRoot;
                        shadowRoot.innerHTML = txt; 
-                       this.getElementInsideShadowRoot(shadowRoot, id, absUrl, url);
+                       this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
                     })
                 })
                 
-                // const _this = this;
-                // shadowDOM.onload = () => {
-                //     templ = _this.getContentFromIFrame(shadowDOM, id, absUrl, url);
-                //     shadowDOM['finishedLoading'] = true;
-                //     if(shadowDOM['waitingForLoading']){
-                //         shadowDOM['waitingForLoading'].forEach(pending =>{
-                //             pending.customEl.getContentFromIFrame(shadowDOM, pending.id, pending.absUrl, pending.url);
-                //         })
-                //         delete shadowDOM['waitingForLoading'];
-                //     }
-                // }
+
             }
         }
         attributeChangedCallback(name, oldValue, newValue) {
