@@ -42,7 +42,7 @@ declare var HTMLImports;
         _bubbles;
         _composed;
         _href;
-        static _iFrames: { [key: string]: HTMLIFrameElement } = {};
+        static _shadowDoms: { [key: string]: ShadowRoot } = {};
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
         absolute(base, relative) {
             var stack = base.split("/"),
@@ -59,11 +59,16 @@ declare var HTMLImports;
             }
             return stack.join("/");
         }
-        getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
-            const cw = iframe.contentWindow;
-            const templ = cw.document.getElementById(id) as HTMLTemplateElement;
+        // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
 
-            //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+
+
+        // }
+
+        getElementInsideShadowRoot(shadowDOM: ShadowRoot, id: string, absUrl: string, url: string) {
+            const templ =  shadowDOM.getElementById(id) as HTMLTemplateElement;
+
+        //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
             //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
@@ -81,8 +86,6 @@ declare var HTMLImports;
                 this.dispatchEvent(newEvent);
             }
             this.appendChild(clone);
-
-
         }
         loadHref() {
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
@@ -94,33 +97,41 @@ declare var HTMLImports;
             const absUrl = this.absolute(location.href, url); //TODO:  baseHref
             const id = splitHref[1];
             const _this = this;
-            let iframe = CarbonCopy._iFrames[absUrl];
+            let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             let templ = 'hello' as any;//: HTMLTemplateElement;
-            if (iframe) {
-                if(iframe['finishedLoading']){
-                    templ = this.getContentFromIFrame(iframe, id, absUrl, url);
-                }else{
-                    if(!iframe['waitingForLoading']) iframe['waitingForLoading'] = [];
-                    iframe['waitingForLoading'].push({customEl: this, id: id, absUrl: absUrl, url: url});
-                }
+            if (shadowDOM) {
+                this.getElementInsideShadowRoot(shadowDOM, id, absUrl, url);
+                // if(shadowDOM['finishedLoading']){
+                //      //this.getContentFromIFrame(shadowDOM, id, absUrl, url);
+                // }else{
+                //     if(!shadowDOM['waitingForLoading']) shadowDOM['waitingForLoading'] = [];
+                //     shadowDOM['waitingForLoading'].push({customEl: this, id: id, absUrl: absUrl, url: url});
+                // }
                 
             } else {
-                iframe = document.createElement('iframe') as HTMLIFrameElement;  //resolve relative path for caching
-                CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
-                iframe.src = splitHref[0];
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-                const _this = this;
-                iframe.onload = () => {
-                    templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
-                    iframe['finishedLoading'] = true;
-                    if(iframe['waitingForLoading']){
-                        iframe['waitingForLoading'].forEach(pending =>{
-                            pending.customEl.getContentFromIFrame(iframe, pending.id, pending.absUrl, pending.url);
-                        })
-                        delete iframe['waitingForLoading'];
-                    }
-                }
+                fetch(absUrl).then(resp =>{
+                    resp.text().then(txt =>{
+                       const container = document.createElement('div');
+                       container.style.display = 'none';
+                       document.body.appendChild(container);
+                       const shadowRoot = container.attachShadow({mode: 'open'});
+                       CarbonCopy._shadowDoms[absUrl]  = shadowRoot;
+                       shadowRoot.innerHTML = txt; 
+                       this.getElementInsideShadowRoot(shadowRoot, id, absUrl, url);
+                    })
+                })
+                
+                // const _this = this;
+                // shadowDOM.onload = () => {
+                //     templ = _this.getContentFromIFrame(shadowDOM, id, absUrl, url);
+                //     shadowDOM['finishedLoading'] = true;
+                //     if(shadowDOM['waitingForLoading']){
+                //         shadowDOM['waitingForLoading'].forEach(pending =>{
+                //             pending.customEl.getContentFromIFrame(shadowDOM, pending.id, pending.absUrl, pending.url);
+                //         })
+                //         delete shadowDOM['waitingForLoading'];
+                //     }
+                // }
             }
         }
         attributeChangedCallback(name, oldValue, newValue) {

@@ -49,10 +49,11 @@
             }
             return stack.join("/");
         }
-        getContentFromIFrame(iframe, id, absUrl, url) {
-            const cw = iframe.contentWindow;
-            const templ = cw.document.getElementById(id);
-            //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+        // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
+        // }
+        getElementInsideShadowRoot(shadowDOM, id, absUrl, url) {
+            const templ = shadowDOM.getElementById(id);
+            //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
             //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
             if (this._eventName) {
@@ -80,35 +81,40 @@
             const absUrl = this.absolute(location.href, url); //TODO:  baseHref
             const id = splitHref[1];
             const _this = this;
-            let iframe = CarbonCopy._iFrames[absUrl];
+            let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             let templ = 'hello'; //: HTMLTemplateElement;
-            if (iframe) {
-                if (iframe['finishedLoading']) {
-                    templ = this.getContentFromIFrame(iframe, id, absUrl, url);
-                }
-                else {
-                    if (!iframe['waitingForLoading'])
-                        iframe['waitingForLoading'] = [];
-                    iframe['waitingForLoading'].push({ customEl: this, id: id, absUrl: absUrl, url: url });
-                }
+            if (shadowDOM) {
+                this.getElementInsideShadowRoot(shadowDOM, id, absUrl, url);
+                // if(shadowDOM['finishedLoading']){
+                //      //this.getContentFromIFrame(shadowDOM, id, absUrl, url);
+                // }else{
+                //     if(!shadowDOM['waitingForLoading']) shadowDOM['waitingForLoading'] = [];
+                //     shadowDOM['waitingForLoading'].push({customEl: this, id: id, absUrl: absUrl, url: url});
+                // }
             }
             else {
-                iframe = document.createElement('iframe'); //resolve relative path for caching
-                CarbonCopy._iFrames[absUrl] = iframe; //TODO:  concurrent?
-                iframe.src = splitHref[0];
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-                const _this = this;
-                iframe.onload = () => {
-                    templ = _this.getContentFromIFrame(iframe, id, absUrl, url);
-                    iframe['finishedLoading'] = true;
-                    if (iframe['waitingForLoading']) {
-                        iframe['waitingForLoading'].forEach(pending => {
-                            pending.customEl.getContentFromIFrame(iframe, pending.id, pending.absUrl, pending.url);
-                        });
-                        delete iframe['waitingForLoading'];
-                    }
-                };
+                fetch(absUrl).then(resp => {
+                    resp.text().then(txt => {
+                        const container = document.createElement('div');
+                        container.style.display = 'none';
+                        document.body.appendChild(container);
+                        const shadowRoot = container.attachShadow({ mode: 'open' });
+                        CarbonCopy._shadowDoms[absUrl] = shadowRoot;
+                        shadowRoot.innerHTML = txt;
+                        this.getElementInsideShadowRoot(shadowRoot, id, absUrl, url);
+                    });
+                });
+                // const _this = this;
+                // shadowDOM.onload = () => {
+                //     templ = _this.getContentFromIFrame(shadowDOM, id, absUrl, url);
+                //     shadowDOM['finishedLoading'] = true;
+                //     if(shadowDOM['waitingForLoading']){
+                //         shadowDOM['waitingForLoading'].forEach(pending =>{
+                //             pending.customEl.getContentFromIFrame(shadowDOM, pending.id, pending.absUrl, pending.url);
+                //         })
+                //         delete shadowDOM['waitingForLoading'];
+                //     }
+                // }
             }
         }
         attributeChangedCallback(name, oldValue, newValue) {
@@ -128,7 +134,7 @@
             }
         }
     }
-    CarbonCopy._iFrames = {};
+    CarbonCopy._shadowDoms = {};
     customElements.define('carbon-copy', CarbonCopy);
 })();
 //# sourceMappingURL=carbon-copy.js.map
