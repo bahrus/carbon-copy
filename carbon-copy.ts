@@ -89,6 +89,7 @@ declare var HTMLImports;
         }
         loadHref() {
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+            if(!this._href) return;
             const splitHref = this._href.split('#');
             const url = splitHref[0];
             const absUrl = this.absolute(location.href, url); //TODO:  baseHref
@@ -118,7 +119,7 @@ declare var HTMLImports;
             switch (name) {
                 case 'href':
                     this._href = newValue;
-
+                    this.loadHref();
 
                     break;
                 case 'event-name':

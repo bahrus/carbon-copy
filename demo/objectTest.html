@@ -8,14 +8,15 @@
             }
         </style>
         <link rel="import" href="../../polymer/polymer-element.html">
-        <script async src="../bower_components/xtal-fetch/xtal-fetch.js"></script>
+        <!-- <script async src="../bower_components/xtal-fetch/xtal-fetch.js"></script> -->
+        <script async src="../carbon-copy.js"></script>
     </head>
     <body>
         <object data="embeddedObject.html" type="text/html">
         </object>
         <button onclick="test1()">create lots of objects</button>
-        <button onclick="test2()">create lots of fetches</button>
-        <button onclick="test3()">create lots of fetches</button>
+        <button onclick="test2()">create lots of carbon copies</button>
+        <button onclick="test3()">create lots of iframes</button>
     </body>
     <script>
         var ubound = 500;
@@ -30,12 +31,9 @@
 
         function test2(){
             for(var i = 0; i < ubound; i++){
-                var obj = document.createElement('xtal-fetch');
-                obj.fetch = true;
-                obj.as = 'text';
-                obj.insertResults = true;
-                obj.href= 'embeddedObject.html';
-                document.body.appendChild(obj);
+                var cc = document.createElement('carbon-copy');
+                cc.setAttribute('href', 'embeddedObject.html#test2');
+                document.body.appendChild(cc);
             }
         }
 

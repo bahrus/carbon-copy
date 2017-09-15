@@ -73,6 +73,8 @@
         }
         loadHref() {
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
+            if (!this._href)
+                return;
             const splitHref = this._href.split('#');
             const url = splitHref[0];
             const absUrl = this.absolute(location.href, url); //TODO:  baseHref
@@ -101,6 +103,7 @@
             switch (name) {
                 case 'href':
                     this._href = newValue;
+                    this.loadHref();
                     break;
                 case 'event-name':
                     this._eventName = newValue;
