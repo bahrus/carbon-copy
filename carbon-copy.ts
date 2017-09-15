@@ -35,9 +35,9 @@ declare var HTMLImports;
             ];
         }
 
-        connectedCallback() {
-            this.loadHref();
-        }
+        // connectedCallback() {
+        //     this.loadHref();
+        // }
         _eventName;
         _bubbles;
         _composed;
@@ -115,12 +115,16 @@ declare var HTMLImports;
 
             }
         }
+        connectedCallback(){
+            console.log('connected callback');
+            this.loadHref();
+        }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
                     this._href = newValue;
-                    this.loadHref();
-
+                    //this.loadHref();
+                    console.log('got href');
                     break;
                 case 'event-name':
                     this._eventName = newValue;

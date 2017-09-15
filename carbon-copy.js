@@ -31,9 +31,6 @@
                 'composed'
             ];
         }
-        connectedCallback() {
-            this.loadHref();
-        }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
         absolute(base, relative) {
             var stack = base.split("/"), parts = relative.split("/");
@@ -99,11 +96,16 @@
                 });
             }
         }
+        connectedCallback() {
+            console.log('connected callback');
+            this.loadHref();
+        }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
                     this._href = newValue;
-                    this.loadHref();
+                    //this.loadHref();
+                    console.log('got href');
                     break;
                 case 'event-name':
                     this._eventName = newValue;

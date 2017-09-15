@@ -25,18 +25,18 @@ Future enhancements:
 
 - [ ] Support HTML Template references within the same document as the consumer
 - [ ] (Possibly) Explore imported templates recursively doing their own HTML Imports
-- [ ] (Possible) Explore integrating with streaming ideas (see below).
+- [ ] (Possible) Explore integrating with streaming ideas.
 - [ ] (Possible) Add support for url resolving for recusive references. 
 
 
 
-Implementation:  The implementation of this was originally done using HTMLImports (for external files).  In light of recents announcements, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame is now used instead.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).
+Implementation:  The implementation of this was originally done using HTMLImports (for external files).  In light of recents announcements regarding the future of HTMLImports, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame was tried.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).  While the use of IFrames may be ideal in some problem domains, a quick performance test indicates the performance of Fetch/ShadowDom/innerHTML greatly exceeds that of iframes (and objects).
 
-_carbon-copy_ is not currently doing any fancy streaming, as the article link above suggests doing.  Rather, this implementation is kind of bare-bones simple, sticking to the basics for now.
+So the current approach is to use fetch / create ShadowDOM / set innerHTML inside the shadowDOM.  This allows id's from different documents to not get confused.
 
-A quick performance test on Chrome seems to indicate that the performance "hit" from cloning an HTML template from an iframe into the hosting page is negligible, performing roughly the same as doing it all from the same document space. The biggest negative, performance wise, would probably be the memory overhead / start-up cost of creating and holding on to the hidden iFrame, in addition to the overhead of the http request (which would be there for any external resource).  These combine to suggest that, at least in an optimal / production setting, some degree of bundling of multiple templates together into one file might be beneficial, though this would come at the cost of making updates more expensive. 
+So far, this implementation is kind of bare-bones simple, sticking to the basics for now.
 
-Care is taken to cache these hidden iFrames, one for each unique base url path.   
+  
 
 ## Viewing Your Element
 
