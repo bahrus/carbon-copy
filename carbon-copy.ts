@@ -42,9 +42,10 @@ declare var HTMLImports;
         _bubbles;
         _composed;
         _href;
-        static _shadowDoms: { [key: string]: ShadowRoot } = {};
+        static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
+        static _shadowDomSubscribers: {[key: string]: [(sr: ShadowRoot) => void]} = {};
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
-        absolute(base, relative) {
+        absolute(base: string, relative: string) : string {
             var stack = base.split("/"),
                 parts = relative.split("/");
             stack.pop(); // remove current file name (or empty string)
@@ -98,8 +99,25 @@ declare var HTMLImports;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
-                this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
+                switch(typeof shadowDOM){
+                    case 'boolean':
+                        const subscribers = CarbonCopy._shadowDomSubscribers;
+                        const fn = (sr: ShadowRoot) =>{
+                            this.copyTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
+                        }
+                        if(!subscribers[absUrl]){
+                            subscribers[absUrl] = [fn];
+                        }else{
+                            subscribers[absUrl].push(fn);
+                        }
+                        break;
+                    case 'object':
+                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM as ShadowRoot, id, absUrl, url);
+                        break;
+                }
+                
             } else {
+                CarbonCopy._shadowDoms[absUrl] = true;
                 fetch(absUrl).then(resp =>{
                     resp.text().then(txt =>{
                        const container = document.createElement('div');
@@ -109,6 +127,11 @@ declare var HTMLImports;
                        CarbonCopy._shadowDoms[absUrl]  = shadowRoot;
                        shadowRoot.innerHTML = txt; 
                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
+                       const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
+                       if(subscribers){
+                           subscribers.forEach(subscriber => subscriber(shadowRoot));
+                           delete CarbonCopy._shadowDomSubscribers[absUrl];
+                       }
                     })
                 })
                 
@@ -116,15 +139,12 @@ declare var HTMLImports;
             }
         }
         connectedCallback(){
-            console.log('connected callback');
             this.loadHref();
         }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
                     this._href = newValue;
-                    //this.loadHref();
-                    console.log('got href');
                     break;
                 case 'event-name':
                     this._eventName = newValue;
@@ -145,10 +165,10 @@ declare var HTMLImports;
         }
     }
 
-
+    class CC extends CarbonCopy{};
 
 
 
     customElements.define('carbon-copy', CarbonCopy);
-
+    customElements.define('c-c', CC);
 })();

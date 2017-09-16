@@ -12,7 +12,7 @@ There are a number of scenarios where a snippet of HTML must be copied (repeated
 
 Out of the box, the template must be imported programmatically.  This can disrupt the flow when inspecting a document.
 
-The carbon copy element, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
+The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
 
 The syntax for this element, at its simplest level, is as follows:
 

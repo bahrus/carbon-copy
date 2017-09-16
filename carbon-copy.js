@@ -80,9 +80,26 @@
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
-                this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
+                switch (typeof shadowDOM) {
+                    case 'boolean':
+                        const subscribers = CarbonCopy._shadowDomSubscribers;
+                        const fn = (sr) => {
+                            this.copyTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
+                        };
+                        if (!subscribers[absUrl]) {
+                            subscribers[absUrl] = [fn];
+                        }
+                        else {
+                            subscribers[absUrl].push(fn);
+                        }
+                        break;
+                    case 'object':
+                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
+                        break;
+                }
             }
             else {
+                CarbonCopy._shadowDoms[absUrl] = true;
                 fetch(absUrl).then(resp => {
                     resp.text().then(txt => {
                         const container = document.createElement('div');
@@ -92,20 +109,22 @@
                         CarbonCopy._shadowDoms[absUrl] = shadowRoot;
                         shadowRoot.innerHTML = txt;
                         this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
+                        const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
+                        if (subscribers) {
+                            subscribers.forEach(subscriber => subscriber(shadowRoot));
+                            delete CarbonCopy._shadowDomSubscribers[absUrl];
+                        }
                     });
                 });
             }
         }
         connectedCallback() {
-            console.log('connected callback');
             this.loadHref();
         }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
                     this._href = newValue;
-                    //this.loadHref();
-                    console.log('got href');
                     break;
                 case 'event-name':
                     this._eventName = newValue;
@@ -120,6 +139,11 @@
         }
     }
     CarbonCopy._shadowDoms = {};
+    CarbonCopy._shadowDomSubscribers = {};
+    class CC extends CarbonCopy {
+    }
+    ;
     customElements.define('carbon-copy', CarbonCopy);
+    customElements.define('c-c', CC);
 })();
 //# sourceMappingURL=carbon-copy.js.map
