@@ -24,7 +24,7 @@
       <h4>Christina Aguilera</h4>
       <demo-snippet style="width:900px">
         <template>
-          <template id="noMatter">No matter what we do (no matter what we do)</template>
+          <template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
           <p>Don't look at me</p>
           <p>
             <div>Everyday is so wonderful</div>
@@ -35,11 +35,7 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <carbon-copy href="HTMLSnippets.html#chorus" subject-is="I am" pronoun="me"
-              event-name="loaded-chorus" 
-              bubbles composed 
-              >
-            </carbon-copy>
+            <c-c href="HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me"></c-c>
           </p>
           <p>
               
@@ -52,13 +48,11 @@
             <div>Ain't that the way it is</div>
           </p>
           <p>
-            <c-c href="HTMLSnippets.html#chorus" subject-is="You're" pronoun="you"
-              event-name="loaded-chorus" bubbles composed
-               ></c-c>
+              <c-c href="HTMLSnippets.html#chorus" set="subjectIs:You are;pronoun:you"></c-c>
           </p>
           <br>
-            <c-c href="#noMatter"></c-c>
-            <div>No matter what we say (no matter what we say)</div>
+            <c-c href="#noMatter" set="verb:do"></c-c><br>
+            <c-c href="#noMatter" set="verb:say"></c-c>
             <div>We're the song inside the tune (yeah, oh yeah)</div>
             <div>Full of beautiful mistakes</div>
           <p>
@@ -68,11 +62,7 @@
             <div>On the other side</div>
           </p>
           <p>
-            <carbon-copy href="HTMLSnippets.html#chorus" subject-is="We're" pronoun="us"
-              event-name="loaded-chorus" 
-              bubbles composed  
-              >
-            </carbon-copy>
+              <c-c href="HTMLSnippets.html#chorus" set="subjectIs:We are;pronoun:we"></c-c>
           </p>
           <p>
             <div>Oh, oh</div>

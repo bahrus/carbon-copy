@@ -4,21 +4,21 @@
 
     
  <template id="beautiful">
-    <div><span class="subjectIs"></span> beautiful</div>
+    <div><c-c get="subjectIs" composed></c-c> beautiful</div>
 </template>
 <template id="down">
     <div>So don't you bring me down today</div>
 </template> 
 <template id="chorus">
-    <carbon-copy href="HTMLSnippets.html#beautiful" event-name="loaded-beautiful" bubbles composed subject-is="${subject-is}"></carbon-copy> 
+    <c-c href="HTMLSnippets.html#beautiful"></c-c> 
     <div>No matter what they say</div>
-    <div prop-pronoun>Words can't bring ${pronoun} down</div>
+    <div prop-pronoun>Words can't bring <c-c get="pronoun" composed></c-c> down</div>
     <div>Oh no</div>
-     <carbon-copy href="HTMLSnippets.html#beautiful" event-name="loaded-beautiful" bubbles composed subject-is="${subject-is}"></carbon-copy> 
+     <c-c href="HTMLSnippets.html#beautiful"></c-c> 
     <div>In every single way</div>
-    <div prop-pronoun>Yes words can't bring ${pronoun} down</div>
+    <div prop-pronoun>Yes words can't bring <c-c get="pronoun" composed></c-c> down</div>
     <div>Oh no</div>
-    <carbon-copy href="HTMLSnippets.html#down"></carbon-copy> 
+    <c-c href="HTMLSnippets.html#down"></c-c> 
 </template>
 </body>
 </html>

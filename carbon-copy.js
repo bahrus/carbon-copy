@@ -24,11 +24,13 @@
                 /**
                  * @type {boolean} indicates whether dispatching should bubble
                  */
-                'bubbles',
-                /**
-                 * @type {boolean} indicates whether dispatching should extend beyond shadow dom
-                 */
-                'composed'
+                // 'bubbles',
+                // /**
+                //  * @type {boolean} indicates whether dispatching should extend beyond shadow dom
+                //  */
+                'composed',
+                'get',
+                'set'
             ];
         }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -53,19 +55,19 @@
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
             //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            if (this._eventName) {
-                const newEvent = new CustomEvent(this._eventName, {
-                    detail: {
-                        clone: clone,
-                        absUrl: absUrl,
-                        url: url,
-                        linkLoadEvent: event,
-                    },
-                    bubbles: this._bubbles,
-                    composed: this._composed,
-                });
-                this.dispatchEvent(newEvent);
-            }
+            // if (this._eventName) {
+            //     const newEvent = new CustomEvent(this._eventName, {
+            //         detail: {
+            //             clone: clone,
+            //             absUrl: absUrl,
+            //             url: url,
+            //             linkLoadEvent: event,
+            //         },
+            //         bubbles: this._bubbles,
+            //         composed: this._composed,
+            //     } as CustomEventInit);
+            //     this.dispatchEvent(newEvent);
+            // }
             this.appendChild(clone);
         }
         loadHref() {
@@ -125,6 +127,29 @@
             }
         }
         connectedCallback() {
+            if (this._set) {
+                console.log('in set');
+                const params = this._set.split(';');
+                params.forEach(param => {
+                    const nameValuePair = param.split(':');
+                    console.log(nameValuePair);
+                    console.log('listen for ' + 'c-c-get-' + nameValuePair[0]);
+                    this.addEventListener('c-c-get-' + nameValuePair[0], e => {
+                        e['detail'].value = nameValuePair[1];
+                        console.log(e);
+                    });
+                });
+            }
+            if (this._get) {
+                console.log('emit event with name ' + 'c-c-get-' + this._get);
+                const newEvent = new CustomEvent('c-c-get-' + this._get, {
+                    detail: {},
+                    bubbles: true,
+                    composed: this._composed,
+                });
+                this.dispatchEvent(newEvent);
+                this.innerHTML = newEvent.detail.value;
+            }
             this.loadHref();
         }
         attributeChangedCallback(name, oldValue, newValue) {
@@ -135,11 +160,18 @@
                 case 'event-name':
                     this._eventName = newValue;
                     break;
-                case 'bubbles':
-                    this._bubbles = newValue !== null;
-                    break;
+                // case 'bubbles':
+                //     this._bubbles = newValue !== null;
+                //     break;
                 case 'composed':
                     this._composed = newValue !== null;
+                    break;
+                case 'set':
+                    this._set = newValue;
+                    break;
+                case 'get':
+                    //console.log('get ' + newValue);
+                    this._get = newValue;
                     break;
             }
         }
