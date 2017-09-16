@@ -128,20 +128,15 @@
         }
         connectedCallback() {
             if (this._set) {
-                console.log('in set');
                 const params = this._set.split(';');
                 params.forEach(param => {
                     const nameValuePair = param.split(':');
-                    console.log(nameValuePair);
-                    console.log('listen for ' + 'c-c-get-' + nameValuePair[0]);
                     this.addEventListener('c-c-get-' + nameValuePair[0], e => {
                         e['detail'].value = nameValuePair[1];
-                        console.log(e);
                     });
                 });
             }
             if (this._get) {
-                console.log('emit event with name ' + 'c-c-get-' + this._get);
                 const newEvent = new CustomEvent('c-c-get-' + this._get, {
                     detail: {},
                     bubbles: true,
@@ -170,7 +165,6 @@
                     this._set = newValue;
                     break;
                 case 'get':
-                    //console.log('get ' + newValue);
                     this._get = newValue;
                     break;
             }

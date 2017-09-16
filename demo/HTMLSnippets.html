@@ -2,9 +2,9 @@
 <html>
 <body>
 
-    
+        <script async src="../carbon-copy.js"></script>
  <template id="beautiful">
-    <div><c-c get="subjectIs" composed></c-c> beautiful</div>
+    <div><c-c get="subjectIs"></c-c> beautiful</div>
 </template>
 <template id="down">
     <div>So don't you bring me down today</div>
@@ -12,11 +12,11 @@
 <template id="chorus">
     <c-c href="HTMLSnippets.html#beautiful"></c-c> 
     <div>No matter what they say</div>
-    <div prop-pronoun>Words can't bring <c-c get="pronoun" composed></c-c> down</div>
+    <div prop-pronoun>Words <c-c get="verb1"></c-c> bring <c-c get="pronoun"></c-c> down</div>
     <div>Oh no</div>
      <c-c href="HTMLSnippets.html#beautiful"></c-c> 
     <div>In every single way</div>
-    <div prop-pronoun>Yes words can't bring <c-c get="pronoun" composed></c-c> down</div>
+    <div prop-pronoun>Yes words  <c-c get="verb2"></c-c> bring <c-c get="pronoun"></c-c> down</div>
     <div>Oh no</div>
     <c-c href="HTMLSnippets.html#down"></c-c> 
 </template>

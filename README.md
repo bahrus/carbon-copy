@@ -12,21 +12,33 @@ There are a number of scenarios where a snippet of HTML must be copied (repeated
 
 Out of the box, the template must be imported programmatically.  This can disrupt the flow when inspecting a document.
 
-The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template into a sibling of the element.
+The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template into the tag's innerHTML.
 
 The syntax for this element, at its simplest level, is as follows:
 
 ```html
-<carbon-copy href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
-</carbon-copy>
+<c-c href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
+</c-c>
+```
+
+You can specify parameters the referenced template can retrieve via the set attribute:
+
+```html
+    <c-c href="#noMatter" set="verb:do"></c-c><br>
+    <c-c href="#noMatter" set="verb:say"></c-c>
+```
+
+The referenced template can retrieve these parameters via the get attribute:
+
+```html
+<template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
 ```
 
 Future enhancements:
 
-- [ ] Support HTML Template references within the same document as the consumer
-- [ ] (Possibly) Explore imported templates recursively doing their own HTML Imports
-- [ ] (Possible) Explore integrating with streaming ideas.
-- [ ] (Possible) Add support for url resolving for recusive references. 
+
+- [ ] (Possibly) Explore integrating with streaming ideas.
+- [ ] (Possibly) Add support for url resolving for recusive references. 
 
 
 
