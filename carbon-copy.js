@@ -73,9 +73,15 @@
             if (!this._href)
                 return;
             const splitHref = this._href.split('#');
+            if (splitHref.length < 2)
+                return;
             const url = splitHref[0];
-            const absUrl = this.absolute(location.href, url); //TODO:  baseHref
             const id = splitHref[1];
+            if (url.length === 0) {
+                this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
+                return;
+            }
+            const absUrl = this.absolute(location.href, url); //TODO:  baseHref
             const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
