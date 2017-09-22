@@ -36,6 +36,47 @@ The referenced template can retrieve these parameters via the get attribute:
 
 Future enhancements:
 
+Preprocessing
+
+```html
+    <c-c href="..." pre-process></c-c>
+```
+
+Lack of support for the is attribute means that syntax that is quite compact in Vue and Angular is relatively verbose when using custom elements.
+
+We need the ability to wrap elements while importing.  We utilize the emmet / zen markup syntax for inspiration.
+
+```html
+<dom-bind wraps="template">
+    <inner-stuff></inner-stuff>
+</dom-bind>
+```
+becomes:
+
+```html
+    <dom-bind>
+        <template>
+            <inner-stuff></inner-stuff>
+        </template>
+    </dom-bind>
+```
+-------------------------------
+```html
+  <li wrapp-in="dom-repeat[repeat='[[items]]'] template">
+    <span>[[item.name]]</span>
+  </li>
+```
+
+becomes
+```html
+    <dom-repeat repeat="[[items]]">
+        <template>
+            <li wrapper="dom-repeat[repeat='[[items]]'] template">
+            <span>[[item.name]]</span>
+            </li>
+        </template>
+    </dom-repeat>
+```
 
 - [ ] (Possibly) Explore integrating with streaming ideas.
 - [ ] (Possibly) Add support for url resolving for recusive references. 
