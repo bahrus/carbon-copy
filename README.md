@@ -84,6 +84,7 @@ becomes
 
 ### Inserting into slots
 
+<c-c href="...">
 
 - [ ] (Possibly) Explore integrating with streaming ideas.
 - [ ] (Possibly) Add support for url resolving for recusive references. 
