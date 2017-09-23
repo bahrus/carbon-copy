@@ -66,7 +66,7 @@ becomes:
 ```
 -------------------------------
 ```html
-  <li wrap-in="dom-repeat[repeat='[[items]]'] template">
+  <li wrap-in="dom-repeat@repeat:[[items]] template">
     <span>[[item.name]]</span>
   </li>
 ```
@@ -75,7 +75,7 @@ becomes
 ```html
     <dom-repeat repeat="[[items]]">
         <template>
-            <li wrapper="dom-repeat[repeat='[[items]]'] template">
+            <li>
                 <span>[[item.name]]</span>
             </li>
         </template>
