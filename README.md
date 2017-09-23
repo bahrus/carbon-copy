@@ -44,7 +44,7 @@ If a document being imported contains this line:
     <meta name="preprocessor" content="zenmu">
 ```
 
-then some preprocessing logic described below will be performed on the import before creating the reusable HTMLTemplate.
+then some preprocessing logic described below will be performed on the import before creating the reusable HTMLTemplates.
 
 Why?
 
@@ -59,7 +59,7 @@ Carbon-copy will only load the client-side JavaScript processor if it sees the m
 We need the ability to wrap elements while importing.  We utilize the emmet / zen markup syntax for inspiration.
 
 ```html
-<dom-bind wraps="template inner-stuff.myClass1.myClass2@href://cnn.com@condensed">
+<dom-bind wraps="template#myId(inner-stuff.myClass1.myClass2@href://cnn.com@condensed">
     <span>Span's rule</span>
     <div>Div's rule</div>
 </dom-bind>
@@ -68,7 +68,7 @@ becomes:
 
 ```html
     <dom-bind>
-        <template>
+        <template id="myId">
             <inner-stuff class="myClass1 myClass2" href="//cnn.com" condensed>
                 <span>Span's rule</span>
                 <div>Div's rule</div>
@@ -80,7 +80,7 @@ becomes:
 #### Preprocessing directive # 2:  Outer Wrapping
 
 ```html
-  <li wrap-in="dom-repeat@repeat:[[items]] template">
+  <li wrap-in="dom-repeat@repeat:[[items]](template">
     <span>[[item.name]]</span>
   </li>
 ```
