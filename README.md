@@ -38,11 +38,19 @@ The referenced template can retrieve these parameters via the get attribute:
 
 ### Preprocessing
 
+If a document being imported contains this line:
+
 ```html
-    <c-c href="..." pre-process></c-c>
+    <meta name="preprocessor" content="zenmu">
 ```
 
-Lack of support for the is attribute means that syntax that is quite compact in Vue and Angular is relatively verbose when using custom elements.
+then some preprocessing logic described below will be performed on the import before creating the reusable HTMLTemplate.
+
+Why?
+
+Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means that syntax that is quite compact in popular frameoworks like Vue and Angular, is relatively verbose when using custom elements.  The preprocessor allows us to have our cake and eat it to.  We can have support syntax, which gets expanded during processing.
+
+#### Wrapping
 
 We need the ability to wrap elements while importing.  We utilize the emmet / zen markup syntax for inspiration.
 
@@ -83,7 +91,7 @@ becomes
 ```
 
 ### Inserting into slots
-
+ 
 <c-c href="...">
 
 - [ ] (Possibly) Explore integrating with streaming ideas.
