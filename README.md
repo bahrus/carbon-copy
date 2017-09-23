@@ -4,15 +4,13 @@
 
 Copy HTML Template into DOM
 
-## Install the Polymer-CLI
-
 There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
 
 >  Think of a template as a content fragment that is being stored for subsequent use in the document. While the parser does process the contents of the \<template\> element while loading the page, it does so only to ensure that those contents are valid; the element's contents are not rendered, however.
 
 Out of the box, the template must be imported programmatically.  This can disrupt the flow when inspecting a document.
 
-The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template into the tag's innerHTML.
+The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template (or one already defined in the main document) into the tag's innerHTML.
 
 The syntax for this element, at its simplest level, is as follows:
 
@@ -20,6 +18,8 @@ The syntax for this element, at its simplest level, is as follows:
 <c-c href="/myPath/toTemplate/myHTMLFile.html#myTemplateId">
 </c-c>
 ```
+
+If no url is specified before the hash symbol, then the code will assume the id exists and is searchable via document.getElementById.
 
 You can specify parameters the referenced template can retrieve via the set attribute:
 
@@ -54,20 +54,24 @@ then some preprocessing logic described below will be performed on the import be
 
 Why?
 
-Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means that syntax that is quite compact in popular frameworks like Vue and Angular, is relatively verbose when using custom elements.  This preprocessor allows us to have our cake and eat it to.  We can utilize compact syntax, which gets expanded during processing.
+One of the aspects that make Vue and Angular popular is it's compact template syntax.
 
-Note:  This preprocessing could be done on the server-side level just as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side or during the build, the meta tag above should be removed before passing down to the client.
+Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means similar syntax is relatively verbose when using custom elements.  
+
+This preprocessor allows us to have our cake and eat it too.  We can utilize compact syntax, which gets expanded during processing.
+
+Note:  This preprocessing could be done on the server-side level just as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side or during the build, the meta tag above should be removed before passing down to the client.  Another option to consider would be to do the preprocessing within a service work.
 
 Carbon-copy will only load the client-side JavaScript processor if it sees the meta tag present.
 
 #### Preprocessing directive # 1:  Inner Wrapping
 
-We need the ability to wrap elements while importing.  We utilize the emmet / zen markup syntax for inspiration.
+We need the ability to wrap elements while importing.  We draw inspiration from  emmet / zen markup to achieve compact notation:
 
 ```html
 <dom-bind wraps="template#myId(inner-stuff.myClass1.myClass2@href://cnn.com@condensed">
-    <span>Span's rule</span>
-    <div>Div's rule</div>
+    <span>Spans rule!</span>
+    <div>Divs divide and conquer!</div>
 </dom-bind>
 ```
 becomes:
@@ -76,8 +80,8 @@ becomes:
     <dom-bind>
         <template id="myId">
             <inner-stuff class="myClass1 myClass2" href="//cnn.com" condensed>
-                <span>Span's rule</span>
-                <div>Div's rule</div>
+                <span>Spans rule!</span>
+                <div>Divs divide and conquer!</div>
             </inner-stuff>
         </template>
     </dom-bind>
@@ -92,6 +96,7 @@ becomes:
 ```
 
 becomes
+
 ```html
     <dom-repeat repeat="[[items]]">
         <template>
@@ -111,20 +116,25 @@ TBD
 - [ ] (Possibly) Explore integrating with streaming ideas.
 - [ ] (Possibly) Add support for url resolving for recusive references. 
 
+### Implementation
 
-
-Implementation:  The implementation of this was originally done using HTMLImports (for external files).  In light of recents announcements regarding the future of HTMLImports, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame was tried.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).  While the use of IFrames may be ideal in some problem domains, a quick performance test indicates the performance of Fetch/ShadowDom/innerHTML greatly exceeds that of iframes (and objects).
+The implementation of this was originally done using HTMLImports (for external files).  In light of recents announcements regarding the future of HTMLImports, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame was tried.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).  While the use of IFrames may be ideal in some problem domains, a quick performance test indicates the performance of Fetch/ShadowDom/innerHTML greatly exceeds that of iframes (and objects).
 
 So the current approach is to use fetch / create ShadowDOM / set innerHTML inside the shadowDOM.  This allows id's from different documents to not get confused.
 
-So far, this implementation is kind of bare-bones simple, sticking to the basics for now.
 
-  
+## Installation
+
+Install the component using [Bower](http://bower.io/):
+```sh
+$ bower install carbon-copy --save
+```
 
 ## Viewing Your Element
 
-```
+```sh
 $ polymer serve
+Open http://127.0.0.1:8081/components/carbon-copy
 ```
 
 ## Running Tests
