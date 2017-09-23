@@ -48,9 +48,13 @@ then some preprocessing logic described below will be performed on the import be
 
 Why?
 
-Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means that syntax that is quite compact in popular frameoworks like Vue and Angular, is relatively verbose when using custom elements.  The preprocessor allows us to have our cake and eat it to.  We can have support syntax, which gets expanded during processing.
+Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means that syntax that is quite compact in popular frameoworks like Vue and Angular, is relatively verbose when using custom elements.  The preprocessor allows us to have our cake and eat it to.  We can utilize compact syntax, which gets expanded during processing.
 
-#### Wrapping
+Note:  This preprocessing could be done on the server-side level just as easily.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side, the meta tag above should be removed before passing down to the client.
+
+Carbon-copy will only load the client-side JavaScript processor if it sees the meta tag present.
+
+#### Preprocessing directive # 1:  Inner Wrapping
 
 We need the ability to wrap elements while importing.  We utilize the emmet / zen markup syntax for inspiration.
 
@@ -72,7 +76,9 @@ becomes:
         </template>
     </dom-bind>
 ```
--------------------------------
+
+#### Preprocessing directive # 2:  Outer Wrapping
+
 ```html
   <li wrap-in="dom-repeat@repeat:[[items]] template">
     <span>[[item.name]]</span>
@@ -92,7 +98,9 @@ becomes
 
 ### Inserting into slots
  
-<c-c href="...">
+TBD
+
+### Other
 
 - [ ] (Possibly) Explore integrating with streaming ideas.
 - [ ] (Possibly) Add support for url resolving for recusive references. 
