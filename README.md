@@ -54,9 +54,9 @@ then some preprocessing logic described below will be performed on the import be
 
 Why?
 
-Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means that syntax that is quite compact in popular frameoworks like Vue and Angular, is relatively verbose when using custom elements.  The preprocessor allows us to have our cake and eat it to.  We can utilize compact syntax, which gets expanded during processing.
+Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means that syntax that is quite compact in popular frameworks like Vue and Angular, is relatively verbose when using custom elements.  This preprocessor allows us to have our cake and eat it to.  We can utilize compact syntax, which gets expanded during processing.
 
-Note:  This preprocessing could be done on the server-side level just as easily.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side, the meta tag above should be removed before passing down to the client.
+Note:  This preprocessing could be done on the server-side level just as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side or during the build, the meta tag above should be removed before passing down to the client.
 
 Carbon-copy will only load the client-side JavaScript processor if it sees the meta tag present.
 
