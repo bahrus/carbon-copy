@@ -54,7 +54,7 @@ then some preprocessing logic described below will be performed on the import be
 
 Why?
 
-One of the aspects that make Vue and Angular popular is it's compact template syntax.
+One of the aspects that make Vue and Angular popular is its compact template syntax.
 
 Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means similar syntax is relatively verbose when using custom elements.  
 
