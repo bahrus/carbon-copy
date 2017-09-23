@@ -34,9 +34,9 @@ The referenced template can retrieve these parameters via the get attribute:
 <template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
 ```
 
-Future enhancements:
+## Future enhancements:
 
-Preprocessing
+### Preprocessing
 
 ```html
     <c-c href="..." pre-process></c-c>
@@ -81,6 +81,9 @@ becomes
         </template>
     </dom-repeat>
 ```
+
+### Inserting into slots
+
 
 - [ ] (Possibly) Explore integrating with streaming ideas.
 - [ ] (Possibly) Add support for url resolving for recusive references. 
