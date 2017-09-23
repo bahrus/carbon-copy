@@ -153,8 +153,35 @@ declare var HTMLImports;
                 const params = this._set.split(';');
                 params.forEach(param =>{
                     const nameValuePair = param.split(':');
-                    this.addEventListener('c-c-get-' + nameValuePair[0], e =>{
-                        e['detail'].value = nameValuePair[1];
+                    const key = nameValuePair[0];
+                    const val = nameValuePair[1];
+                    this.addEventListener('c-c-get-' + key, e =>{
+                        e['detail'].value = val;
+                        const attrib = this.getAttribute(key +'-props');
+                        if(attrib){
+                            const props = attrib.split(';');
+                            props.forEach(prop =>{
+                                const nvp2 = prop.split(':');
+                                const propKey = nvp2[0];
+                                const propVal = nvp2[1];
+                                const tokens = propKey.split('.');
+                                let targetProp = e.srcElement;
+                                const len = tokens.length;
+                                for(let i = 0; i < len - 1; i++){
+                                    targetProp = targetProp[tokens[i]];
+                                }
+                                const lastToken = tokens[len - 1];
+                                switch(typeof(targetProp[lastToken])){
+                                    case 'string':
+                                        targetProp[lastToken] = propVal;
+                                        break;
+                                    default:
+                                        throw 'not implemented yet';
+                                }
+                                
+                            })
+                        }
+                        //
                     });
 
                 });

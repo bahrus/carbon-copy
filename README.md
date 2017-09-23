@@ -34,6 +34,12 @@ The referenced template can retrieve these parameters via the get attribute:
 <template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
 ```
 
+You can also set attributes and classes similarly.
+
+```html
+    <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do;"></c-c>
+```
+
 ## Future enhancements:
 
 ### Preprocessing
