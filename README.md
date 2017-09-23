@@ -47,8 +47,9 @@ Lack of support for the is attribute means that syntax that is quite compact in 
 We need the ability to wrap elements while importing.  We utilize the emmet / zen markup syntax for inspiration.
 
 ```html
-<dom-bind wraps="template">
-    <inner-stuff></inner-stuff>
+<dom-bind wraps="template inner-stuff.myClass1.myClass2@href://cnn.com@condensed">
+    <span>Span's rule</span>
+    <div>Div's rule</div>
 </dom-bind>
 ```
 becomes:
@@ -56,13 +57,16 @@ becomes:
 ```html
     <dom-bind>
         <template>
-            <inner-stuff></inner-stuff>
+            <inner-stuff class="myClass1 myClass2" href="//cnn.com" condensed>
+                <span>Span's rule</span>
+                <div>Div's rule</div>
+            </inner-stuff>
         </template>
     </dom-bind>
 ```
 -------------------------------
 ```html
-  <li wrapp-in="dom-repeat[repeat='[[items]]'] template">
+  <li wrap-in="dom-repeat[repeat='[[items]]'] template">
     <span>[[item.name]]</span>
   </li>
 ```
@@ -72,7 +76,7 @@ becomes
     <dom-repeat repeat="[[items]]">
         <template>
             <li wrapper="dom-repeat[repeat='[[items]]'] template">
-            <span>[[item.name]]</span>
+                <span>[[item.name]]</span>
             </li>
         </template>
     </dom-repeat>
