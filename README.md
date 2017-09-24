@@ -44,15 +44,18 @@ You can also set attributes and classes similarly.
 
 ### Preprocessing
 
-If a document being imported contains this line:
+If a document being imported contains lines like this:
 
 ```html
+    <meta name="preprocessor" content="myPreprocessor">
     <meta name="preprocessor" content="zenmu">
 ```
 
-then some preprocessing logic described below will be performed on the import before creating the reusable HTMLTemplates.
+then some preprocessing functions: myPreProcessor, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document, and they can manipulate the document.
 
-Why?
+The functions myPreprocessor and zenmu (in this case) must be put into global scope.
+
+The particular function zenmu (in zenmu.js) that comes with this component is a particular function that might be of interest to those trying to reduce the verbosity of web component markup.
 
 One of the aspects that make Vue and Angular popular is its compact template syntax.
 

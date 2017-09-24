@@ -148,23 +148,26 @@ declare var HTMLImports;
                         document.body.appendChild(container);
                         const shadowRoot = container.attachShadow({ mode: 'open' });
                         CarbonCopy._shadowDoms[absUrl] = shadowRoot;
-                        if (this._type) {
+                        //if (this._type) {
                             const parser = new DOMParser();
-                            let docFrag = parser.parseFromString(txt, this._type);
-                            const metaProcessors = docFrag.head.querySelectorAll('meta[name="preprocessor"]');
-                            for(let i = 0, ii = metaProcessors.length; i < ii; i++){
-                                const metaProcessorTag = metaProcessors[i];
-                                const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
-                                const metaProcessor = eval(metaProcessorIdentifier);
-                                docFrag = metaProcessor(docFrag);
+                            let docFrag = parser.parseFromString(txt, this._type || 'text/html');
+                            if(docFrag.head){
+                                const metaProcessors = docFrag.head.querySelectorAll('meta[name="preprocessor"]');
+                                for(let i = 0, ii = metaProcessors.length; i < ii; i++){
+                                    const metaProcessorTag = metaProcessors[i];
+                                    const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
+                                    const metaProcessor = eval(metaProcessorIdentifier);
+                                    docFrag = metaProcessor(docFrag);
+                                }
                             }
+
                             shadowRoot.appendChild(docFrag.activeElement);
-                        } else {
-                            const parser = new DOMParser();
-                            const docFrag = parser.parseFromString(txt, this._type);
+                        // } else {
+                        //     const parser = new DOMParser();
+                        //     const docFrag = parser.parseFromString(txt, this._type);
                             
-                            shadowRoot.innerHTML = txt;
-                        }
+                        //     shadowRoot.innerHTML = txt;
+                        // }
 
                         this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
                         const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
