@@ -40,9 +40,8 @@ You can also set attributes and classes similarly.
     <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do;"></c-c>
 ```
 
-## Future enhancements:
-
 ### Preprocessing
+
 
 If a document being imported contains lines like this:
 
@@ -54,6 +53,10 @@ If a document being imported contains lines like this:
 then some preprocessing functions: myPreProcessor, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document, and they can manipulate the document.
 
 The functions myPreprocessor and zenmu (in this case) must be put into global scope.
+
+## Future enhancements:
+
+
 
 The particular function zenmu (in zenmu.js) that comes with this component is a particular function that might be of interest to those trying to reduce the verbosity of web component markup.
 

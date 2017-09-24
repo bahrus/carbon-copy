@@ -1,4 +1,4 @@
 function zenmu(doc: Document){
-    debugger;
+    console.log('in zenmu for further processing (future enhancement)');
     return doc;
 }
