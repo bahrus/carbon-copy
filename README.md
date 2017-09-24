@@ -112,7 +112,7 @@ becomes
 TBD
 
 ### Other
-
+- [ ] Do all set properties in one step (Polymer, other libraries)
 - [ ] (Possibly) Explore integrating with streaming ideas.
 - [ ] (Possibly) Add support for url resolving for recusive references. 
 

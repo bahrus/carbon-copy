@@ -29,8 +29,20 @@
                 //  * @type {boolean} indicates whether dispatching should extend beyond shadow dom
                 //  */
                 'composed',
+                /**
+                 * @type {string} Retrieve content from referring container
+                 *
+                 */
                 'get',
-                'set'
+                /**
+                 * @type {string} Provide content to referenced content
+                 */
+                'set',
+                /**
+                 * @type {string} Mime type of content.  If present, content will be parsed,
+                 * allowing for preprocessing to take place
+                 */
+                'type',
             ];
         }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -115,7 +127,16 @@
                         document.body.appendChild(container);
                         const shadowRoot = container.attachShadow({ mode: 'open' });
                         CarbonCopy._shadowDoms[absUrl] = shadowRoot;
-                        shadowRoot.innerHTML = txt;
+                        if (this._type) {
+                            const parser = new DOMParser();
+                            const docFrag = parser.parseFromString(txt, "text/html");
+                            shadowRoot.appendChild(docFrag);
+                        }
+                        else {
+                            const parser = new DOMParser();
+                            const docFrag = parser.parseFromString(txt, "text/html");
+                            shadowRoot.innerHTML = txt;
+                        }
                         this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
                         const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
                         if (subscribers) {
@@ -181,9 +202,6 @@
                 case 'event-name':
                     this._eventName = newValue;
                     break;
-                // case 'bubbles':
-                //     this._bubbles = newValue !== null;
-                //     break;
                 case 'composed':
                     this._composed = newValue !== null;
                     break;
@@ -192,6 +210,9 @@
                     break;
                 case 'get':
                     this._get = newValue;
+                    break;
+                case 'type':
+                    this._type = newValue;
                     break;
             }
         }
