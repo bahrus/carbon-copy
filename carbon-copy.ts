@@ -150,11 +150,19 @@ declare var HTMLImports;
                         CarbonCopy._shadowDoms[absUrl] = shadowRoot;
                         if (this._type) {
                             const parser = new DOMParser();
-                            const docFrag = parser.parseFromString(txt, this._type);
+                            let docFrag = parser.parseFromString(txt, this._type);
+                            const metaProcessors = docFrag.head.querySelectorAll('meta[name="preprocessor"]');
+                            for(let i = 0, ii = metaProcessors.length; i < ii; i++){
+                                const metaProcessorTag = metaProcessors[i];
+                                const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
+                                const metaProcessor = eval(metaProcessorIdentifier);
+                                docFrag = metaProcessor(docFrag);
+                            }
                             shadowRoot.appendChild(docFrag.activeElement);
                         } else {
                             const parser = new DOMParser();
-                            const docFrag = parser.parseFromString(txt, "text/html");
+                            const docFrag = parser.parseFromString(txt, this._type);
+                            
                             shadowRoot.innerHTML = txt;
                         }
 
