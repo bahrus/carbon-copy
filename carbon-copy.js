@@ -129,8 +129,8 @@
                         CarbonCopy._shadowDoms[absUrl] = shadowRoot;
                         if (this._type) {
                             const parser = new DOMParser();
-                            const docFrag = parser.parseFromString(txt, "text/html");
-                            shadowRoot.appendChild(docFrag);
+                            const docFrag = parser.parseFromString(txt, this._type);
+                            shadowRoot.appendChild(docFrag.activeElement);
                         }
                         else {
                             const parser = new DOMParser();
