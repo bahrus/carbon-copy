@@ -59,6 +59,7 @@ declare var HTMLImports;
         _set;
         _get;
         _type;
+        _absUrl;
         static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
         static _shadowDomSubscribers: { [key: string]: [(sr: ShadowRoot) => void] } = {};
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -116,9 +117,9 @@ declare var HTMLImports;
                 this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
-            const absUrl = this.absolute(location.href, url); //TODO:  baseHref
-
-            const _this = this;
+            this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            const absUrl = this._absUrl;
+            //const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
@@ -157,7 +158,7 @@ declare var HTMLImports;
                                     const metaProcessorTag = metaProcessors[i];
                                     const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
                                     const metaProcessor = eval(metaProcessorIdentifier);
-                                    docFrag = metaProcessor(docFrag);
+                                    docFrag = metaProcessor(docFrag, this);
                                 }
                             }
 

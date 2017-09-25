@@ -95,8 +95,9 @@
                 this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
-            const absUrl = this.absolute(location.href, url); //TODO:  baseHref
-            const _this = this;
+            this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            const absUrl = this._absUrl;
+            //const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
@@ -136,7 +137,7 @@
                                 const metaProcessorTag = metaProcessors[i];
                                 const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
                                 const metaProcessor = eval(metaProcessorIdentifier);
-                                docFrag = metaProcessor(docFrag);
+                                docFrag = metaProcessor(docFrag, this);
                             }
                         }
                         shadowRoot.appendChild(docFrag.activeElement);
