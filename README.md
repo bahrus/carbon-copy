@@ -54,9 +54,9 @@ If a document being imported contains lines like this in the header:
 </header>
 ```
 
-then some preprocessing functions: cc_resolver, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document, and they can manipulate the document.  These are separate JavaScript files from carbon_copy.js, so users will only incur the performance hit if the benefits of the proprocessor outweigh the costs.  Users of the carbon-copy element can create their own preprocessor function(s) and add it to the processing pipeline
+then some preprocessing functions: cc_resolver, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document as well as the referring carbon-copy element, and these preprocessing functions can manipulate the document.  By being passed the carbon-copy element, one can inform the url context from which the file was referenced, and hence one can recusively modify the relative url's contained within the file. These proprocessing function are separate JavaScript files from carbon_copy.js, so users will only incur the performance hit if the benefits of the proprocessor outweigh the costs.  Users of the carbon-copy element can create their own preprocessor function(s) and add it to the processing pipeline, using these two useful preprocessor functions as a guide.
 
-The functions myPreprocessor and zenmu (in this case) must be put into global scope.
+The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above)..
 
 ## Future enhancements:
 
