@@ -100,11 +100,12 @@ Emmet syntax treats the div tag special -- because div is the highest used tag.
 
 zenmu gives similar special treatment to the template tag.  So the markup above could be further reduced as follows:
 
+```html
 <dom-bind wraps="#myId(inner-stuff.myClass1.myClass2@href://cnn.com@condensed">
     <span>Spans rule!</span>
     <div>Divs divide and conquer!</div>
 </dom-bind>
-
+```
 
 #### Preprocessing directive # 2:  Outer Wrapping
 
