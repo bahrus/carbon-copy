@@ -43,26 +43,29 @@ You can also set attributes and classes similarly.
 ### Preprocessing
 
 
-If a document being imported contains lines like this:
+If a document being imported contains lines like this in the header:
 
 ```html
-    <meta name="preprocessor" content="myPreprocessor">
+<header>
+    ...
+    <meta name="preprocessor" content="cc_resolver">
     <meta name="preprocessor" content="zenmu">
+    ...
+</header>
 ```
 
-then some preprocessing functions: myPreProcessor, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document, and they can manipulate the document.
+then some preprocessing functions: cc_resolver, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document, and they can manipulate the document.  These are separate JavaScript files from carbon_copy.js, so users will only incur the performance hit if the benefits of the proprocessor outweigh the costs.  Users of the carbon-copy element can create their own preprocessor function(s) and add it to the processing pipeline
 
 The functions myPreprocessor and zenmu (in this case) must be put into global scope.
 
 ## Future enhancements:
 
 
-
 The particular function zenmu (in zenmu.js) that comes with this component is a particular function that might be of interest to those trying to reduce the verbosity of web component markup.
 
 One of the aspects that make Vue and Angular popular is its compact template syntax.
 
-Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level), for now,  means similar syntax is relatively verbose when using custom elements.  
+Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level -- i.e. no custom attribute standard has been ratified), for now,  means similar syntax is relatively verbose when using custom elements.  
 
 This preprocessor allows us to have our cake and eat it too.  We can utilize compact syntax, which gets expanded during processing.
 
@@ -93,6 +96,16 @@ becomes:
     </dom-bind>
 ```
 
+Emmet syntax treats the div tag special -- because div is the highest used tag.
+
+zenmu gives similar special treatment to the template tag.  So the markup above could be further reduced as follows:
+
+<dom-bind wraps="#myId(inner-stuff.myClass1.myClass2@href://cnn.com@condensed">
+    <span>Spans rule!</span>
+    <div>Divs divide and conquer!</div>
+</dom-bind>
+
+
 #### Preprocessing directive # 2:  Outer Wrapping
 
 ```html
@@ -112,6 +125,15 @@ becomes
         </template>
     </dom-repeat>
 ```
+
+We think it is a common pattern to have the primary attribute match the second part of the custom element tag name.  This, combined with the assumption of the template tag name, allows the markup to be shorted even further:
+
+```html
+  <li wrap-in="dom-repeat@:[[items]](">
+    <span>[[item.name]]</span>
+  </li>
+```
+
 
 ### Inserting into slots
  
