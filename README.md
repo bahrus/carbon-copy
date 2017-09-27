@@ -12,6 +12,8 @@ Out of the box, the template must be imported programmatically.  This can disrup
 
 The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template (or one already defined in the main document) into the tag's innerHTML.
 
+Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) if carbon-copy doesn't meet your needs.
+
 The syntax for this element, at its simplest level, is as follows:
 
 ```html
@@ -58,8 +60,15 @@ then some preprocessing functions: cc_resolver, and zenmu (described below) will
 
 The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above)..
 
+cc_resolver recursively resolves carbon copy (cc) elements.
+
 ## Future enhancements:
 
+### cc_resolver
+
+Will add resolving support for script and css references.
+
+### zenmu 
 
 The particular function zenmu (in zenmu.js) that comes with this component is a particular function that might be of interest to those trying to reduce the verbosity of web component markup.
 

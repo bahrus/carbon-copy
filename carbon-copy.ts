@@ -55,7 +55,7 @@ declare var HTMLImports;
         _eventName;
         //_bubbles;
         _composed;
-        _href;
+        _href: string;
         _set;
         _get;
         _type;
@@ -117,7 +117,12 @@ declare var HTMLImports;
                 this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
-            this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            if(url.startsWith('http://') || url.startsWith('//') || url.startsWith('https://')){
+                this._absUrl = url;
+            }else{
+                this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            }
+            
             const absUrl = this._absUrl;
             //const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];

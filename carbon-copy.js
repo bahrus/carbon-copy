@@ -95,7 +95,12 @@
                 this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
-            this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            if (url.startsWith('http://') || url.startsWith('//') || url.startsWith('https://')) {
+                this._absUrl = url;
+            }
+            else {
+                this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
+            }
             const absUrl = this._absUrl;
             //const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
