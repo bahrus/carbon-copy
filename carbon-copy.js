@@ -95,10 +95,16 @@
                 this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
-            if (url.startsWith('http://') || url.startsWith('//') || url.startsWith('https://')) {
-                this._absUrl = url;
+            const isAbsTests = ['https://', '/', '//', 'http://'];
+            let isAbsolute = false;
+            for (let i = 0, ii = isAbsTests.length; i < ii; i++) {
+                if (url.startsWith(isAbsTests[i])) {
+                    this._absUrl = url;
+                    isAbsolute = true;
+                    break;
+                }
             }
-            else {
+            if (!isAbsolute) {
                 this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
             }
             const absUrl = this._absUrl;

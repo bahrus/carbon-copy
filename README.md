@@ -70,7 +70,7 @@ Will add resolving support for script and css references.
 
 ### zenmu 
 
-The particular function zenmu (in zenmu.js) that comes with this component is a particular function that might be of interest to those trying to reduce the verbosity of web component markup.
+The particular function zenmu (in zenmu.js) that comes with this component  might be of interest to those trying to reduce the verbosity of web component markup.
 
 One of the aspects that make Vue and Angular popular is its compact template syntax.
 
@@ -78,7 +78,7 @@ Lack of support for the "is" attribute, as well as the requirement that custom e
 
 This preprocessor allows us to have our cake and eat it too.  We can utilize compact syntax, which gets expanded during processing.
 
-Note:  This preprocessing could be done on the server-side level just as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side or during the build, the meta tag above should be removed before passing down to the client.  Another option to consider would be to do the preprocessing within a service work.
+Note:  This preprocessing could be done on the server-side level just as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side or during the build, the meta tag above should be removed before passing down to the client.  Another option to consider would be to do the preprocessing within a service worker.
 
 Carbon-copy will only load the client-side JavaScript processor if it sees the meta tag present.
 
@@ -136,7 +136,7 @@ becomes
     </dom-repeat>
 ```
 
-We think it is a common pattern to have the primary attribute match the second part of the custom element tag name.  This, combined with the assumption of the template tag name, allows the markup to be shorted even further:
+We think it is a common pattern to have the primary attribute match the second part of the custom element tag name.  This, combined with the assumption of the template tag name, allows the markup to be shortened even further:
 
 ```html
   <li wrap-in="dom-repeat@:[[items]](">
@@ -152,7 +152,7 @@ TBD
 ### Other
 - [ ] Do all set properties in one step (Polymer, other libraries)
 - [ ] (Possibly) Explore integrating with streaming ideas.
-- [ ] (Possibly) Add support for url resolving for recusive references. 
+
 
 ### Implementation
 

@@ -117,9 +117,16 @@ declare var HTMLImports;
                 this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
-            if(url.startsWith('http://') || url.startsWith('//') || url.startsWith('https://')){
-                this._absUrl = url;
-            }else{
+            const isAbsTests = ['https://', '/', '//', 'http://'];
+            let isAbsolute = false;
+            for(let i = 0, ii = isAbsTests.length; i < ii; i++){
+                if(url.startsWith(isAbsTests[i])){
+                    this._absUrl = url;
+                    isAbsolute = true;
+                    break;
+                }
+            }
+            if(!isAbsolute){
                 this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
             }
             
