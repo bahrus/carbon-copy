@@ -17,23 +17,19 @@ declare var HTMLImports;
                 /** @type {string} Url to resource containing the Template, identified by the hash after the url
                  * which must match the id of the template.
                  * e.g. <c-c href="/my/path/myFile.html#myId"></c-c>
-                 * If reference is inside the same document as the referencer, use href="./#myId"
+                 * If reference is inside the same document as the referencer, use href="#myId"
                  */
                 'href',
                 /** @type {string} Name of event to emit when loading complete.  Allows container to modify the template.
                  * 
                  */
-                'event-name',
-                /**
-                 * @type {boolean} indicates whether dispatching should bubble
-                 */
-                // 'bubbles',
+                // 'loaded-event-name',
                 // /**
-                //  * @type {boolean} indicates whether dispatching should extend beyond shadow dom
+                //  * @type {boolean} indicates whether dispatching events should extend beyond shadow dom
                 //  */
                 'composed',
                 /**
-                 * @type {string} Retrieve content from referring container
+                 * @type {string} Retrieve content from referring container (or higher)
                  * 
                  */
                 'get',
@@ -41,11 +37,11 @@ declare var HTMLImports;
                  * @type {string} Provide content to referenced content
                  */
                 'set',
-                /**
-                 * @type {string} Mime type of content.  If present, content will be parsed,
-                 * allowing for preprocessing to take place
-                 */
-                'type',
+                // /**
+                //  * @type {string} Mime type of content.  If present, content will be parsed,
+                //  * allowing for preprocessing to take place
+                //  */
+                // 'type',
             ];
         }
 
@@ -58,7 +54,7 @@ declare var HTMLImports;
         _href: string;
         _set;
         _get;
-        _type;
+        //_type;
         _absUrl;
         static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
         static _shadowDomSubscribers: { [key: string]: [(sr: ShadowRoot) => void] } = {};
@@ -119,19 +115,18 @@ declare var HTMLImports;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
             let isAbsolute = false;
-            for(let i = 0, ii = isAbsTests.length; i < ii; i++){
-                if(url.startsWith(isAbsTests[i])){
+            for (let i = isAbsTests.length; i--;) {
+                if (url.startsWith(isAbsTests[i])) {
                     this._absUrl = url;
                     isAbsolute = true;
                     break;
                 }
             }
-            if(!isAbsolute){
+            if (!isAbsolute) {
                 this._absUrl = this.absolute(location.href, url); //TODO:  baseHref
             }
-            
+
             const absUrl = this._absUrl;
-            //const _this = this;
             let shadowDOM = CarbonCopy._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
@@ -161,26 +156,21 @@ declare var HTMLImports;
                         document.body.appendChild(container);
                         const shadowRoot = container.attachShadow({ mode: 'open' });
                         CarbonCopy._shadowDoms[absUrl] = shadowRoot;
-                        //if (this._type) {
-                            const parser = new DOMParser();
-                            let docFrag = parser.parseFromString(txt, this._type || 'text/html');
-                            if(docFrag.head){
-                                const metaProcessors = docFrag.head.querySelectorAll('meta[name="preprocessor"]');
-                                for(let i = 0, ii = metaProcessors.length; i < ii; i++){
-                                    const metaProcessorTag = metaProcessors[i];
-                                    const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
-                                    const metaProcessor = eval(metaProcessorIdentifier);
-                                    docFrag = metaProcessor(docFrag, this);
-                                }
+                        const parser = new DOMParser();
+                        let docFrag = parser.parseFromString(txt, 'text/html');
+                        if (docFrag.head) {
+                            const metaProcessors = docFrag.head.querySelectorAll('meta[name="preprocessor"]');
+                            for (let i = 0, ii = metaProcessors.length; i < ii; i++) {
+                                const metaProcessorTag = metaProcessors[i];
+                                const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
+                                //TODO:  validate identifier looks safe?
+                                const metaProcessor = eval(metaProcessorIdentifier);
+                                docFrag = metaProcessor(docFrag, this);
                             }
+                        }
 
-                            shadowRoot.appendChild(docFrag.activeElement);
-                        // } else {
-                        //     const parser = new DOMParser();
-                        //     const docFrag = parser.parseFromString(txt, this._type);
-                            
-                        //     shadowRoot.innerHTML = txt;
-                        // }
+                        shadowRoot.appendChild(docFrag.activeElement);
+
 
                         this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
                         const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
