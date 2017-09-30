@@ -56,7 +56,7 @@ If a document being imported contains lines like this in the header:
 </header>
 ```
 
-then some preprocessing functions: cc_resolver, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document as well as the referring carbon-copy element, and these preprocessing functions can manipulate the document.  By being passed the carbon-copy element, one can inform the url context from which the file was referenced, and hence one can recusively modify the relative url's contained within the file. These proprocessing function are separate JavaScript files from carbon_copy.js, so users will only incur the performance hit if the benefits of the proprocessor outweigh the costs.  Users of the carbon-copy element can create their own preprocessor function(s) and add it to the processing pipeline, using these two useful preprocessor functions as a guide.
+then some preprocessing functions: cc_resolver, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document as well as the referring carbon-copy element, and these preprocessing functions can manipulate the document.  By being passed the carbon-copy element, one can infer the url context from which the file was referenced, and hence one can recusively modify the relative url's contained within the file. These preprocessing functions are separate JavaScript files from carbon_copy.js, so users will only incur the performance hit from downloading these functions if the benefits of the preprocessor outweigh the costs.  Users of the carbon-copy element can create their own preprocessor function(s) and add it to the processing pipeline, using these two useful preprocessor functions as a guide.
 
 The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above)..
 
@@ -105,7 +105,7 @@ becomes:
     </dom-bind>
 ```
 
-Emmet syntax treats the div tag special -- because div is the highest used tag.
+Emmet syntax treats the div tag special -- because div is the most frequenly used tag.
 
 zenmu gives similar special treatment to the template tag.  So the markup above could be further reduced as follows:
 
@@ -156,7 +156,7 @@ TBD
 
 ### Implementation
 
-The implementation of this was originally done using HTMLImports (for external files).  In light of recents announcements regarding the future of HTMLImports, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame was tried.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).  While the use of IFrames may be ideal in some problem domains, a quick performance test indicates the performance of Fetch/ShadowDom/innerHTML greatly exceeds that of iframes (and objects).
+The implementation of this was originally done using HTMLImports (for external files).  In light of recent announcements regarding the future of HTMLImports, and partly inspired by this [interesting article](https://jakearchibald.com/2016/fun-hacks-faster-content/), a hidden iFrame was tried.  The streaming-element the article describes features many obscure tricks I wasn't aware of, [but it does require a fair amount of code](https://github.com/bahrus/streaming-element/blob/master/streaming-element.js).  While the use of IFrames may be ideal in some problem domains, a quick performance test indicates the performance of Fetch/ShadowDom/innerHTML greatly exceeds that of iframes (and objects) when applied repeatedly.
 
 So the current approach is to use fetch / create ShadowDOM / set innerHTML inside the shadowDOM.  This allows id's from different documents to not get confused.
 
