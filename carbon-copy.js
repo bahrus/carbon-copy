@@ -230,6 +230,9 @@
             this._href = val;
             this.loadHref();
         }
+        get href() {
+            return this._href;
+        }
     }
     CarbonCopy._shadowDoms = {};
     CarbonCopy._shadowDomSubscribers = {};

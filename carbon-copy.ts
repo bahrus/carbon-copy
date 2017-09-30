@@ -269,6 +269,9 @@ declare var HTMLImports;
             this._href = val;
             this.loadHref();
         }
+        get href(){
+            return this._href;
+        }
     }
 
     class CC extends CarbonCopy { };
