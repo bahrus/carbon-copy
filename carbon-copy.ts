@@ -89,8 +89,12 @@ declare var HTMLImports;
             const clone = document.importNode(templ.content, true) as HTMLDocument;
             if(this._stampHref){
                 const initialChildren = this.querySelectorAll('[c-c-initial-child]');
-                for(let i = initialChildren.length; i--;){
+                for(let i = 0, ii = initialChildren.length; i < ii; i++){
                     (<HTMLElement>initialChildren[i]).style.display = 'none';
+                }
+                for(let i = 0, ii = clone.children.length; i < ii; i++){
+                    const child = clone.children[i];
+                    child.setAttribute('c-c-href-stamp', this._href);
                 }
             }
             this.appendChild(clone);
@@ -99,7 +103,7 @@ declare var HTMLImports;
             if(!this._initialized){
                 if(this._stampHref){
                     const children = this.children;
-                    for(let i = children.length; i--;){
+                    for(let i = 0, ii = children.length - 1; i < ii; i++){
                         children[i].setAttribute('c-c-initial-child', 'true');
                     }
                 }
@@ -107,6 +111,26 @@ declare var HTMLImports;
             }
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href) return;
+            let needToProcessFurther = true;
+            if(this._stampHref){
+                //check for existing nodes, that match
+                const existingNodes = this.querySelectorAll(':scope > [c-c-href-stamp]');
+                console.log('testing ' + this._href + " node count = " + existingNodes.length);
+                for(let i = 0, ii = existingNodes.length; i < ii; i++){
+                    const existingNode = existingNodes[i] as HTMLElement;
+                    console.log("value of node " + existingNode.getAttribute('c-c-href-stamp'));
+                    if(existingNode.getAttribute('c-c-href-stamp') === this._href){
+                        console.log(existingNode.outerHTML + ' found a match')
+                        needToProcessFurther = false;
+                        existingNode.style.display = existingNode['c_c_originalStyle'];
+                    }else{
+                        
+                        existingNode['c_c_originalStyle'] = existingNode.style.display;
+                        existingNode.style.display = 'none';
+                    }
+                }
+            }
+            if(!needToProcessFurther) return;
             const splitHref = this._href.split('#');
             if (splitHref.length < 2) return;
             const url = splitHref[0];
@@ -117,7 +141,7 @@ declare var HTMLImports;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
             let isAbsolute = false;
-            for (let i = isAbsTests.length; i--;) {
+            for (let i = 0, ii = isAbsTests.length; i < ii; i++) {
                 if (url.startsWith(isAbsTests[i])) {
                     this._absUrl = url;
                     isAbsolute = true;
