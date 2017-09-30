@@ -42,6 +42,17 @@ You can also set attributes and classes similarly.
     <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do;"></c-c>
 ```
 
+### Changing href
+
+By default, if the href attribute / property changes for an existing c-c element instance, the new template will be appended to the inner content of the c-c element.  Even if you go back to the original template, it will keep getting appended repeatedly.
+
+This allows one to switch between pages instaneously, similar to Polymer's iron-pages element.
+
+However, the attribute stamp-href modifies the behavior in the following ways:
+
+- Previous template imports will be hidden
+- If you go back to the original template import href, it will unhide what was there.  Thus any editing or navigation done within that DOM tree will persist.
+
 ### Preprocessing
 
 
