@@ -1,0 +1,20 @@
+{
+  "name": "PolymerTests",
+  "homepage": "https://github.com/bahrus/carbon-copy",
+  "authors": [
+    "bahrus <anderson.bruce.b@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "xtal-fetch": "bahrus/xtal-fetch#^0.0.14"
+  }
+}
