@@ -51,7 +51,7 @@ However, the attribute stamp-href modifies the behavior in the following ways:
 - Previous template imports will be hidden
 - If you go back to the original template import href, it will unhide what was there.  Thus any editing or navigation done within that DOM tree will persist.
 
-This allows one to switch between pages instaneously, similar to Polymer's iron-pages element.
+This allows one to switch between already loaded pages instaneously, similar to Polymer's iron-pages element.
 
 ### Preprocessing
 
