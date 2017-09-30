@@ -208,6 +208,8 @@
             switch (name) {
                 case 'href':
                     this._href = newValue;
+                    if (this._initialized)
+                        this.loadHref();
                     break;
                 case 'event-name':
                     this._eventName = newValue;
@@ -227,8 +229,9 @@
             }
         }
         set href(val) {
-            this._href = val;
-            this.loadHref();
+            this.setAttribute('href', val);
+            //this._href = val;
+            //this.loadHref();
         }
         get href() {
             return this._href;

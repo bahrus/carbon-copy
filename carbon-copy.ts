@@ -241,6 +241,7 @@ declare var HTMLImports;
             switch (name) {
                 case 'href':
                     this._href = newValue;
+                    if(this._initialized) this.loadHref();
                     break;
                 case 'event-name':
                     this._eventName = newValue;
@@ -266,8 +267,9 @@ declare var HTMLImports;
         }
 
         set href(val: string){
-            this._href = val;
-            this.loadHref();
+            this.setAttribute('href', val);
+            //this._href = val;
+            //this.loadHref();
         }
         get href(){
             return this._href;
