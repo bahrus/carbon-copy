@@ -115,12 +115,9 @@ declare var HTMLImports;
             if(this._stampHref){
                 //check for existing nodes, that match
                 const existingNodes = this.querySelectorAll(':scope > [c-c-href-stamp]');
-                console.log('testing ' + this._href + " node count = " + existingNodes.length);
                 for(let i = 0, ii = existingNodes.length; i < ii; i++){
                     const existingNode = existingNodes[i] as HTMLElement;
-                    console.log("value of node " + existingNode.getAttribute('c-c-href-stamp'));
                     if(existingNode.getAttribute('c-c-href-stamp') === this._href){
-                        console.log(existingNode.outerHTML + ' found a match')
                         needToProcessFurther = false;
                         existingNode.style.display = existingNode['c_c_originalStyle'];
                     }else{
