@@ -37,11 +37,10 @@ declare var HTMLImports;
                  * @type {string} Provide content to referenced content
                  */
                 'set',
-                // /**
-                //  * @type {string} Mime type of content.  If present, content will be parsed,
-                //  * allowing for preprocessing to take place
-                //  */
-                // 'type',
+                /**
+                 * @type {boolean} 
+                 */
+                'stamp-href'
             ];
         }
 
@@ -56,6 +55,8 @@ declare var HTMLImports;
         _get;
         //_type;
         _absUrl;
+        _stampHref;
+        _initialized;
         static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
         static _shadowDomSubscribers: { [key: string]: [(sr: ShadowRoot) => void] } = {};
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -80,29 +81,30 @@ declare var HTMLImports;
 
         // }
 
-        copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM: ShadowRoot | Document, id: string, absUrl: string, url: string) {
+        appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM: ShadowRoot | Document, id: string, absUrl: string, url: string) {
             const templ = shadowDOM.getElementById(id) as HTMLTemplateElement;
 
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
-            //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            // if (this._eventName) {
-            //     const newEvent = new CustomEvent(this._eventName, {
-            //         detail: {
-            //             clone: clone,
-            //             absUrl: absUrl,
-            //             url: url,
-            //             linkLoadEvent: event,
-            //         },
-            //         bubbles: this._bubbles,
-            //         composed: this._composed,
-            //     } as CustomEventInit);
-            //     this.dispatchEvent(newEvent);
-            // }
+            if(this._stampHref){
+                const initialChildren = this.querySelectorAll('[c-c-initial-child]');
+                for(let i = initialChildren.length; i--;){
+                    (<HTMLElement>initialChildren[i]).style.display = 'none';
+                }
+            }
             this.appendChild(clone);
         }
         loadHref() {
+            if(!this._initialized){
+                if(this._stampHref){
+                    const children = this.children;
+                    for(let i = children.length; i--;){
+                        children[i].setAttribute('c-c-initial-child', 'true');
+                    }
+                }
+                this._initialized = true;
+            }
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href) return;
             const splitHref = this._href.split('#');
@@ -110,7 +112,7 @@ declare var HTMLImports;
             const url = splitHref[0];
             const id = splitHref[1];
             if (url.length === 0) {
-                this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
+                this.appendTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
@@ -134,7 +136,7 @@ declare var HTMLImports;
                     case 'boolean':
                         const subscribers = CarbonCopy._shadowDomSubscribers;
                         const fn = (sr: ShadowRoot) => {
-                            this.copyTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
+                            this.appendTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
                         }
                         if (!subscribers[absUrl]) {
                             subscribers[absUrl] = [fn];
@@ -143,7 +145,7 @@ declare var HTMLImports;
                         }
                         break;
                     case 'object':
-                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM as ShadowRoot, id, absUrl, url);
+                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM as ShadowRoot, id, absUrl, url);
                         break;
                 }
 
@@ -169,10 +171,10 @@ declare var HTMLImports;
                             }
                         }
 
-                        shadowRoot.appendChild(docFrag.activeElement);
+                        shadowRoot.appendChild(docFrag.body);
 
 
-                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
+                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
                         const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
@@ -252,14 +254,20 @@ declare var HTMLImports;
                 case 'get':
                     this._get = newValue;
                     break;
-                // case 'type':
-                //     this._type = newValue;
-                //     break;
+                case 'stamp-href':
+                    this._stampHref = (newValue !== undefined);
+                    break;
+                    
             }
 
 
 
 
+        }
+
+        set href(val: string){
+            this._href = val;
+            this.loadHref();
         }
     }
 

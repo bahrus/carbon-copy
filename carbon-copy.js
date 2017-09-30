@@ -34,6 +34,10 @@
                  * @type {string} Provide content to referenced content
                  */
                 'set',
+                /**
+                 * @type {boolean}
+                 */
+                'stamp-href'
             ];
         }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -53,27 +57,28 @@
         }
         // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
         // }
-        copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url) {
+        appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url) {
             const templ = shadowDOM.getElementById(id);
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
-            //const dispatchTypeArg = this.getAttribute('dispatch-type-arg');
-            // if (this._eventName) {
-            //     const newEvent = new CustomEvent(this._eventName, {
-            //         detail: {
-            //             clone: clone,
-            //             absUrl: absUrl,
-            //             url: url,
-            //             linkLoadEvent: event,
-            //         },
-            //         bubbles: this._bubbles,
-            //         composed: this._composed,
-            //     } as CustomEventInit);
-            //     this.dispatchEvent(newEvent);
-            // }
+            if (this._stampHref) {
+                const initialChildren = this.querySelectorAll('[c-c-initial-child]');
+                for (let i = initialChildren.length; i--;) {
+                    initialChildren[i].style.display = 'none';
+                }
+            }
             this.appendChild(clone);
         }
         loadHref() {
+            if (!this._initialized) {
+                if (this._stampHref) {
+                    const children = this.children;
+                    for (let i = children.length; i--;) {
+                        children[i].setAttribute('c-c-initial-child', 'true');
+                    }
+                }
+                this._initialized = true;
+            }
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href)
                 return;
@@ -83,7 +88,7 @@
             const url = splitHref[0];
             const id = splitHref[1];
             if (url.length === 0) {
-                this.copyTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
+                this.appendTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
                 return;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
@@ -106,7 +111,7 @@
                     case 'boolean':
                         const subscribers = CarbonCopy._shadowDomSubscribers;
                         const fn = (sr) => {
-                            this.copyTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
+                            this.appendTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
                         };
                         if (!subscribers[absUrl]) {
                             subscribers[absUrl] = [fn];
@@ -116,7 +121,7 @@
                         }
                         break;
                     case 'object':
-                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
+                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
                         break;
                 }
             }
@@ -141,8 +146,8 @@
                                 docFrag = metaProcessor(docFrag, this);
                             }
                         }
-                        shadowRoot.appendChild(docFrag.activeElement);
-                        this.copyTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
+                        shadowRoot.appendChild(docFrag.body);
+                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
                         const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
@@ -216,7 +221,14 @@
                 case 'get':
                     this._get = newValue;
                     break;
+                case 'stamp-href':
+                    this._stampHref = (newValue !== undefined);
+                    break;
             }
+        }
+        set href(val) {
+            this._href = val;
+            this.loadHref();
         }
     }
     CarbonCopy._shadowDoms = {};
