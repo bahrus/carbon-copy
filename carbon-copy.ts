@@ -252,9 +252,9 @@ declare var HTMLImports;
                 case 'get':
                     this._get = newValue;
                     break;
-                case 'type':
-                    this._type = newValue;
-                    break;
+                // case 'type':
+                //     this._type = newValue;
+                //     break;
             }
 
 
