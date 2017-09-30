@@ -75,6 +75,10 @@ cc_resolver recursively resolves carbon copy (cc) elements.
 
 ## Future enhancements:
 
+### Child Property Propagation
+
+TBD
+
 ### cc_resolver
 
 Will add resolving support for script and css references.
@@ -87,10 +91,15 @@ The content to import into a c-c tag is identified via the href attribute / prop
 
 ### Content protection
 
+TBD
 
 ### Content merging
-#### Append
+
+TBD
+
 #### Replace
+
+TBD
 
 ### zenmu 
 
