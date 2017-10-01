@@ -272,27 +272,14 @@
                     if (this._initialized)
                         this.loadHref();
                     break;
-                case 'event-name':
-                    this._eventName = newValue;
+                case 'stamp-href':
+                    this._stampHref = (newValue !== undefined);
                     break;
                 case 'composed':
                     this._composed = newValue !== null;
                     break;
-                case 'set':
-                    this._set = newValue;
-                    break;
-                case 'get':
-                    this._get = newValue;
-                    break;
-                case 'set-props':
-                    this._setProps = newValue;
-                    break;
-                case 'get-props':
-                    this._getProps = newValue;
-                    break;
-                case 'stamp-href':
-                    this._stampHref = (newValue !== undefined);
-                    break;
+                default:
+                    this['_' + name.replace('-', '_')] = newValue;
             }
         }
         set href(val) {
