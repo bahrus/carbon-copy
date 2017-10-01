@@ -92,7 +92,7 @@ The contained, referenced snippet that is loaded via the c-c element (for exampl
         <xtal-json-editor watch="[[generatedJson]]"></xtal-json-editor>
 ``` 
 
-The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target elemtn (xtal-json-editor in this case) were directly embedded in the containing page.
+The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
 
 
 
