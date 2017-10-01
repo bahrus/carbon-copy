@@ -275,9 +275,9 @@ declare var HTMLImports;
             }
             if (this._get) {
                 const newEvent = new CustomEvent('c-c-get-' + this._get, {
-                    // detail: {
+                    detail: {
 
-                    // },
+                    },
                     bubbles: true,
                     composed: this._composed,
                 } as CustomEventInit);

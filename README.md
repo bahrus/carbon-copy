@@ -104,11 +104,6 @@ The combination of the set-props c-c element and the get-props c-c element creat
 
 Will add resolving support for script and css references.
 
-### Content persistence
-
-The content to import into a c-c tag is identified via the href attribute / property.  However, what happens if we change the value of href?   What if we come back to the original href later? We can handle this in one of two ways
-
-1)  The previous content (including edits) just goes poof!  The previous DOM tree is released, replaced by the new
 
 ### Content protection
 
