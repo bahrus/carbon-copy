@@ -23,14 +23,14 @@ The syntax for this element, at its simplest level, is as follows:
 
 If no url is specified before the hash symbol, then the code will assume the id exists and is searchable via document.getElementById.
 
-You can specify parameters the referenced template can retrieve via the set attribute:
+You can specify parameters the referenced template can retrieve via the set attribute, which is a semi-colon delimited list of name/value pairs (using the colon as the assignment operator):
 
 ```html
     <c-c href="#noMatter" set="verb:do"></c-c><br>
     <c-c href="#noMatter" set="verb:say"></c-c>
 ```
 
-The referenced template can retrieve these parameters via the get attribute:
+The referenced template can retrieve these parameters via the get attribute, also semicolon delimited:
 
 ```html
 <template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
@@ -77,7 +77,15 @@ cc_resolver recursively resolves carbon copy (cc) elements.
 
 ### Child Property Propagation
 
-TBD
+When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We need to bring the elements up to date. This is done using a semi-colon delimited list of properties that will need to be provided to the inserted elements:
+
+```html
+<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
+```
+
+The watch attribute shown here is an example of a binding within a Polymer dom-bind element.  But the key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element gets assigned the value of watch.
+
+The containing c-c element can provide a 
 
 ### cc_resolver
 
