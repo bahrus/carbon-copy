@@ -226,7 +226,6 @@
             if (this._setProps) {
                 const params = this._setProps.split(';');
                 params.forEach(param => {
-                    console.log('add listener for ' + 'c-c-get-props-' + param);
                     this.addEventListener('c-c-get-props-' + param, e => {
                         e['detail'].value = this[param];
                         const nextSibling = e.srcElement.nextElementSibling;
@@ -258,7 +257,6 @@
                         bubbles: true,
                         composed: this._composed,
                     });
-                    console.log("dispatching get props event: " + 'c-c-get-props-' + param);
                     this.dispatchEvent(newEvent);
                     //this.nextSibling[param] = newEvent.detail.value;
                 });
