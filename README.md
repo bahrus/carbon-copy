@@ -83,7 +83,7 @@ In the containing document, we turn the c-c element into a property setter c-c e
 <c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
 ```
 
-The watch attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?] (https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's watch property gets assigned (and receives updates of) the value in question.  .
+The watch attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's watch property gets assigned (and receives updates of) the value in question.  .
 
 The contained, referenced snippet that is loaded via the c-c element (for example, the template contained in JsonEditorSnippet.html in this example) needs to supply a "getter" c-c element.  This getter c-c element should appear as a previous sibling of the target element which needs the property value (binding).
 
