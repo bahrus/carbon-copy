@@ -60,14 +60,17 @@
             var stack = base.split("/"), parts = relative.split("/");
             stack.pop(); // remove current file name (or empty string)
             // (omit if "base" is the current folder without trailing slash)
-            for (var i = 0; i < parts.length; i++) {
-                if (parts[i] == ".")
-                    continue;
-                if (parts[i] == "..")
-                    stack.pop();
-                else
-                    stack.push(parts[i]);
-            }
+            parts.forEach(part => {
+                switch (part) {
+                    case '.':
+                        return;
+                    case '..':
+                        stack.pop();
+                        break;
+                    default:
+                        stack.push(part);
+                }
+            });
             return stack.join("/");
         }
         // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
@@ -198,7 +201,7 @@
                 });
             }
         }
-        connectedCallback2() {
+        c2() {
             if (this._set) {
                 const params = this._set.split(';');
                 params.forEach(param => {
@@ -285,7 +288,7 @@
             //https://github.com/w3c/webcomponents/issues/551
             setTimeout(() => {
                 //hack?
-                this.connectedCallback2();
+                this.c2();
             }, 1);
         }
         attributeChangedCallback(name, oldValue, newValue) {
