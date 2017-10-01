@@ -1,6 +1,9 @@
 declare var HTMLImports;
 
 (function () {
+    const cg = 'c-c-get-';
+    const cgp = cg + 'props-';
+    // const tn = ['c-c', 'carbon-copy']
     /**
     * `carbon-copy`
     * Dependency free web component that allows downloading / caching of HTML Templates from external HTML Files.
@@ -10,7 +13,7 @@ declare var HTMLImports;
     * @polymer
     * @demo demo/index.html
     */
-    class CarbonCopy extends HTMLElement {
+    class CC extends HTMLElement {
 
         static get observedAttributes() {
             return [
@@ -160,12 +163,12 @@ declare var HTMLImports;
             }
 
             const absUrl = this._absUrl;
-            let shadowDOM = CarbonCopy._shadowDoms[absUrl];
+            let shadowDOM = CC._shadowDoms[absUrl];
             //let templ = 'hello' as any;//: HTMLTemplateElement;
             if (shadowDOM) {
                 switch (typeof shadowDOM) {
                     case 'boolean':
-                        const subscribers = CarbonCopy._shadowDomSubscribers;
+                        const subscribers = CC._shadowDomSubscribers;
                         const fn = (sr: ShadowRoot) => {
                             this.appendTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
                         }
@@ -181,14 +184,14 @@ declare var HTMLImports;
                 }
 
             } else {
-                CarbonCopy._shadowDoms[absUrl] = true;
+                CC._shadowDoms[absUrl] = true;
                 fetch(absUrl).then(resp => {
                     resp.text().then(txt => {
                         const container = document.createElement('div');
                         container.style.display = 'none';
                         document.body.appendChild(container);
                         const shadowRoot = container.attachShadow({ mode: 'open' });
-                        CarbonCopy._shadowDoms[absUrl] = shadowRoot;
+                        CC._shadowDoms[absUrl] = shadowRoot;
                         const parser = new DOMParser();
                         let docFrag = parser.parseFromString(txt, 'text/html');
                         if (docFrag.head) {
@@ -206,10 +209,10 @@ declare var HTMLImports;
 
 
                         this.appendTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
-                        const subscribers = CarbonCopy._shadowDomSubscribers[absUrl];
+                        const subscribers = CC._shadowDomSubscribers[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
-                            delete CarbonCopy._shadowDomSubscribers[absUrl];
+                            delete CC._shadowDomSubscribers[absUrl];
                         }
                     })
                 })
@@ -224,7 +227,7 @@ declare var HTMLImports;
                     const nameValuePair = param.split(':');
                     const key = nameValuePair[0];
                     const val = nameValuePair[1];
-                    this.addEventListener('c-c-get-' + key, e => {
+                    this.addEventListener(cg + key, e => {
                         e['detail'].value = val;
                         const attrib = this.getAttribute(key + '-props');
                         if (attrib) {
@@ -258,7 +261,7 @@ declare var HTMLImports;
             if(this._setProps){
                 const params = this._setProps.split(';');
                 params.forEach(param =>{
-                    this.addEventListener('c-c-get-props-' + param, e => {
+                    this.addEventListener(cgp + param, e => {
                         e['detail'].value = this[param];
                         const nextSibling = e.srcElement.nextElementSibling
                         const setter = function(newVal){
@@ -273,7 +276,7 @@ declare var HTMLImports;
                 });
             }
             if (this._get) {
-                const newEvent = new CustomEvent('c-c-get-' + this._get, {
+                const newEvent = new CustomEvent(cg + this._get, {
                     detail: {
 
                     },
@@ -286,7 +289,7 @@ declare var HTMLImports;
             if(this._getProps){
                 const params = this._getProps.split(';');
                 params.forEach(param =>{
-                    const newEvent = new CustomEvent('c-c-get-props-' + param, {
+                    const newEvent = new CustomEvent(cgp + param, {
                         detail: {
     
                         },
@@ -294,7 +297,6 @@ declare var HTMLImports;
                         composed: this._composed,
                     } as CustomEventInit);
                     this.dispatchEvent(newEvent);
-                    //this.nextSibling[param] = newEvent.detail.value;
                 });
             }
             this.loadHref();
@@ -333,10 +335,9 @@ declare var HTMLImports;
         }
     }
 
-    class CC extends CarbonCopy { };
-
-
-
-    customElements.define('carbon-copy', CarbonCopy);
+    class CarbonCopy extends CC { };
+    
     customElements.define('c-c', CC);
+    customElements.define('carbon-copy', CarbonCopy);
+    
 })();
