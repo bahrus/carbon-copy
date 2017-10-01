@@ -73,19 +73,32 @@ The functions cc_resolver and zenmu (in this case) must be put into global scope
 
 cc_resolver recursively resolves carbon copy (cc) elements.
 
-## Future enhancements:
-
 ### Child Property Propagation
 
-When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We need to bring the elements up to date. This is done using a semi-colon delimited list of properties that will need to be provided to the inserted elements:
+When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We would like to be able to wire that up via markup.  The solution is described below. 
+
+In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute -- a semi-colon delimited list of properties that will need to be provided to the inserted elements:
 
 ```html
-<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[pot]]"></c-c>
+<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
 ```
 
-The watch attribute shown above is an example of a binding within a Polymer dom-bind element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's  gets assigned the value of watch.  I.e. element.watch = [the thing we want to set for the children].
+The watch attribute shown above is an example of a binding within a Polymer dom-bind element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's watch property gets assigned a value.  .
 
-The containing c-c element can provide a 
+The contained, referenced snippet that is loaded via the c-c element (for example, the template contained in JsonEditorSnippet.html in this example) needs to supply a "getter" c-c element, as a previous sibling of the target element which needs the property value.
+
+```html
+        <c-c get-props="watch"></c-c>
+        <xtal-json-editor watch="[[generatedJson]]"></xtal-json-editor>
+``` 
+
+The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target elemtn (xtal-json-editor in this case) were directly embedded in the containing page.
+
+
+
+## Future enhancements:
+
+
 
 ### cc_resolver
 

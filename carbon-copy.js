@@ -229,26 +229,22 @@
                     console.log('add listener for ' + 'c-c-get-props-' + param);
                     this.addEventListener('c-c-get-props-' + param, e => {
                         e['detail'].value = this[param];
-                        this['_targetElement'] = e.srcElement.nextElementSibling;
-                        this['_targetProp'] = param;
+                        const nextSibling = e.srcElement.nextElementSibling;
+                        const setter = function (newVal) {
+                            nextSibling[param] = newVal;
+                        };
                         Object.defineProperty(this, param, {
                             enumerable: true,
                             configurable: true,
-                            //writable: true,
-                            set: function (newVal) {
-                                const test = this['_targetElement'];
-                                const param = this['_targetProp'];
-                                debugger;
-                                test[param] = newVal;
-                                //debugger;
-                            },
+                            set: setter
                         });
                     });
                 });
             }
             if (this._get) {
                 const newEvent = new CustomEvent('c-c-get-' + this._get, {
-                    detail: {},
+                    // detail: {
+                    // },
                     bubbles: true,
                     composed: this._composed,
                 });
@@ -265,7 +261,7 @@
                     });
                     console.log("dispatching get props event: " + 'c-c-get-props-' + param);
                     this.dispatchEvent(newEvent);
-                    this.nextSibling[param] = newEvent.detail.value;
+                    //this.nextSibling[param] = newEvent.detail.value;
                 });
             }
             this.loadHref();
