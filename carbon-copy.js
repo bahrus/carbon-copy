@@ -35,7 +35,15 @@
                  */
                 'set',
                 /**
-                 * @type {boolean}
+                 * @type {string} Retrieve this semicolon delimited list of properties
+                 */
+                'get-props',
+                /**
+                 * @type {string} Listen for queries regarding these properties (semicolon delimited)
+                 */
+                'set-props',
+                /**
+                 * @type {boolean} Persist previous templates when the href changes
                  */
                 'stamp-href'
             ];
@@ -215,6 +223,29 @@
                     });
                 });
             }
+            if (this._setProps) {
+                const params = this._setProps.split(';');
+                params.forEach(param => {
+                    console.log('add listener for ' + 'c-c-get-props-' + param);
+                    this.addEventListener('c-c-get-props-' + param, e => {
+                        e['detail'].value = this[param];
+                        this['_targetElement'] = e.srcElement.nextElementSibling;
+                        this['_targetProp'] = param;
+                        Object.defineProperty(this, param, {
+                            enumerable: true,
+                            configurable: true,
+                            //writable: true,
+                            set: function (newVal) {
+                                const test = this['_targetElement'];
+                                const param = this['_targetProp'];
+                                debugger;
+                                test[param] = newVal;
+                                //debugger;
+                            },
+                        });
+                    });
+                });
+            }
             if (this._get) {
                 const newEvent = new CustomEvent('c-c-get-' + this._get, {
                     detail: {},
@@ -223,6 +254,19 @@
                 });
                 this.dispatchEvent(newEvent);
                 this.innerHTML = newEvent.detail.value;
+            }
+            if (this._getProps) {
+                const params = this._getProps.split(';');
+                params.forEach(param => {
+                    const newEvent = new CustomEvent('c-c-get-props-' + param, {
+                        detail: {},
+                        bubbles: true,
+                        composed: this._composed,
+                    });
+                    console.log("dispatching get props event: " + 'c-c-get-props-' + param);
+                    this.dispatchEvent(newEvent);
+                    this.nextSibling[param] = newEvent.detail.value;
+                });
             }
             this.loadHref();
         }
@@ -244,6 +288,12 @@
                     break;
                 case 'get':
                     this._get = newValue;
+                    break;
+                case 'set-props':
+                    this._setProps = newValue;
+                    break;
+                case 'get-props':
+                    this._getProps = newValue;
                     break;
                 case 'stamp-href':
                     this._stampHref = (newValue !== undefined);

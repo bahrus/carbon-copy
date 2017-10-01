@@ -80,10 +80,10 @@ cc_resolver recursively resolves carbon copy (cc) elements.
 When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We need to bring the elements up to date. This is done using a semi-colon delimited list of properties that will need to be provided to the inserted elements:
 
 ```html
-<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
+<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[pot]]"></c-c>
 ```
 
-The watch attribute shown here is an example of a binding within a Polymer dom-bind element.  But the key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element gets assigned the value of watch.
+The watch attribute shown above is an example of a binding within a Polymer dom-bind element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's  gets assigned the value of watch.  I.e. element.watch = [the thing we want to set for the children].
 
 The containing c-c element can provide a 
 
