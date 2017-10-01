@@ -1,8 +1,12 @@
 declare var HTMLImports;
 
 (function () {
-    const cg = 'c-c-get-';
+    const p = 'c-c-';
+    const cg = p + 'get-';
     const cgp = cg + 'props-';
+    const ic = p + 'initial-child';
+    const hs = p + 'href-stamp';
+    const sh = 'stamp-href';
     // const tn = ['c-c', 'carbon-copy']
     /**
     * `carbon-copy`
@@ -51,7 +55,7 @@ declare var HTMLImports;
                 /**
                  * @type {boolean} Persist previous templates when the href changes
                  */
-                'stamp-href'
+                sh
             ];
         }
 
@@ -64,14 +68,15 @@ declare var HTMLImports;
         _href: string;
         _set;
         _get;
-        _setProps;
-        _getProps;
+        _set_props;
+        _get_props;
         //_type;
         _absUrl;
-        _stampHref;
+        _stamp_href;
         _initialized;
         static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
         static _shadowDomSubscribers: { [key: string]: [(sr: ShadowRoot) => void] } = {};
+        pcs :{[key: string] : HTMLElement[]};// prop change subscribers
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
         absolute(base: string, relative: string): string {
             var stack = base.split("/"),
@@ -94,30 +99,32 @@ declare var HTMLImports;
 
         // }
 
-        appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM: ShadowRoot | Document, id: string, absUrl: string, url: string) {
+        append(shadowDOM: ShadowRoot | Document, id: string, absUrl: string, url: string) {
             const templ = shadowDOM.getElementById(id) as HTMLTemplateElement;
 
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
-            if(this._stampHref){
-                const initialChildren = this.querySelectorAll('[c-c-initial-child]');
+            if(this._stamp_href){
+                const initialChildren = this.querySelectorAll('[' + ic + ']');
                 for(let i = 0, ii = initialChildren.length; i < ii; i++){
                     (<HTMLElement>initialChildren[i]).style.display = 'none';
                 }
-                for(let i = 0, ii = clone.children.length; i < ii; i++){
-                    const child = clone.children[i];
-                    child.setAttribute('c-c-href-stamp', this._href);
+                const children = clone.children;
+                console.log({children:children})
+                for(let i = 0, ii = children.length; i < ii; i++){
+                    const child = children[i];
+                    child.setAttribute(hs, this._href);
                 }
             }
             this.appendChild(clone);
         }
         loadHref() {
             if(!this._initialized){
-                if(this._stampHref){
+                if(this._stamp_href){
                     const children = this.children;
-                    for(let i = 0, ii = children.length - 1; i < ii; i++){
-                        children[i].setAttribute('c-c-initial-child', 'true');
+                    for(let i = 0, ii = children.length; i < ii; i++){
+                        children[i].setAttribute(ic, 'true');
                     }
                 }
                 this._initialized = true;
@@ -125,12 +132,14 @@ declare var HTMLImports;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href) return;
             let needToProcessFurther = true;
-            if(this._stampHref){
+            //console.log('stamphref = ' + this._stamp_href);
+            if(this._stamp_href){
                 //check for existing nodes, that match
-                const existingNodes = this.querySelectorAll(':scope > [c-c-href-stamp]');
+                const existingNodes = this.querySelectorAll(':scope > [' + hs + ']');
+                // console.log({existingNodes: existingNodes});
                 for(let i = 0, ii = existingNodes.length; i < ii; i++){
                     const existingNode = existingNodes[i] as HTMLElement;
-                    if(existingNode.getAttribute('c-c-href-stamp') === this._href){
+                    if(existingNode.getAttribute(hs) === this._href){
                         needToProcessFurther = false;
                         existingNode.style.display = existingNode['c_c_originalStyle'];
                     }else{
@@ -146,7 +155,7 @@ declare var HTMLImports;
             const url = splitHref[0];
             const id = splitHref[1];
             if (url.length === 0) {
-                this.appendTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
+                this.append(document, id, null, url);
                 return;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
@@ -170,7 +179,7 @@ declare var HTMLImports;
                     case 'boolean':
                         const subscribers = CC._shadowDomSubscribers;
                         const fn = (sr: ShadowRoot) => {
-                            this.appendTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
+                            this.append(sr, id, absUrl, url);
                         }
                         if (!subscribers[absUrl]) {
                             subscribers[absUrl] = [fn];
@@ -179,7 +188,7 @@ declare var HTMLImports;
                         }
                         break;
                     case 'object':
-                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM as ShadowRoot, id, absUrl, url);
+                        this.append(shadowDOM as ShadowRoot, id, absUrl, url);
                         break;
                 }
 
@@ -208,7 +217,7 @@ declare var HTMLImports;
                         shadowRoot.appendChild(docFrag.body);
 
 
-                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
+                        this.append(shadowRoot, id, absUrl, url);
                         const subscribers = CC._shadowDomSubscribers[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
@@ -220,7 +229,7 @@ declare var HTMLImports;
 
             }
         }
-        connectedCallback() {
+        connectedCallback2() {
             if (this._set) {
                 const params = this._set.split(';');
                 params.forEach(param => {
@@ -258,14 +267,20 @@ declare var HTMLImports;
 
                 });
             }
-            if(this._setProps){
-                const params = this._setProps.split(';');
+            if(this._set_props){
+                const params = this._set_props.split(';');
                 params.forEach(param =>{
                     this.addEventListener(cgp + param, e => {
-                        e['detail'].value = this[param];
-                        const nextSibling = e.srcElement.nextElementSibling
+                        
+                        //e['detail'].value = this[param];
+                        const nextSibling = e.srcElement.nextElementSibling as HTMLElement;
+                        nextSibling[param] = this[param];
+                        if(!this.pcs) this.pcs = {};
+                        if(!this.pcs[param]) this.pcs[param] = [];
+                        this.pcs[param].push(nextSibling);
                         const setter = function(newVal){
-                            nextSibling[param] = newVal;
+                            this.pcs[param].forEach(el => el[param] = newVal);
+                            //nextSibling[param] = newVal;
                         }
                         Object.defineProperty(this, param, {
                             enumerable: true,
@@ -286,13 +301,13 @@ declare var HTMLImports;
                 this.dispatchEvent(newEvent);
                 this.innerHTML = newEvent.detail.value;
             }
-            if(this._getProps){
-                const params = this._getProps.split(';');
+            if(this._get_props){
+                const params = this._get_props.split(';');
                 params.forEach(param =>{
                     const newEvent = new CustomEvent(cgp + param, {
-                        detail: {
+                        // detail: {
     
-                        },
+                        // },
                         bubbles: true,
                         composed: this._composed,
                     } as CustomEventInit);
@@ -301,14 +316,21 @@ declare var HTMLImports;
             }
             this.loadHref();
         }
+        connectedCallback(){
+            //https://github.com/w3c/webcomponents/issues/551
+            setTimeout(() =>{
+                //hack?
+                this.connectedCallback2();
+            }, 1);
+        }
         attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             switch (name) {
                 case 'href':
                     this._href = newValue;
                     if(this._initialized) this.loadHref();
                     break;
-                case 'stamp-href':
-                    this._stampHref = (newValue !== undefined);
+                case sh:
+                    this._stamp_href = (newValue !== undefined);
                     break;
 
                 case 'composed':
@@ -336,7 +358,7 @@ declare var HTMLImports;
     }
 
     class CarbonCopy extends CC { };
-    
+
     customElements.define('c-c', CC);
     customElements.define('carbon-copy', CarbonCopy);
     

@@ -1,6 +1,10 @@
 (function () {
-    const cg = 'c-c-get-';
+    const p = 'c-c-';
+    const cg = p + 'get-';
     const cgp = cg + 'props-';
+    const ic = p + 'initial-child';
+    const hs = p + 'href-stamp';
+    const sh = 'stamp-href';
     // const tn = ['c-c', 'carbon-copy']
     /**
     * `carbon-copy`
@@ -48,7 +52,7 @@
                 /**
                  * @type {boolean} Persist previous templates when the href changes
                  */
-                'stamp-href'
+                sh
             ];
         }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -68,28 +72,30 @@
         }
         // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
         // }
-        appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url) {
+        append(shadowDOM, id, absUrl, url) {
             const templ = shadowDOM.getElementById(id);
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
-            if (this._stampHref) {
-                const initialChildren = this.querySelectorAll('[c-c-initial-child]');
+            if (this._stamp_href) {
+                const initialChildren = this.querySelectorAll('[' + ic + ']');
                 for (let i = 0, ii = initialChildren.length; i < ii; i++) {
                     initialChildren[i].style.display = 'none';
                 }
-                for (let i = 0, ii = clone.children.length; i < ii; i++) {
-                    const child = clone.children[i];
-                    child.setAttribute('c-c-href-stamp', this._href);
+                const children = clone.children;
+                console.log({ children: children });
+                for (let i = 0, ii = children.length; i < ii; i++) {
+                    const child = children[i];
+                    child.setAttribute(hs, this._href);
                 }
             }
             this.appendChild(clone);
         }
         loadHref() {
             if (!this._initialized) {
-                if (this._stampHref) {
+                if (this._stamp_href) {
                     const children = this.children;
-                    for (let i = 0, ii = children.length - 1; i < ii; i++) {
-                        children[i].setAttribute('c-c-initial-child', 'true');
+                    for (let i = 0, ii = children.length; i < ii; i++) {
+                        children[i].setAttribute(ic, 'true');
                     }
                 }
                 this._initialized = true;
@@ -98,12 +104,14 @@
             if (!this._href)
                 return;
             let needToProcessFurther = true;
-            if (this._stampHref) {
+            //console.log('stamphref = ' + this._stamp_href);
+            if (this._stamp_href) {
                 //check for existing nodes, that match
-                const existingNodes = this.querySelectorAll(':scope > [c-c-href-stamp]');
+                const existingNodes = this.querySelectorAll(':scope > [' + hs + ']');
+                // console.log({existingNodes: existingNodes});
                 for (let i = 0, ii = existingNodes.length; i < ii; i++) {
                     const existingNode = existingNodes[i];
-                    if (existingNode.getAttribute('c-c-href-stamp') === this._href) {
+                    if (existingNode.getAttribute(hs) === this._href) {
                         needToProcessFurther = false;
                         existingNode.style.display = existingNode['c_c_originalStyle'];
                     }
@@ -121,7 +129,7 @@
             const url = splitHref[0];
             const id = splitHref[1];
             if (url.length === 0) {
-                this.appendTemplateElementInsideShadowRootToInnerHTML(document, id, null, url);
+                this.append(document, id, null, url);
                 return;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
@@ -144,7 +152,7 @@
                     case 'boolean':
                         const subscribers = CC._shadowDomSubscribers;
                         const fn = (sr) => {
-                            this.appendTemplateElementInsideShadowRootToInnerHTML(sr, id, absUrl, url);
+                            this.append(sr, id, absUrl, url);
                         };
                         if (!subscribers[absUrl]) {
                             subscribers[absUrl] = [fn];
@@ -154,7 +162,7 @@
                         }
                         break;
                     case 'object':
-                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowDOM, id, absUrl, url);
+                        this.append(shadowDOM, id, absUrl, url);
                         break;
                 }
             }
@@ -180,7 +188,7 @@
                             }
                         }
                         shadowRoot.appendChild(docFrag.body);
-                        this.appendTemplateElementInsideShadowRootToInnerHTML(shadowRoot, id, absUrl, url);
+                        this.append(shadowRoot, id, absUrl, url);
                         const subscribers = CC._shadowDomSubscribers[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
@@ -190,7 +198,7 @@
                 });
             }
         }
-        connectedCallback() {
+        connectedCallback2() {
             if (this._set) {
                 const params = this._set.split(';');
                 params.forEach(param => {
@@ -226,14 +234,21 @@
                     });
                 });
             }
-            if (this._setProps) {
-                const params = this._setProps.split(';');
+            if (this._set_props) {
+                const params = this._set_props.split(';');
                 params.forEach(param => {
                     this.addEventListener(cgp + param, e => {
-                        e['detail'].value = this[param];
+                        //e['detail'].value = this[param];
                         const nextSibling = e.srcElement.nextElementSibling;
+                        nextSibling[param] = this[param];
+                        if (!this.pcs)
+                            this.pcs = {};
+                        if (!this.pcs[param])
+                            this.pcs[param] = [];
+                        this.pcs[param].push(nextSibling);
                         const setter = function (newVal) {
-                            nextSibling[param] = newVal;
+                            this.pcs[param].forEach(el => el[param] = newVal);
+                            //nextSibling[param] = newVal;
                         };
                         Object.defineProperty(this, param, {
                             enumerable: true,
@@ -252,11 +267,12 @@
                 this.dispatchEvent(newEvent);
                 this.innerHTML = newEvent.detail.value;
             }
-            if (this._getProps) {
-                const params = this._getProps.split(';');
+            if (this._get_props) {
+                const params = this._get_props.split(';');
                 params.forEach(param => {
                     const newEvent = new CustomEvent(cgp + param, {
-                        detail: {},
+                        // detail: {
+                        // },
                         bubbles: true,
                         composed: this._composed,
                     });
@@ -265,6 +281,13 @@
             }
             this.loadHref();
         }
+        connectedCallback() {
+            //https://github.com/w3c/webcomponents/issues/551
+            setTimeout(() => {
+                //hack?
+                this.connectedCallback2();
+            }, 1);
+        }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
                 case 'href':
@@ -272,8 +295,8 @@
                     if (this._initialized)
                         this.loadHref();
                     break;
-                case 'stamp-href':
-                    this._stampHref = (newValue !== undefined);
+                case sh:
+                    this._stamp_href = (newValue !== undefined);
                     break;
                 case 'composed':
                     this._composed = newValue !== null;
