@@ -123,15 +123,16 @@ declare var HTMLImports;
             this.appendChild(clone);
         }
         loadHref() {
-            if(!this._initialized){
-                if(this._stamp_href){
-                    const children = this.children;
-                    for(let i = 0, ii = children.length; i < ii; i++){
-                        children[i].setAttribute(ic, 'true');
-                    }
-                }
-                this._initialized = true;
-            }
+            // if(!this._initialized){
+            //     if(this._stamp_href){
+            //         const children = this.children;
+            //         for(let i = 0, ii = children.length; i < ii; i++){
+            //             children[i].setAttribute(ic, 'true');
+            //         }
+            //     }
+            //     this._initialized = true;
+            // }
+            this._initialized = true;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href) return;
             let needToProcessFurther = true;
