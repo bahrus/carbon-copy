@@ -5,6 +5,7 @@
     const ic = p + 'initial-child';
     const hs = p + 'href-stamp';
     const sh = 'stamp-href';
+    const os = p + 'orig-style';
     // const tn = ['c-c', 'carbon-copy']
     /**
     * `carbon-copy`
@@ -80,12 +81,10 @@
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             const clone = document.importNode(templ.content, true);
             if (this._stamp_href) {
-                const initialChildren = this.querySelectorAll('[' + ic + ']');
-                for (let i = 0, ii = initialChildren.length; i < ii; i++) {
-                    initialChildren[i].style.display = 'none';
-                }
+                this.qsa('[' + ic + ']').forEach(initialChild => {
+                    initialChild.style.display = 'none';
+                });
                 const children = clone.children;
-                console.log({ children: children });
                 for (let i = 0, ii = children.length; i < ii; i++) {
                     const child = children[i];
                     child.setAttribute(hs, this._href);
@@ -93,16 +92,10 @@
             }
             this.appendChild(clone);
         }
+        qsa(css, from) {
+            return [].slice.call((from ? from : this).querySelectorAll(css));
+        }
         loadHref() {
-            // if(!this._initialized){
-            //     if(this._stamp_href){
-            //         const children = this.children;
-            //         for(let i = 0, ii = children.length; i < ii; i++){
-            //             children[i].setAttribute(ic, 'true');
-            //         }
-            //     }
-            //     this._initialized = true;
-            // }
             this._initialized = true;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href)
@@ -110,20 +103,17 @@
             let needToProcessFurther = true;
             //console.log('stamphref = ' + this._stamp_href);
             if (this._stamp_href) {
-                //check for existing nodes, that match
-                const existingNodes = this.querySelectorAll(':scope > [' + hs + ']');
-                // console.log({existingNodes: existingNodes});
-                for (let i = 0, ii = existingNodes.length; i < ii; i++) {
-                    const existingNode = existingNodes[i];
+                //check for existing nodes, that don't match url, and  hide them
+                this.qsa(':scope > [' + hs + ']').forEach(existingNode => {
                     if (existingNode.getAttribute(hs) === this._href) {
                         needToProcessFurther = false;
-                        existingNode.style.display = existingNode['c_c_originalStyle'];
+                        existingNode.style.display = existingNode[os];
                     }
                     else {
-                        existingNode['c_c_originalStyle'] = existingNode.style.display;
+                        existingNode[os] = existingNode.style.display;
                         existingNode.style.display = 'none';
                     }
-                }
+                });
             }
             if (!needToProcessFurther)
                 return;
@@ -182,14 +172,12 @@
                         const parser = new DOMParser();
                         let docFrag = parser.parseFromString(txt, 'text/html');
                         if (docFrag.head) {
-                            const metaProcessors = docFrag.head.querySelectorAll('meta[name="preprocessor"]');
-                            for (let i = 0, ii = metaProcessors.length; i < ii; i++) {
-                                const metaProcessorTag = metaProcessors[i];
+                            this.qsa('meta[name="preprocessor"]', docFrag).forEach(metaProcessorTag => {
                                 const metaProcessorIdentifier = metaProcessorTag.getAttribute('content');
                                 //TODO:  validate identifier looks safe?
                                 const metaProcessor = eval(metaProcessorIdentifier);
                                 docFrag = metaProcessor(docFrag, this);
-                            }
+                            });
                         }
                         shadowRoot.appendChild(docFrag.body);
                         this.append(shadowRoot, id, absUrl, url);
