@@ -2,7 +2,7 @@
 
 # \<carbon-copy\>
 
-Copy HTML Template into DOM
+Copy an HTML Template into DOM, and more, with this 1.7kb (gzipped, minified) web component.
 
 There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
 

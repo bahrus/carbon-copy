@@ -74,9 +74,9 @@ declare var HTMLImports;
         //_type;
         _absUrl;
         _stamp_href;
-        _initialized;
+        _once;
         static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
-        static _shadowDomSubscribers: { [key: string]: [(sr: ShadowRoot) => void] } = {};
+        static _shDmSub: { [key: string]: [(sr: ShadowRoot) => void] } = {};
         pcs :{[key: string] : HTMLElement[]};// prop change subscribers
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
         absolute(base: string, relative: string): string {
@@ -125,7 +125,7 @@ declare var HTMLImports;
             return  [].slice.call((from ? from : this).querySelectorAll(css));
         }
         loadHref() {
-            this._initialized = true;
+            this._once = true;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href) return;
             let needToProcessFurther = true;
@@ -171,7 +171,7 @@ declare var HTMLImports;
             if (shadowDOM) {
                 switch (typeof shadowDOM) {
                     case 'boolean':
-                        const subscribers = CC._shadowDomSubscribers;
+                        const subscribers = CC._shDmSub;
                         const fn = (sr: ShadowRoot) => {
                             this.append(sr, id, absUrl, url);
                         }
@@ -210,10 +210,10 @@ declare var HTMLImports;
 
 
                         this.append(shadowRoot, id, absUrl, url);
-                        const subscribers = CC._shadowDomSubscribers[absUrl];
+                        const subscribers = CC._shDmSub[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
-                            delete CC._shadowDomSubscribers[absUrl];
+                            delete CC._shDmSub[absUrl];
                         }
                     })
                 })
@@ -319,7 +319,7 @@ declare var HTMLImports;
             switch (name) {
                 case 'href':
                     this._href = newValue;
-                    if(this._initialized) this.loadHref();
+                    if(this._once) this.loadHref();
                     break;
                 case sh:
                     this._stamp_href = (newValue !== undefined);

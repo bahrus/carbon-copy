@@ -96,7 +96,7 @@
             return [].slice.call((from ? from : this).querySelectorAll(css));
         }
         loadHref() {
-            this._initialized = true;
+            this._once = true;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
             if (!this._href)
                 return;
@@ -144,7 +144,7 @@
             if (shadowDOM) {
                 switch (typeof shadowDOM) {
                     case 'boolean':
-                        const subscribers = CC._shadowDomSubscribers;
+                        const subscribers = CC._shDmSub;
                         const fn = (sr) => {
                             this.append(sr, id, absUrl, url);
                         };
@@ -181,10 +181,10 @@
                         }
                         shadowRoot.appendChild(docFrag.body);
                         this.append(shadowRoot, id, absUrl, url);
-                        const subscribers = CC._shadowDomSubscribers[absUrl];
+                        const subscribers = CC._shDmSub[absUrl];
                         if (subscribers) {
                             subscribers.forEach(subscriber => subscriber(shadowRoot));
-                            delete CC._shadowDomSubscribers[absUrl];
+                            delete CC._shDmSub[absUrl];
                         }
                     });
                 });
@@ -284,7 +284,7 @@
             switch (name) {
                 case 'href':
                     this._href = newValue;
-                    if (this._initialized)
+                    if (this._once)
                         this.loadHref();
                     break;
                 case sh:
@@ -307,7 +307,7 @@
         }
     }
     CC._shadowDoms = {};
-    CC._shadowDomSubscribers = {};
+    CC._shDmSub = {};
     class CarbonCopy extends CC {
     }
     ;
