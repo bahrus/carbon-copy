@@ -77,7 +77,7 @@ Carbon-copy will only load the client-side JavaScript processor if it sees the m
 
 The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above).
 
-cc_resolver recursively resolves carbon copy (cc) elements.
+cc_resolver recursively resolves carbon copy (cc) elements as well as HTMLImports.
 
 ### Child Property Propagation
 
