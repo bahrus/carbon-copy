@@ -69,7 +69,13 @@ If a document being imported contains lines like this in the header:
 
 then some preprocessing functions: cc_resolver, and zenmu (described below) will be performed on the import before creating the reusable HTMLTemplates.  They will be passed the referenced document as well as the referring carbon-copy element, and these preprocessing functions can manipulate the document.  By being passed the carbon-copy element, one can infer the url context from which the file was referenced, and hence one can recusively modify the relative url's contained within the file. These preprocessing functions are separate JavaScript files from carbon_copy.js, so users will only incur the performance hit from downloading these functions if the benefits of the preprocessor outweigh the costs.  Users of the carbon-copy element can create their own preprocessor function(s) and add it to the processing pipeline, using these two useful preprocessor functions as a guide.
 
-The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above)..
+Note:  This preprocessing could be done on the server-side level just (or almost) as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but, at least in some cases (zenmu below) there could be advantages of doing the processing on the client, too, so the right place to do the processing may vary depending on the use case.   If done server-side or during the build, the meta tag above should be removed before passing down to the client.  Another option to consider would be to do the preprocessing within a service worker.
+
+The biggest benefit, of course, of allowing the processing to be done by client-side JavaScript is that it doesn't add any additional build steps during development.
+
+Carbon-copy will only load the client-side JavaScript processor if it sees the meta tag present.
+
+The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above).
 
 cc_resolver recursively resolves carbon copy (cc) elements.
 
@@ -127,9 +133,6 @@ Lack of support for the "is" attribute, as well as the requirement that custom e
 
 This preprocessor allows us to have our cake and eat it too.  We can utilize compact syntax, which gets expanded during processing.
 
-Note:  This preprocessing could be done on the server-side level just as easily, and/or during the optimizing build.  That would mean less JavaScript processing, but it would also mean a larger (fairly compressible) download.  If done server-side or during the build, the meta tag above should be removed before passing down to the client.  Another option to consider would be to do the preprocessing within a service worker.
-
-Carbon-copy will only load the client-side JavaScript processor if it sees the meta tag present.
 
 #### Preprocessing directive # 1:  Inner Wrapping
 
