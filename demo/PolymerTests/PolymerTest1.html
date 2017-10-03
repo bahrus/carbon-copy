@@ -4,6 +4,7 @@
         <title>PolymerTest1</title>
         <link rel="import" href="bower_components/polymer/polymer-element.html">
         <link rel="import" href="bower_components/polymer/lib/elements/dom-bind.html">
+        <script src="../cc_resolver.js"></script>
         <script async src="bower_components/xtal-fetch/xtal-fetch.js"></script>
         <!-- <script async src="bower_components/xtal-json-editor/xtal-json-editor.js"></script> -->
         <!-- <link rel="import" href="bower_components/xtal-json-editor/xtal-json-editor.html"> -->
@@ -22,7 +23,7 @@
             <template id="template1">
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
                 
-                <c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
+                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
 
                 
             </template>

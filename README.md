@@ -127,7 +127,7 @@ TBD
 
 The particular function zenmu (in zenmu.js) that comes with this component  might be of interest to those trying to reduce the verbosity of web component markup.
 
-One of the aspects that make Vue and Angular popular is its compact template syntax.
+One of the aspects that make Vue, Angular, Aurelia, Riot, popular is their compact template syntax.
 
 Lack of support for the "is" attribute, as well as the requirement that custom elements only be defined at the tag level (not attribute level -- i.e. no custom attribute standard has been ratified), for now,  means similar syntax is relatively verbose when using custom elements.  
 
@@ -157,7 +157,7 @@ becomes:
     </dom-bind>
 ```
 
-Emmet syntax treats the div tag special -- because div is the most frequenly used tag.
+Emmet syntax treats the div tag special -- because div is the most frequently used tag.
 
 zenmu gives similar special treatment to the template tag.  So the markup above could be further reduced as follows:
 
@@ -196,6 +196,7 @@ We think it is a common pattern to have the primary attribute match the second p
   </li>
 ```
 
+One could fret about the fact that we could easily run into scenarios where the zenmu syntax breaks down due to one of the special characters -- . @ or # needing to appear in an unusual place -- e.g. an attribute value needs to contain the @ character.  Rather than create difficult to remember rules for these scenarios, simply revert to more verbose syntax.
 
 ### Inserting into slots
  
