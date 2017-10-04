@@ -1,5 +1,12 @@
 declare var HTMLImports;
 
+
+export interface ICarbonCopy{
+    absolute(base: string, relative: string) : string;
+    _absUrl: string;
+    qsa(css, from?: HTMLElement | Document | DocumentFragment) : HTMLElement[];
+}
+
 (function () {
     const p = 'c-c-';
     const cg = p + 'get-';
@@ -18,7 +25,7 @@ declare var HTMLImports;
     * @polymer
     * @demo demo/index.html
     */
-    class CC extends HTMLElement {
+    class CC extends HTMLElement implements ICarbonCopy{
 
         static get observedAttributes() {
             return [
