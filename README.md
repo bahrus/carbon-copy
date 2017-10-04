@@ -12,7 +12,7 @@ Out of the box, the template must be imported programmatically.  This can disrup
 
 The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template (or one already defined in the main document) into the tag's innerHTML.
 
-Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) if carbon-copy doesn't meet your needs.
+Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
 The syntax for this element, at its simplest level, is as follows:
 
@@ -77,7 +77,7 @@ Carbon-copy will only load the client-side JavaScript processor if it sees the m
 
 The functions cc_resolver and zenmu (in this case) must be put into global scope and loaded before the carbon element is utilized (if you add the meta tags as shown above).
 
-cc_resolver recursively resolves carbon copy (cc) elements, stylesheets, HTMLImports, script tags and IFrames.
+cc_resolver recursively resolves carbon copy (cc) elements, stylesheets, HTMLImports, script tags and IFrames. (More testing needed.)
 
 ### Child Property Propagation
 
@@ -103,12 +103,6 @@ The combination of the set-props c-c element and the get-props c-c element creat
 
 
 ## Future enhancements:
-
-
-
-### cc_resolver
-
-Will add resolving support for script and css references.
 
 
 ### Content protection
