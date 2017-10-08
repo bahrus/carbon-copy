@@ -7,6 +7,7 @@ export interface ICarbonCopy{
 function zenmu_createElement(zenmu: string){
     const tags = zenmu.split('(');
     let htmlElement : HTMLElement;
+    let rootElement: HTMLElement;
     //const reg = /(.*)#(.*).(.*)@(.*)/;
     tags.forEach(tag =>{
         //const split = tag.split(reg);
@@ -45,13 +46,24 @@ function zenmu_createElement(zenmu: string){
             remainingString = remainingString.substr(0, posOfHash);
         }
         tagName = remainingString || 'template';
-        console.log({
-            tagName:tagName,
-            id:id,
-            attribs:attribs,
-            classes:classes
-        });
+        const newElement = document.createElement(tagName);
+        if(id) newElement.setAttribute('id', id);
+        for(var key in attribs){
+            newElement.setAttribute(key, attribs[key]);
+        }
+        newElement.className = classes.join(' ');
+        if(!rootElement){
+            rootElement = newElement;
+        }else{
+            htmlElement.appendChild(newElement);
+        }
+        htmlElement = newElement;
+
     })
+    return{
+        topElement: rootElement,
+        bottomElement: htmlElement,
+    }
 }
 
 function zenmu(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
@@ -59,7 +71,12 @@ function zenmu(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
         cc.qsa('[wraps]', template.content ).forEach(wrapEl =>{
             const wrapsAtr = wrapEl.getAttribute('wraps');
             const domToInsert = zenmu_createElement(wrapsAtr);
-            console.log(wrapsAtr);
+            for(let i = 0, ii = wrapEl.children.length; i < ii; i++){
+                const child = wrapEl.children[0];
+                const removedChild = wrapEl.removeChild(child);
+                domToInsert.bottomElement.appendChild(removedChild);
+            }
+            wrapEl.appendChild(domToInsert.topElement);
         })               
     });
     return doc;
