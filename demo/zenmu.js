@@ -75,6 +75,16 @@ function zenmu(doc, cc) {
             wrapEl.appendChild(domToInsert.topElement);
             wrapEl.removeAttribute('wraps');
         });
+        cc.qsa('[wrap-in]', template.content).forEach(wrapperEl => {
+            const wrapInAtr = wrapperEl.getAttribute('wrap-in');
+            const domToInser = zenmu_createElement(wrapInAtr);
+            const parentElement = wrapperEl.parentElement;
+            parentElement.insertBefore(domToInser.topElement, wrapperEl);
+            const removedWrapperEl = parentElement.removeChild(wrapperEl);
+            removedWrapperEl.removeAttribute('wrap-in');
+            domToInser.bottomElement.appendChild(removedWrapperEl);
+        });
+        zenmu(template.content, cc);
     });
     return doc;
 }

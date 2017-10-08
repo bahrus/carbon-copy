@@ -69,7 +69,7 @@ function zenmu_createElement(zenmu: string){
     }
 }
 
-function zenmu(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
+function zenmu(doc: Document | DocumentFragment, cc: ICarbonCopy){
     cc.qsa('template', doc).forEach((template: HTMLTemplateElement) =>{
         cc.qsa('[wraps]', template.content ).forEach(wrapEl =>{
             const wrapsAtr = wrapEl.getAttribute('wraps');
@@ -81,7 +81,18 @@ function zenmu(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
             }
             wrapEl.appendChild(domToInsert.topElement);
             wrapEl.removeAttribute('wraps');
-        })               
+        });
+        cc.qsa('[wrap-in]', template.content).forEach(wrapperEl =>{
+            const wrapInAtr = wrapperEl.getAttribute('wrap-in');
+            const domToInser = zenmu_createElement(wrapInAtr);
+            const parentElement = wrapperEl.parentElement;
+            parentElement.insertBefore(domToInser.topElement, wrapperEl);
+            const removedWrapperEl = parentElement.removeChild(wrapperEl);
+            removedWrapperEl.removeAttribute('wrap-in');
+            domToInser.bottomElement.appendChild(removedWrapperEl);
+
+        })
+        zenmu(template.content, cc);               
     });
     return doc;
 }

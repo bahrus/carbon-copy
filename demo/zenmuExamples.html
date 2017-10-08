@@ -18,5 +18,13 @@
                 <div>Divs divide and conquer!</div>
             </dom-bind>
         </template>
+
+        <template id="test3">
+            <ul>
+                <li wrap-in="dom-repeat@repeat:[[items]](template">
+                    <span>[[item.name]]</span>
+                </li>
+            </ul>
+        </template>
     </body>
 </html>
