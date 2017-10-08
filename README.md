@@ -79,44 +79,6 @@ The functions cc_resolver and zenmu (in this case) must be put into global scope
 
 cc_resolver recursively resolves carbon copy (cc) elements, stylesheets, HTMLImports, script tags and IFrames. (More testing needed.)
 
-### Child Property Propagation
-
-When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We would like to be able to wire that up via markup.  The solution is described below. 
-
-In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute -- a semi-colon delimited list of properties that will need to be provided to the inserted elements:
-
-```html
-<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
-```
-
-The watch attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's watch property gets assigned (and receives updates of) the value in question.  .
-
-The contained, referenced snippet that is loaded via the c-c element (for example, the template contained in JsonEditorSnippet.html in this example) needs to supply a "getter" c-c element.  This getter c-c element should appear as a previous sibling of the target element which needs the property value (binding).
-
-```html
-        <c-c get-props="watch"></c-c>
-        <xtal-json-editor></xtal-json-editor>
-``` 
-
-The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
-
-
-
-## Future enhancements:
-
-
-### Content protection
-
-TBD
-
-### Content merging
-
-TBD
-
-#### Replace
-
-TBD
-
 ### zenmu 
 
 The particular function zenmu (in zenmu.js) that comes with this component  might be of interest to those trying to reduce the verbosity of web component markup.
@@ -191,6 +153,50 @@ We think it is a common pattern to have the primary attribute match the second p
 ```
 
 One could fret about the fact that we could easily run into scenarios where the zenmu syntax breaks down due to one of the special characters -- . @ or # needing to appear in an unusual place -- e.g. an attribute value needs to contain the @ character.  Rather than create difficult to remember rules for these scenarios, simply revert to more verbose syntax.
+
+### Child Property Propagation
+
+When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We would like to be able to wire that up via markup.  The solution is described below. 
+
+In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute -- a semi-colon delimited list of properties that will need to be provided to the inserted elements:
+
+```html
+<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
+```
+
+The watch attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's watch property gets assigned (and receives updates of) the value in question.  .
+
+The contained, referenced snippet that is loaded via the c-c element (for example, the template contained in JsonEditorSnippet.html in this example) needs to supply a "getter" c-c element.  This getter c-c element should appear as a previous sibling of the target element which needs the property value (binding).
+
+```html
+        <c-c get-props="watch"></c-c>
+        <xtal-json-editor></xtal-json-editor>
+``` 
+
+The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
+
+
+
+## Future enhancements:
+
+### Polymer specific template stamping
+
+TBD
+
+
+### Content protection
+
+TBD
+
+### Content merging
+
+TBD
+
+#### Replace
+
+TBD
+
+
 
 ### Inserting into slots
  
