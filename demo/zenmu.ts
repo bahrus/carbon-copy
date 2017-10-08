@@ -49,7 +49,14 @@ function zenmu_createElement(zenmu: string){
         const newElement = document.createElement(tagName);
         if(id) newElement.setAttribute('id', id);
         for(var key in attribs){
-            newElement.setAttribute(key, attribs[key]);
+            if(key.length === 0){
+                const tokens = tagName.split('-');
+                const lastToken = tokens[tokens.length - 1];
+                newElement.setAttribute(lastToken, attribs[key]);
+            }else{
+                newElement.setAttribute(key, attribs[key]);
+            }
+            
         }
         if(classes.length > 0){
             newElement.className = classes.join(' ');
