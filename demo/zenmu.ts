@@ -42,7 +42,7 @@ function zenmu_createElement(zenmu: string){
         }
         const posOfHash = remainingString.indexOf('#');
         if(posOfHash > -1){
-            id = remainingString.substr(posOfHash);
+            id = remainingString.substr(posOfHash + 1);
             remainingString = remainingString.substr(0, posOfHash);
         }
         tagName = remainingString || 'template';
@@ -51,7 +51,10 @@ function zenmu_createElement(zenmu: string){
         for(var key in attribs){
             newElement.setAttribute(key, attribs[key]);
         }
-        newElement.className = classes.join(' ');
+        if(classes.length > 0){
+            newElement.className = classes.join(' ');
+        }
+        
         if(!rootElement){
             rootElement = newElement;
         }else{
@@ -77,6 +80,7 @@ function zenmu(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
                 domToInsert.bottomElement.appendChild(removedChild);
             }
             wrapEl.appendChild(domToInsert.topElement);
+            wrapEl.removeAttribute('wraps');
         })               
     });
     return doc;
