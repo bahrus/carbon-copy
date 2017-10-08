@@ -17,19 +17,24 @@ function zenmu_createElement(zenmu: string){
         let classes = [];
         const posOfAt = remainingString.indexOf('@');
         if(posOfAt > -1){
-            const attribString = remainingString.substr(posOfAt);
+            const attribString = remainingString.substr(posOfAt + 1);
             const nameValPairs = attribString.split('@');
             nameValPairs.forEach(nvp =>{
                 const lhs_rhs = nvp.split(':');
-                attribs[lhs_rhs[0]] = lhs_rhs[1];
+                if(lhs_rhs.length > 1){
+                    attribs[lhs_rhs[0]] = lhs_rhs[1];
+                }else{
+                    attribs[lhs_rhs[0]] = '';
+                }
+                
             })
             remainingString = remainingString.substr(0, posOfAt);
         }
         const posOfDot = remainingString.indexOf('.');
         if(posOfDot > -1){
-            const classString = remainingString.substr(posOfDot);
-            const classes = classString.split('.');
-            classes.forEach(classString =>{
+            const classString = remainingString.substr(posOfDot + 1);
+            const splitClassString = classString.split('.');
+            splitClassString.forEach(classString =>{
                 classes.push(classString);
             })
             remainingString = remainingString.substr(0, posOfDot);
