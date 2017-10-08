@@ -4,6 +4,9 @@ export interface ICarbonCopy{
     _absUrl: string;
     qsa(css, from?: HTMLElement | Document | DocumentFragment) : HTMLElement[];
 }
+//This version of cc_resolver is meant to be run in the browser, in conjunction with carbon-copy.
+//A different function (with same name) should be developed to do the equivalent during build time or
+//on the server side.
 
 function cc_resolver(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
     const target = doc['body'] || doc['content'];
