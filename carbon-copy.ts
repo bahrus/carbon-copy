@@ -273,6 +273,17 @@ export interface ICarbonCopy{
                         
                         //e['detail'].value = this[param];
                         const nextSibling = e.srcElement.nextElementSibling as HTMLElement;
+                        nextSibling.addEventListener('edited-result-changed', e =>{
+                            this['properties'] = e['detail'].value;
+                            const newEvent = new CustomEvent('properties-changed', {
+                                detail: {
+                                    value: e['detail'].value
+                                },
+                                bubbles: true,
+                                composed: true,
+                            } as CustomEventInit);
+                            this.dispatchEvent(newEvent);
+                        })
                         nextSibling[param] = this[param];
                         if(!this.pcs) this.pcs = {};
                         if(!this.pcs[param]) this.pcs[param] = [];
@@ -321,6 +332,7 @@ export interface ICarbonCopy{
                 //hack?
                 this.c2();
             }, 1);
+            
         }
         attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             switch (name) {

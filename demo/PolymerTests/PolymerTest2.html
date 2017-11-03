@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PolymerTest2</title>
+        <link rel="import" href="bower_components/polymer/polymer.html">
+        <link rel="import" href="bower_components/polymer/lib/elements/dom-bind.html">
+        <script src="../cc_resolver.js"></script>
+        <script async src="bower_components/xtal-fetch/xtal-fetch.js"></script>
+        <!-- <script async src="bower_components/xtal-json-editor/xtal-json-editor.js"></script> -->
+        <link rel="import" href="bower_components/xtal-json-editor/xtal-json-editor.html">
+        <script async src="../../carbon-copy.js"></script>
+        
+    </head>
+    <body>
+        <dom-bind id="domBind1">
+            <template id="template1">
+                <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
+                
+                <carbon-copy href="IncludeFolder/JsonEditorSnippet2.html#jes" set-props="watch" watch="[[generatedJson]]" stamp-template></carbon-copy>
+
+                
+            </template>
+        </dom-bind>
+
+    </body>
+</html>

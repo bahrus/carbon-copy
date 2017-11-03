@@ -232,6 +232,17 @@
                     this.addEventListener(cgp + param, e => {
                         //e['detail'].value = this[param];
                         const nextSibling = e.srcElement.nextElementSibling;
+                        nextSibling.addEventListener('edited-result-changed', e => {
+                            this['properties'] = e['detail'].value;
+                            const newEvent = new CustomEvent('properties-changed', {
+                                detail: {
+                                    value: e['detail'].value
+                                },
+                                bubbles: true,
+                                composed: true,
+                            });
+                            this.dispatchEvent(newEvent);
+                        });
                         nextSibling[param] = this[param];
                         if (!this.pcs)
                             this.pcs = {};

@@ -9,21 +9,23 @@
         <!-- <script async src="bower_components/xtal-json-editor/xtal-json-editor.js"></script> -->
         <!-- <link rel="import" href="bower_components/xtal-json-editor/xtal-json-editor.html"> -->
         <script async src="../../carbon-copy.js"></script>
-        <script>
+        <!-- <script>
             function addJsonEditor(){
                 var xje = document.createElement('xtal-json-editor');
                 xje.setAttribute('watch', '[[generatedJson]]');
                 var targetElement = document.getElementById('domBind1');
                 targetElement.appendChild(xje);
             }
-        </script>
+        </script> -->
     </head>
     <body>
         <dom-bind id="domBind1">
             <template id="template1">
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
-                
-                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
+                <div>[[myProperties]]</div>
+                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" 
+                    set-props="watch" watch="[[generatedJson]]" properties="{{myProperties}}"
+                ></c-c>
 
                 
             </template>
