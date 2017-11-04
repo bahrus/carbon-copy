@@ -286,14 +286,16 @@ export interface ICarbonCopy{
                                                 key:key,
                                                 property: property
                                             });
-                                            nextSibling.addEventListener(this.camelToDashCase(key) + '-changed', e =>{
-                                                this['properties'] = e['detail'].value;
-                                                const newEvent = new CustomEvent('properties-changed', {
+                                            const dashCaseKey = this.camelToDashCase(key);
+                                            const notifyingKey = key;
+                                            nextSibling.addEventListener(dashCaseKey + '-changed', e =>{
+                                                this[notifyingKey] = e['detail'].value;
+                                                const newEvent = new CustomEvent(dashCaseKey + '-changed', {
                                                     detail: {
                                                         value: e['detail'].value
                                                     },
                                                     bubbles: true,
-                                                    composed: true,
+                                                    composed: false,
                                                 } as CustomEventInit);
                                                 this.dispatchEvent(newEvent);
                                             })

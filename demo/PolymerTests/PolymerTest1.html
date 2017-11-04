@@ -22,9 +22,10 @@
         <dom-bind id="domBind1">
             <template id="template1">
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
-                <div>[[myProperties]]</div>
+                <div style="height:200px;overflow-y:hidden">[[editedJson]]</div>
                 <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" 
-                    set-props="watch" watch="[[generatedJson]]" properties="{{myProperties}}"
+                    set-props="watch" watch="[[generatedJson]]" 
+                     edited-result="{{editedJson}}"
                 ></c-c>
 
                 
