@@ -279,27 +279,8 @@ export interface ICarbonCopy{
                                 const ceDef = customElements.get(tagName);
                                 if(ceDef.properties){
                                     for(var key in ceDef.properties){
-                                        
                                         const property = ceDef.properties[key];
-                                        if(property.notify){
-                                            console.log({
-                                                key:key,
-                                                property: property
-                                            });
-                                            const dashCaseKey = this.camelToDashCase(key);
-                                            const notifyingKey = key;
-                                            nextSibling.addEventListener(dashCaseKey + '-changed', e =>{
-                                                this[notifyingKey] = e['detail'].value;
-                                                const newEvent = new CustomEvent(dashCaseKey + '-changed', {
-                                                    detail: {
-                                                        value: e['detail'].value
-                                                    },
-                                                    bubbles: true,
-                                                    composed: false,
-                                                } as CustomEventInit);
-                                                this.dispatchEvent(newEvent);
-                                            })
-                                        }
+                                        this.attachPropertyListener(property, key, nextSibling);
                                     }
                                 }
 
@@ -380,6 +361,27 @@ export interface ICarbonCopy{
                 this.c2();
             }, 1);
             
+        }
+        attachPropertyListener(property, key, nextSibling){
+            if(property.notify){
+                console.log({
+                    key:key,
+                    property: property
+                });
+                const dashCaseKey = this.camelToDashCase(key);
+                const notifyingKey = key;
+                nextSibling.addEventListener(dashCaseKey + '-changed', e =>{
+                    this[notifyingKey] = e['detail'].value;
+                    const newEvent = new CustomEvent(dashCaseKey + '-changed', {
+                        detail: {
+                            value: e['detail'].value
+                        },
+                        bubbles: true,
+                        composed: false,
+                    } as CustomEventInit);
+                    this.dispatchEvent(newEvent);
+                })
+            }
         }
         attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             switch (name) {

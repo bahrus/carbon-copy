@@ -239,25 +239,7 @@
                                 if (ceDef.properties) {
                                     for (var key in ceDef.properties) {
                                         const property = ceDef.properties[key];
-                                        if (property.notify) {
-                                            console.log({
-                                                key: key,
-                                                property: property
-                                            });
-                                            const dashCaseKey = this.camelToDashCase(key);
-                                            const notifyingKey = key;
-                                            nextSibling.addEventListener(dashCaseKey + '-changed', e => {
-                                                this[notifyingKey] = e['detail'].value;
-                                                const newEvent = new CustomEvent(dashCaseKey + '-changed', {
-                                                    detail: {
-                                                        value: e['detail'].value
-                                                    },
-                                                    bubbles: true,
-                                                    composed: false,
-                                                });
-                                                this.dispatchEvent(newEvent);
-                                            });
-                                        }
+                                        this.attachPropertyListener(property, key, nextSibling);
                                     }
                                 }
                             });
@@ -331,6 +313,27 @@
                 //hack?
                 this.c2();
             }, 1);
+        }
+        attachPropertyListener(property, key, nextSibling) {
+            if (property.notify) {
+                console.log({
+                    key: key,
+                    property: property
+                });
+                const dashCaseKey = this.camelToDashCase(key);
+                const notifyingKey = key;
+                nextSibling.addEventListener(dashCaseKey + '-changed', e => {
+                    this[notifyingKey] = e['detail'].value;
+                    const newEvent = new CustomEvent(dashCaseKey + '-changed', {
+                        detail: {
+                            value: e['detail'].value
+                        },
+                        bubbles: true,
+                        composed: false,
+                    });
+                    this.dispatchEvent(newEvent);
+                });
+            }
         }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {
