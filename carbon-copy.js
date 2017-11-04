@@ -232,17 +232,45 @@
                     this.addEventListener(cgp + param, e => {
                         //e['detail'].value = this[param];
                         const nextSibling = e.srcElement.nextElementSibling;
-                        nextSibling.addEventListener('edited-result-changed', e => {
-                            this['properties'] = e['detail'].value;
-                            const newEvent = new CustomEvent('properties-changed', {
-                                detail: {
-                                    value: e['detail'].value
-                                },
-                                bubbles: true,
-                                composed: true,
+                        const tagName = nextSibling.tagName.toLowerCase();
+                        if (tagName.indexOf('-') > -1) {
+                            customElements.whenDefined(tagName).then(() => {
+                                const ceDef = customElements.get(tagName);
+                                if (ceDef.properties) {
+                                    for (var key in ceDef.properties) {
+                                        const property = ceDef.properties[key];
+                                        if (property.notify) {
+                                            console.log({
+                                                key: key,
+                                                property: property
+                                            });
+                                            nextSibling.addEventListener(this.camelToDashCase(key) + '-changed', e => {
+                                                this['properties'] = e['detail'].value;
+                                                const newEvent = new CustomEvent('properties-changed', {
+                                                    detail: {
+                                                        value: e['detail'].value
+                                                    },
+                                                    bubbles: true,
+                                                    composed: true,
+                                                });
+                                                this.dispatchEvent(newEvent);
+                                            });
+                                        }
+                                    }
+                                }
                             });
-                            this.dispatchEvent(newEvent);
-                        });
+                        }
+                        // nextSibling.addEventListener('edited-result-changed', e =>{
+                        //     this['properties'] = e[' detail'].value;
+                        //     const newEvent = new CustomEvent('properties-changed', {
+                        //         detail: {
+                        //             value: e['detail'].value
+                        //         },
+                        //         bubbles: true,
+                        //         composed: true,
+                        //     } as CustomEventInit);
+                        //     this.dispatchEvent(newEvent);
+                        // })
                         nextSibling[param] = this[param];
                         if (!this.pcs)
                             this.pcs = {};
@@ -284,6 +312,17 @@
             }
             this.loadHref();
         }
+        /**
+        * Converts "camelCase" identifier (e.g. `fooBarBaz`) to "dash-case"
+        * (e.g. `foo-bar-baz`).  From Polymer utils
+        *
+        * @memberof Polymer.CaseMap
+        * @param {string} camel Camel-case identifier
+        * @return {string} Dash-case representation of the identifier
+        */
+        camelToDashCase(camel) {
+            return CC.caseMap[camel] || (CC.caseMap[camel] = camel.replace(CC.CAMEL_TO_DASH, '-$1').toLowerCase());
+        }
         connectedCallback() {
             //https://github.com/w3c/webcomponents/issues/551
             setTimeout(() => {
@@ -319,6 +358,8 @@
     }
     CC._shadowDoms = {};
     CC._shDmSub = {};
+    CC.caseMap = {};
+    CC.CAMEL_TO_DASH = /([A-Z])/g;
     class CarbonCopy extends CC {
     }
     ;
