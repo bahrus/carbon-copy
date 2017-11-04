@@ -2,7 +2,7 @@
 
 # \<carbon-copy\>
 
-Copy an HTML Template into DOM, and more, with this 1.7kb (gzipped, minified) web component.
+Copy an HTML Template into DOM, and more, with this 2.0kb (gzipped, minified) web component.
 
 There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
 
@@ -175,7 +175,9 @@ The contained, referenced snippet that is loaded via the c-c element (for exampl
 
 The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
 
+### Event bubbling (experimental)
 
+The c-c element also propagates events coming from Polymer-based elements included in the template, if the element gets properties from the container.  See demo/PolymerTests/PolymerTest.html for an exmple.
 
 ## Future enhancements:
 

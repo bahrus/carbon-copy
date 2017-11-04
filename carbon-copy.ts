@@ -364,10 +364,6 @@ export interface ICarbonCopy{
         }
         attachPropertyListener(property, key, nextSibling){
             if(property.notify){
-                console.log({
-                    key:key,
-                    property: property
-                });
                 const dashCaseKey = this.camelToDashCase(key);
                 const notifyingKey = key;
                 nextSibling.addEventListener(dashCaseKey + '-changed', e =>{
