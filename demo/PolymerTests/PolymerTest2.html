@@ -12,15 +12,25 @@
         
     </head>
     <body>
-        <dom-bind id="domBind1">
-            <template id="template1">
-                <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
-                
-                <carbon-copy href="IncludeFolder/JsonEditorSnippet2.html#jes" set-props="watch" watch="[[generatedJson]]" stamp-template></carbon-copy>
+        <my-component></my-component>
+        <script>
+            class MyComponent extends Polymer.Element{
+                static get is(){return 'my-component';}
+                static get properties(){
+                    return{
 
-                
-            </template>
-        </dom-bind>
-
+                    }
+                }
+                static get template(){
+                    return `
+<xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
+<div style="height:200px;overflow-y:hidden">[[editedJson]]</div>
+<carbon-copy href="IncludeFolder/JsonEditorSnippet2.html#jes" set-props="watch" 
+watch="[[generatedJson]]" edited-result="{{editedJson}}"></carbon-copy>
+                    `
+                }
+            }
+            customElements.define(MyComponent.is, MyComponent);
+        </script>
     </body>
 </html>
