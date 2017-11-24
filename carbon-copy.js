@@ -274,24 +274,27 @@
                 });
             }
             if (this._get) {
-                const newEvent = new CustomEvent(cg + this._get, {
-                    detail: {},
-                    bubbles: true,
-                    composed: this._composed,
-                });
-                this.dispatchEvent(newEvent);
+                // const newEvent = new CustomEvent(cg + this._get, {
+                //     detail: {
+                //     },
+                //     bubbles: true,
+                //     composed: this._composed,
+                // } as CustomEventInit);
+                // this.dispatchEvent(newEvent);
+                const newEvent = this.de(cg + this._get, {});
                 this.innerHTML = newEvent.detail.value;
             }
             if (this._get_props) {
                 const params = this._get_props.split(';');
                 params.forEach(param => {
-                    const newEvent = new CustomEvent(cgp + param, {
-                        // detail: {
-                        // },
-                        bubbles: true,
-                        composed: this._composed,
-                    });
-                    this.dispatchEvent(newEvent);
+                    // const newEvent = new CustomEvent(cgp + param, {
+                    //     // detail: {
+                    //     // },
+                    //     bubbles: true,
+                    //     composed: this._composed,
+                    // } as CustomEventInit);
+                    // this.dispatchEvent(newEvent);
+                    this.de(cgp + param, null);
                 });
             }
             this.loadHref();
@@ -317,19 +320,33 @@
         attachPropertyListener(property, key, nextSibling) {
             if (property.notify) {
                 const dashCaseKey = this.camelToDashCase(key);
+                const dashCaseKeyChanged = dashCaseKey + '-changed';
                 const notifyingKey = key;
-                nextSibling.addEventListener(dashCaseKey + '-changed', e => {
-                    this[notifyingKey] = e['detail'].value;
-                    const newEvent = new CustomEvent(dashCaseKey + '-changed', {
-                        detail: {
-                            value: e['detail'].value
-                        },
-                        bubbles: true,
-                        composed: false,
+                nextSibling.addEventListener(dashCaseKeyChanged, e => {
+                    const val = e['detail'].value;
+                    this[notifyingKey] = val;
+                    this.de(dashCaseKeyChanged, {
+                        value: val
                     });
-                    this.dispatchEvent(newEvent);
+                    // const newEvent = new CustomEvent(dashCaseKeyChanged, {
+                    //     detail: {
+                    //         value: val
+                    //     },
+                    //     bubbles: true,
+                    //     composed: false,
+                    // } as CustomEventInit);
+                    // this.dispatchEvent(newEvent);
                 });
             }
+        }
+        de(name, detail) {
+            const newEvent = new CustomEvent(name, {
+                detail: detail,
+                bubbles: true,
+                composed: this._composed
+            });
+            this.dispatchEvent(newEvent);
+            return newEvent;
         }
         attributeChangedCallback(name, oldValue, newValue) {
             switch (name) {

@@ -314,27 +314,29 @@ export interface ICarbonCopy{
                 });
             }
             if (this._get) {
-                const newEvent = new CustomEvent(cg + this._get, {
-                    detail: {
+                // const newEvent = new CustomEvent(cg + this._get, {
+                //     detail: {
 
-                    },
-                    bubbles: true,
-                    composed: this._composed,
-                } as CustomEventInit);
-                this.dispatchEvent(newEvent);
+                //     },
+                //     bubbles: true,
+                //     composed: this._composed,
+                // } as CustomEventInit);
+                // this.dispatchEvent(newEvent);
+                const newEvent = this.de(cg + this._get, {});
                 this.innerHTML = newEvent.detail.value;
             }
             if(this._get_props){
                 const params = this._get_props.split(';');
                 params.forEach(param =>{
-                    const newEvent = new CustomEvent(cgp + param, {
-                        // detail: {
+                    // const newEvent = new CustomEvent(cgp + param, {
+                    //     // detail: {
     
-                        // },
-                        bubbles: true,
-                        composed: this._composed,
-                    } as CustomEventInit);
-                    this.dispatchEvent(newEvent);
+                    //     // },
+                    //     bubbles: true,
+                    //     composed: this._composed,
+                    // } as CustomEventInit);
+                    // this.dispatchEvent(newEvent);
+                    this.de(cgp + param, null)
                 });
             }
             this.loadHref();
@@ -365,19 +367,33 @@ export interface ICarbonCopy{
         attachPropertyListener(property, key, nextSibling){
             if(property.notify){
                 const dashCaseKey = this.camelToDashCase(key);
+                const dashCaseKeyChanged = dashCaseKey + '-changed';
                 const notifyingKey = key;
-                nextSibling.addEventListener(dashCaseKey + '-changed', e =>{
-                    this[notifyingKey] = e['detail'].value;
-                    const newEvent = new CustomEvent(dashCaseKey + '-changed', {
-                        detail: {
-                            value: e['detail'].value
-                        },
-                        bubbles: true,
-                        composed: false,
-                    } as CustomEventInit);
-                    this.dispatchEvent(newEvent);
+                nextSibling.addEventListener(dashCaseKeyChanged, e =>{
+                    const val = e['detail'].value;
+                    this[notifyingKey] = val;
+                    this.de(dashCaseKeyChanged, {
+                        value: val
+                    });
+                    // const newEvent = new CustomEvent(dashCaseKeyChanged, {
+                    //     detail: {
+                    //         value: val
+                    //     },
+                    //     bubbles: true,
+                    //     composed: false,
+                    // } as CustomEventInit);
+                    // this.dispatchEvent(newEvent);
                 })
             }
+        }
+        de(name: string, detail: any){
+            const newEvent = new CustomEvent(name, {
+                detail: detail,
+                bubbles: true,
+                composed: this._composed
+            } as CustomEventInit);
+            this.dispatchEvent(newEvent);
+            return newEvent;
         }
         attributeChangedCallback(name: string, oldValue: string, newValue: string) {
             switch (name) {

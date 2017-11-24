@@ -2,3 +2,4 @@
 /demo/PolymerTests/bower_components
 /*.exe
 /node_modules
+/*.pem
