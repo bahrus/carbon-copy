@@ -57,7 +57,7 @@ export interface ICarbonCopy{
                 //  */
                 // 'get-props',
                 /**
-                 * @type {string} Listen for queries regarding these properties (semicolon delimited)
+                 * @type {boolean} Listen for queries regarding these properties (semicolon delimited)
                  */
                 'set-props',
                 /**
@@ -430,7 +430,9 @@ export interface ICarbonCopy{
                 case sh:
                     this._stamp_href = (newValue !== undefined);
                     break;
-
+                case 'set-props':
+                    this._set_props = newValue !== null;
+                    break;
                 case 'composed':
                     this._composed = newValue !== null;
                     break;
