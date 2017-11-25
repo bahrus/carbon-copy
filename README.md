@@ -2,7 +2,7 @@
 
 # \<carbon-copy\>
 
-Copy an HTML Template into DOM, and more, with this 2.0kb (gzipped, minified) web component.
+Copy an HTML Template into DOM, and more, with this 1.9kb (gzipped, minified) web component.
 
 There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
 
@@ -158,26 +158,28 @@ One could fret about the fact that we could easily run into scenarios where the 
 
 When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We would like to be able to wire that up via markup.  The solution is described below. 
 
-In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute -- a semi-colon delimited list of properties that will need to be provided to the inserted elements:
+In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute:
 
 ```html
-<c-c href="JsonEditorSnippet.html#jes" set-props="watch" watch="[[generatedJson]]"></c-c>
+<c-c href="JsonEditorSnippet.html#jes" set-props watch-test="[[generatedJson]]"></c-c>
 ```
 
-The watch attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if set-props is set to "watch" then the developer is responsible for ensuring that the c-c element's watch property gets assigned (and receives updates of) the value in question.  .
-
-The contained, referenced snippet that is loaded via the c-c element (for example, the template contained in JsonEditorSnippet.html in this example) needs to supply a "getter" c-c element.  This getter c-c element should appear as a previous sibling of the target element which needs the property value (binding).
+The flag set-props indicates that after appending DOM content, it should search for elements with attributes like shown below:
 
 ```html
-        <c-c get-props="watch"></c-c>
-        <xtal-json-editor></xtal-json-editor>
-``` 
+<xtal-json-editor get-props="watch:watchTest" notify-props></xtal-json-editor>
+```
 
-The combination of the set-props c-c element and the get-props c-c element creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
+The *c-c* element will set the watch property of *xta-json-editor* to the value of the watch-test.
 
-### Event bubbling (experimental)
+The watch-test attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if get-props is set to "watch:watchTest" then the developer is responsible for ensuring that the c-c element's watchTest property gets assigned (and receives updates of) the value in question.
 
-The c-c element also propagates events coming from Polymer-based elements included in the template, if the element gets properties from the container.  See demo/PolymerTests/PolymerTest.html for an exmple.
+
+The combination of the set-props c-c element and the get-props attribute on a child DOM node creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
+
+### Event bubbling
+
+The c-c element also searches for child elements with attribute notify-props.  For each such element, it will set up a listener on that property, which will then pass the value to the host element.  See demo/PolymerTests/PolymerTest.html for an example.
 
 ## Future enhancements:
 

@@ -74,8 +74,6 @@
             });
             return stack.join("/");
         }
-        // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
-        // }
         append(shadowDOM, id, absUrl, url) {
             const templ = shadowDOM.getElementById(id);
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template

@@ -104,11 +104,6 @@ export interface ICarbonCopy{
             })
             return stack.join("/");
         }
-        // getContentFromIFrame(iframe: HTMLIFrameElement, id: string, absUrl: string, url: string) {
-
-
-
-        // }
 
         append(shadowDOM: ShadowRoot | Document, id: string, absUrl: string, url: string) {
             const templ = shadowDOM.getElementById(id) as HTMLTemplateElement;
@@ -275,18 +270,14 @@ export interface ICarbonCopy{
                     const val = nameValuePair[1];
                     this.addEventListener(cg + key, e => {
                         e['detail'].value = val;
-
                     });
 
                 });
             }
-
             if (this._get) {
- 
                 const newEvent = this.de(cg + this._get, {});
                 this.innerHTML = newEvent.detail.value;
             }
-
             this.loadHref();
         }
         static caseMap = {};
