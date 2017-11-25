@@ -24,7 +24,7 @@
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
                 <div style="height:200px;overflow-y:hidden">[[editedJson]]</div>
                 <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" 
-                    set-props watch="[[generatedJson]]" 
+                    set-props watchs="[[generatedJson]]" 
                      edited-result="{{editedJson}}"
                 ></c-c>
 
