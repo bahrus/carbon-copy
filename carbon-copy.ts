@@ -275,108 +275,18 @@ export interface ICarbonCopy{
                     const val = nameValuePair[1];
                     this.addEventListener(cg + key, e => {
                         e['detail'].value = val;
-                        //const attrib = this.getAttribute(key + '-props');
-                        // if (attrib) {
-                        //     const props = attrib.split(';');
-                        //     props.forEach(prop => {
-                        //         const nvp2 = prop.split(':');
-                        //         const propKey = nvp2[0];
-                        //         const propVal = nvp2[1];
-                        //         const tokens = propKey.split('.');
-                        //         let targetProp = e.srcElement;
-                        //         const len = tokens.length;
-                        //         for (let i = 0; i < len - 1; i++) {
-                        //             targetProp = targetProp[tokens[i]];
-                        //         }
-                        //         const lastToken = tokens[len - 1];
-                        //         switch (typeof (targetProp[lastToken])) {
-                        //             case 'string':
-                        //                 targetProp[lastToken] = propVal;
-                        //                 break;
-                        //             default:
-                        //                 throw 'not implemented yet';
-                        //         }
 
-                        //     })
-                        // }
-                        //
                     });
 
                 });
             }
-            // if(this._set_props){
-            //     const params = this._set_props.split(';');
-            //     params.forEach(param =>{
-            //         this.addEventListener(cgp + param, e => {
-                        
-            //             //e['detail'].value = this[param];
-            //             const nextSibling = e.srcElement.nextElementSibling as HTMLElement;
-            //             const tagName = nextSibling.tagName.toLowerCase();
-            //             if(tagName.indexOf('-') > -1){
-            //                 customElements.whenDefined(tagName).then(() =>{
-            //                     const ceDef = customElements.get(tagName);
-            //                     if(ceDef.properties){
-            //                         for(var key in ceDef.properties){
-            //                             const property = ceDef.properties[key];
-            //                             this.attachPropertyListener(property, key, nextSibling);
-            //                         }
-            //                     }
 
-            //                 })
-            //             }
-            //             // nextSibling.addEventListener('edited-result-changed', e =>{
-            //             //     this['properties'] = e[' detail'].value;
-            //             //     const newEvent = new CustomEvent('properties-changed', {
-            //             //         detail: {
-            //             //             value: e['detail'].value
-            //             //         },
-            //             //         bubbles: true,
-            //             //         composed: true,
-            //             //     } as CustomEventInit);
-            //             //     this.dispatchEvent(newEvent);
-            //             // })
-            //             nextSibling[param] = this[param];
-            //             if(!this.pcs) this.pcs = {};
-            //             if(!this.pcs[param]) this.pcs[param] = [];
-            //             this.pcs[param].push(nextSibling);
-            //             const setter = function(newVal){
-            //                 this.pcs[param].forEach(el => el[param] = newVal);
-            //                 //nextSibling[param] = newVal;
-            //             }
-            //             Object.defineProperty(this, param, {
-            //                 enumerable: true,
-            //                 configurable: true,
-            //                 set: setter
-            //             });
-            //         });
-            //     });
-            // }
             if (this._get) {
-                // const newEvent = new CustomEvent(cg + this._get, {
-                //     detail: {
-
-                //     },
-                //     bubbles: true,
-                //     composed: this._composed,
-                // } as CustomEventInit);
-                // this.dispatchEvent(newEvent);
+ 
                 const newEvent = this.de(cg + this._get, {});
                 this.innerHTML = newEvent.detail.value;
             }
-            // if(this._get_props){
-            //     const params = this._get_props.split(';');
-            //     params.forEach(param =>{
-            //         // const newEvent = new CustomEvent(cgp + param, {
-            //         //     // detail: {
-    
-            //         //     // },
-            //         //     bubbles: true,
-            //         //     composed: this._composed,
-            //         // } as CustomEventInit);
-            //         // this.dispatchEvent(newEvent);
-            //         this.de(cgp + param, null)
-            //     });
-            // }
+
             this.loadHref();
         }
         static caseMap = {};
