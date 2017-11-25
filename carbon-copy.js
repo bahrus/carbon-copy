@@ -117,6 +117,18 @@
                     el.removeAttribute('get-props');
                 });
             }
+            this.qsa('[notify-props]', this).forEach(el => {
+                const tagName = el.tagName.toLowerCase();
+                customElements.whenDefined(tagName).then(() => {
+                    const ceDef = customElements.get(tagName);
+                    if (ceDef.properties) {
+                        for (var key in ceDef.properties) {
+                            const property = ceDef.properties[key];
+                            this.attachPropertyListener(property, key, el);
+                        }
+                    }
+                });
+            });
         }
         qsa(css, from) {
             return [].slice.call((from ? from : this).querySelectorAll(css));
