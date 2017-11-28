@@ -183,7 +183,13 @@ The c-c element also searches for child custom element tags with attribute notif
 
 ### Event attaching
 
-The c-c element bubbles an event up when it loads new DOM content.  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded.  It is important to note that he markup used to support specifying event listeners differs from the Polymer way of declaratively event handlers. c-c uses:
+The c-c element bubbles an event up when it clones the HTML Template.  One can attach (in a Polymer element) an event handler for this event declaratively:
+
+```html
+                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-c-c-cloned="onClone"
+                ></c-c>
+```
+  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded.  **It is important to note that the markup used to support specifying event listeners differs from the Polymer way of declaratively event handlers**. c-c uses:
 
 ```html
 <span call-myMethodName-on="click">Click here</span>
@@ -195,7 +201,9 @@ as opposed to the Polymer syntax:
 <span on-click="myMethodName">Click here</span>
 ```
 
-This deviation allows the code base for the c-c element to be smaller and faster
+This deviation allows the code base for the c-c element to be smaller and faster.
+
+You can have multiple events map to the same method by using a pipe deliminted list in the value of the attribute, e.g. "blur|click"
 
 
 ## Future enhancements:

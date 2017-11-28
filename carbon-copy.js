@@ -88,10 +88,10 @@
                     child.setAttribute(hs, this._href);
                 }
             }
-            const newNode = this.appendChild(clone);
-            this.de(p + 'loaded', {
-                newNode: newNode
+            this.de(p + 'cloned', {
+                clone: clone
             });
+            const newNode = this.appendChild(clone);
             if (this._set_props) {
                 this.qsa('[get-props]', this).forEach(el => {
                     const getPropAttr = el.getAttribute('get-props').split(';').forEach(prop => {
@@ -137,12 +137,12 @@
         attachEventHandlers(ce, newNode) {
             if (!newNode)
                 newNode = this;
-            for (var methodName in ce) {
+            Object.getOwnPropertyNames(ce).forEach(methodName => {
                 const method = ce[methodName];
                 if (typeof method !== 'function')
-                    continue;
+                    return;
                 const attrName = 'call-' + methodName + '-on';
-                const methodNodes = this.qsa(`[${attrName}]`, newNode).forEach(methodNode => {
+                this.qsa(`[${attrName}]`, newNode).forEach(methodNode => {
                     const triggerEventNames = methodNode.getAttribute(attrName).split('|');
                     triggerEventNames.forEach(triggerEventName => {
                         methodNode.addEventListener(triggerEventName, ev => {
@@ -150,7 +150,7 @@
                         });
                     });
                 });
-            }
+            });
         }
         loadHref() {
             this._once = true;

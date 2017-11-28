@@ -127,10 +127,11 @@ export interface ICarbonCopy{
                     child.setAttribute(hs, this._href);
                 }
             }
+            this.de(p + 'cloned',{
+                clone: clone 
+             });
             const newNode = this.appendChild(clone);
-            this.de(p + 'loaded',{
-               newNode: newNode 
-            });
+            
             if(this._set_props){
                 this.qsa('[get-props]', this).forEach(el =>{
                     const getPropAttr = el.getAttribute('get-props').split(';').forEach(prop =>{
@@ -175,11 +176,11 @@ export interface ICarbonCopy{
         }
         attachEventHandlers(ce: HTMLElement, newNode?: HTMLElement){
             if(!newNode) newNode = this;
-            for(var methodName in ce){
+            Object.getOwnPropertyNames(ce).forEach(methodName =>{
                 const method = ce[methodName];
-                if(typeof method !== 'function') continue;
+                if(typeof method !== 'function') return;
                 const attrName = 'call-' + methodName + '-on';
-                const methodNodes = this.qsa(`[${attrName}]`, newNode).forEach(methodNode =>{
+                this.qsa(`[${attrName}]`, newNode).forEach(methodNode =>{
                     const triggerEventNames = methodNode.getAttribute(attrName).split('|');
                     triggerEventNames.forEach(triggerEventName =>{
                         methodNode.addEventListener(triggerEventName, ev =>{
@@ -187,8 +188,8 @@ export interface ICarbonCopy{
                         });
                     })
                 })
-
-            }
+            });
+            
         }
         loadHref() {
             this._once = true;
