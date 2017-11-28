@@ -179,7 +179,24 @@ The combination of the set-props c-c element and the get-props attribute on a ch
 
 ### Event bubbling
 
-The c-c element also searches for child elements with attribute notify-props.  For each such element, it will set up a listener on that property, which will then pass the value to the host element.  See demo/PolymerTests/PolymerTest.html for an example.
+The c-c element also searches for child custom element tags with attribute notify-props.  For each such element, *c-c* checks if (for now) the custom element uses the Polymer static properties getter to provide reflection on the properties of the custom element.  Support for other custom element libraries, like SkateJS, Stencil, etc. will be forthcoming assuming the the equivalent integration is applicable.  *c-c* sifts through these properties, and sets up a listener on each property which is marked "notify", which will then pass the value to the host element using the Polymer convention "[property-name]-changed".  See demo/PolymerTests/PolymerTest.html for an example.
+
+### Event attaching
+
+The c-c element bubbles an event up when it loads new DOM content.  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded.  It is important to note that he markup used to support specifying event listeners differs from the Polymer way of declaratively event handlers. c-c uses:
+
+```html
+<span call-myMethodName-on="click">Click here</span>
+```
+
+as opposed to the Polymer syntax:
+
+```html
+<span on-click="myMethodName">Click here</span>
+```
+
+This deviation allows the code base for the c-c element to be smaller and faster
+
 
 ## Future enhancements:
 

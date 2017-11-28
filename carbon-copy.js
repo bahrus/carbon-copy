@@ -89,6 +89,9 @@
                 }
             }
             const newNode = this.appendChild(clone);
+            this.de(p + 'loaded', {
+                newNode: newNode
+            });
             if (this._set_props) {
                 this.qsa('[get-props]', this).forEach(el => {
                     const getPropAttr = el.getAttribute('get-props').split(';').forEach(prop => {
@@ -130,6 +133,24 @@
         }
         qsa(css, from) {
             return [].slice.call((from ? from : this).querySelectorAll(css));
+        }
+        attachEventHandlers(ce, newNode) {
+            if (!newNode)
+                newNode = this;
+            for (var methodName in ce) {
+                const method = ce[methodName];
+                if (typeof method !== 'function')
+                    continue;
+                const attrName = 'call-' + methodName + '-on';
+                const methodNodes = this.qsa(`[${attrName}]`, newNode).forEach(methodNode => {
+                    const triggerEventNames = methodNode.getAttribute(attrName).split('|');
+                    triggerEventNames.forEach(triggerEventName => {
+                        methodNode.addEventListener(triggerEventName, ev => {
+                            ce[methodName](ev);
+                        });
+                    });
+                });
+            }
         }
         loadHref() {
             this._once = true;
@@ -322,7 +343,13 @@
             return this._href;
         }
     }
+    /**
+     * A globally available lookup between the url (including hashtag id) and the shadowroot
+     */
     CC._shadowDoms = {};
+    /**
+     * emporary subscriber needed for updating the dom.
+     */
     CC._shDmSub = {};
     CC.caseMap = {};
     CC.CAMEL_TO_DASH = /([A-Z])/g;

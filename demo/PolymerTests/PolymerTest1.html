@@ -9,6 +9,7 @@
         <!-- <script async src="bower_components/xtal-json-editor/xtal-json-editor.js"></script> -->
         <!-- <link rel="import" href="bower_components/xtal-json-editor/xtal-json-editor.html"> -->
         <script async src="../../carbon-copy.js"></script>
+        <script async src="https://cdn.jsdelivr.net/npm/xtal-decorator/build/ES6/xtal-decorator.js"></script>
         <!-- <script>
             function addJsonEditor(){
                 var xje = document.createElement('xtal-json-editor');
@@ -19,6 +20,19 @@
         </script> -->
     </head>
     <body>
+        <xtal-decorator>
+            <template>
+                <script  type="text/ecmascript">
+                [
+                    {
+                        handleClick: function (e) {
+                            alert('i am here');
+                        }
+                    }
+                ]
+                </script>
+            </template>
+        </xtal-decorator>
         <dom-bind id="domBind1">
             <template id="template1">
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
@@ -27,8 +41,8 @@
                     set-props watch-test="[[generatedJson]]" 
                      edited-result="{{editedJson}}"
                 ></c-c>
-
                 
+                <span on-click="handleClick">Click here 2</span>
             </template>
         </dom-bind>
 

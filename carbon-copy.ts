@@ -82,7 +82,13 @@ export interface ICarbonCopy{
         _absUrl;
         _stamp_href;
         _once;
+        /**
+         * A globally available lookup between the url (including hashtag id) and the shadowroot
+         */
         static _shadowDoms: { [key: string]: boolean | ShadowRoot } = {};
+        /**
+         * emporary subscriber needed for updating the dom.
+         */
         static _shDmSub: { [key: string]: [(sr: ShadowRoot) => void] } = {};
         pcs :{[key: string] : HTMLElement[]};// prop change subscribers
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript
@@ -122,6 +128,9 @@ export interface ICarbonCopy{
                 }
             }
             const newNode = this.appendChild(clone);
+            this.de(p + 'loaded',{
+               newNode: newNode 
+            });
             if(this._set_props){
                 this.qsa('[get-props]', this).forEach(el =>{
                     const getPropAttr = el.getAttribute('get-props').split(';').forEach(prop =>{
@@ -163,6 +172,23 @@ export interface ICarbonCopy{
         }
         qsa(css, from?: HTMLElement | Document) : HTMLElement[]{
             return  [].slice.call((from ? from : this).querySelectorAll(css));
+        }
+        attachEventHandlers(ce: HTMLElement, newNode?: HTMLElement){
+            if(!newNode) newNode = this;
+            for(var methodName in ce){
+                const method = ce[methodName];
+                if(typeof method !== 'function') continue;
+                const attrName = 'call-' + methodName + '-on';
+                const methodNodes = this.qsa(`[${attrName}]`, newNode).forEach(methodNode =>{
+                    const triggerEventNames = methodNode.getAttribute(attrName).split('|');
+                    triggerEventNames.forEach(triggerEventName =>{
+                        methodNode.addEventListener(triggerEventName, ev =>{
+                            ce[methodName](ev);
+                        });
+                    })
+                })
+
+            }
         }
         loadHref() {
             this._once = true;
