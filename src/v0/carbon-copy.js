@@ -54,6 +54,10 @@
                  * @type {boolean} Persist previous templates when the href changes
                  */
                 sh,
+                /**
+                 * @type {boolean} Don't load href url when this property is true (or attribute is present)
+                 */
+                'wait'
             ];
         }
         //from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript

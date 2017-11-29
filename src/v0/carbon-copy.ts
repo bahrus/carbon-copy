@@ -67,6 +67,7 @@ export interface ICarbonCopy{
                 /**
                  * @type {boolean} Don't load href url when this property is true (or attribute is present)
                  */
+                'wait'
             ];
         }
 

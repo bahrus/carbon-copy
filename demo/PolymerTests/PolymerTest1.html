@@ -41,7 +41,7 @@
             <template id="template1">
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
                 <div style="height:200px;overflow-y:hidden">[[editedJson]]</div>
-                <c-c wait href="IncludeFolder/JsonEditorSnippet.html#jes" 
+                <c-c wait="[[wait]]" href="IncludeFolder/JsonEditorSnippet.html#jes" 
                     set-props watch-test="[[generatedJson]]" 
                      edited-result="{{editedJson}}"
                      on-c-c-cloned="onClone"

@@ -2,7 +2,8 @@ const PRECACHE = 'precache-v1';
 const RUNTIME = 'runtime';
 const PRECACHE_URLS = [
     'https://cdn.jsdelivr.net/npm/xtal-decorator/build/ES6/xtal-decorator.js',
-    'https://cdn.jsdelivr.net/npm/xtal-json-editor/build/ES6/xtal-json-editor.js'
+    'https://cdn.jsdelivr.net/npm/xtal-json-editor/build/ES6/xtal-json-editor.js',
+    'https://cdn.jsdelivr.net/npm/xtal-fetch/build/ES6/xtal-fetch.js'
 ];
 // The install handler takes care of precaching the resources we always need.
 self.addEventListener('install', event => {
