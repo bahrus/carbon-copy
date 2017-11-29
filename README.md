@@ -189,13 +189,21 @@ The c-c element bubbles an event up when it clones the HTML Template.  One can a
                 <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-c-c-cloned="onClone"
                 ></c-c>
 ```
-  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded.  **It is important to note that the markup used to support specifying event listeners differs from the Polymer way of declaratively event handlers**. c-c uses:
+  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded:
+
+```JavaScript
+    onClone: function (e) {
+        e.srcElement.attachEventHandlers(this, e.detail.clone);
+    },
+```
+  
+**It is important to note that the markup used to support specifying event listeners differs from the Polymer way of declaratively event handlers**. c-c uses:
 
 ```html
 <span call-myMethodName-on="click">Click here</span>
 ```
 
-as opposed to the Polymer syntax:
+as opposed to the more familiar Polymer syntax:
 
 ```html
 <span on-click="myMethodName">Click here</span>
@@ -207,6 +215,45 @@ You can have multiple events map to the same method by using a pipe deliminted l
 
 
 ## Future enhancements:
+
+### const exporter preprocessor
+
+file:  https://domain.com/path/to/myFile.html
+
+```html
+<script type="module" id="scriptA">
+        export const foo = 
+        export const bar = 'hello';
+        export const baz = 5;
+</script>
+```
+
+transforms into:
+
+```html
+    <script>
+        (function () {
+            const exportSymbol = {};
+            exportSymbol.foo = () => {
+                console.log('i am here');
+            };
+            exportSymbol.bar = 'hello';
+            exportSymbol.baz = 5;
+            customElements.get('c-c').symbols['https://domain.com/path/to/myFile.html#scriptA'] = exportSymbol;
+        })();
+    </script>
+```
+
+```html
+    <c-c href="https://domain.com/path/to/myFile.html#scriptA" as=>
+```
+
+transforms to:
+
+```html
+
+### litter preprocessor
+
 
 ### Polymer specific template stamping
 
