@@ -9,6 +9,8 @@ function cc_resolver(doc, cc) {
                 case 'IFRAME':
                 case 'SCRIPT':
                     const src = hrefOrScriptTag.getAttribute('src');
+                    if (src.startsWith('http'))
+                        return;
                     const newSrc = cc.absolute(cc._absUrl, src);
                     hrefOrScriptTag.setAttribute('src', newSrc);
                     break;

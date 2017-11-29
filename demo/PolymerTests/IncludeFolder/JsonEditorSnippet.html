@@ -3,10 +3,11 @@
 <head>
     <title>JsonEditorSnippet</title>
     <meta name="preprocessor" content="cc_resolver">
+
 </head>
 <body>
     <template id="jes">
-        <link rel="import" href="../bower_components/xtal-json-editor/xtal-json-editor.html">
+        <script async src="https://cdn.jsdelivr.net/npm/xtal-json-editor/build/ES6/xtal-json-editor.js"></script>
         Test1: <br>
         <span call-handleClick-on="click">Click here</span>
         <xtal-json-editor get-props="watch:watchTest" notify-props></xtal-json-editor>
