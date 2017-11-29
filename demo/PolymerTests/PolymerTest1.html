@@ -8,7 +8,7 @@
         <script async src="bower_components/xtal-fetch/xtal-fetch.js"></script>
         <!-- <script async src="bower_components/xtal-json-editor/xtal-json-editor.js"></script> -->
         <!-- <link rel="import" href="bower_components/xtal-json-editor/xtal-json-editor.html"> -->
-        <script async src="../../carbon-copy.js"></script>
+        <script async src="../../src/v0/carbon-copy.js"></script>
         <script async src="https://cdn.jsdelivr.net/npm/xtal-decorator/build/ES6/xtal-decorator.js"></script>
         <!-- <script>
             function addJsonEditor(){
@@ -30,7 +30,8 @@
                         },
                         handleClick: function(e){
                             alert('I am here');
-                        }
+                        },
+                        wait: false,
                     }
                 ]
                 </script>
@@ -40,7 +41,7 @@
             <template id="template1">
                 <xtal-fetch fetch href="generated.json" as="json" result="{{generatedJson}}"></xtal-fetch>
                 <div style="height:200px;overflow-y:hidden">[[editedJson]]</div>
-                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" 
+                <c-c wait href="IncludeFolder/JsonEditorSnippet.html#jes" 
                     set-props watch-test="[[generatedJson]]" 
                      edited-result="{{editedJson}}"
                      on-c-c-cloned="onClone"
