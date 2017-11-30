@@ -222,7 +222,9 @@ file:  https://domain.com/path/to/myFile.html
 
 ```html
 <script type="module" id="scriptA">
-        export const foo = 
+        export const foo =  () => {
+            console.log('i am here');
+        };
         export const bar = 'hello';
         export const baz = 5;
 </script>
@@ -233,19 +235,19 @@ transforms into:
 ```html
     <script>
         (function () {
-            const exportSymbol = {};
-            exportSymbol.foo = () => {
+            const exportconst = {};
+            exportconst.foo = () => {
                 console.log('i am here');
             };
-            exportSymbol.bar = 'hello';
-            exportSymbol.baz = 5;
-            customElements.get('c-c').symbols['https://domain.com/path/to/myFile.html#scriptA'] = exportSymbol;
+            exportconst.bar = 'hello';
+            exportconst.baz = 5;
+            customElements.get('c-c').symbols['https://domain.com/path/to/myFile.html#scriptA'] = exportconst;
         })();
     </script>
 ```
 
 ```html
-    <c-c href="https://domain.com/path/to/myFile.html#scriptA" as=>
+    <c-c href="https://domain.com/path/to/myFile.html#scriptA" render-fn="foo" state="[[myState]]"></c-c>
 ```
 
 transforms to:
