@@ -238,26 +238,17 @@ file:  https://domain.com/path/to/myFile.html
 
 ```html
 <script type="module" id="scriptA">
-        import import {html, render} from 'lit-html';
-        export const foo =  () => {
-            console.log('i am here');
-        };
-        export const bar = 'hello';
-        export const baz = 5;
+        export const foo = 'hello';
 </script>
 ```
 
 transforms into:
 
 ```html
-    <script>
+    <script type="module" id="scriptA">
         (function () {
             const exportconst = {};
-            exportconst.foo = () => {
-                console.log('i am here');
-            };
-            exportconst.bar = 'hello';
-            exportconst.baz = 5;
+            const foo = exportconst.foo = 'hello'
             import.meta['exports'] = exportconst; 
         })();
     </script>
