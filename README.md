@@ -152,6 +152,14 @@ We think it is a common pattern to have the primary attribute match the second p
   </li>
 ```
 
+NB:  Polymer's dom-repeat element doesn't actually follow my grand observation.  It uses items="[[]]", which maybe is more intuitive than
+
+```html
+<dom-repeat repeat="[[items]]">
+```
+
+So the "common pattern" may not actually be that common.
+
 One could fret about the fact that we could easily run into scenarios where the zenmu syntax breaks down due to one of the special characters -- . @ or # needing to appear in an unusual place -- e.g. an attribute value needs to contain the @ character.  Rather than create difficult to remember rules for these scenarios, simply revert to more verbose syntax.
 
 ### Child Property Propagation
@@ -209,7 +217,7 @@ as opposed to the more familiar Polymer syntax:
 <span on-click="myMethodName">Click here</span>
 ```
 
-This deviation allows the code base for the c-c element to be smaller and faster.
+This deviation allows the code base for the c-c element to be smaller and faster (maybe).
 
 You can have multiple events map to the same method by using a pipe deliminted list in the value of the attribute, e.g. "blur|click"
 
@@ -222,6 +230,7 @@ file:  https://domain.com/path/to/myFile.html
 
 ```html
 <script type="module" id="scriptA">
+        import import {html, render} from 'lit-html';
         export const foo =  () => {
             console.log('i am here');
         };
@@ -245,16 +254,6 @@ transforms into:
         })();
     </script>
 ```
-
-```html
-    <c-c href="https://domain.com/path/to/myFile.html#scriptA" render-fn="foo" state="[[myState]]"></c-c>
-```
-
-transforms to:
-
-```html
-
-### litter preprocessor
 
 
 ### Polymer specific template stamping
