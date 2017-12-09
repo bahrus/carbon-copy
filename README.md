@@ -12,6 +12,14 @@ Out of the box, the template must be imported programmatically.  This can disrup
 
 The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to declaratively copy contents from an external HTML template (or one already defined in the main document) into the tag's innerHTML.
 
+Why is this useful?
+
+In the age of HTTP/2, the need for a robust client-side include increases, as it can benefit from the superior caching that HTTP/2 affords without too much penalty from breaking up a page.  This can be extremely useful for static content generators, where common markup appears multiple times.
+
+It can also be useful when utilizing a functional renderer like lit-html.  If large sections of the output are not bound to any dynamic properties, those large sections could be referenced via the c-c element.  This would allow those sections to be encoded in HTML, and parsed by the fast c++ compiler, rather than the not [quite so fast JavaScript parser](https://youtu.be/Io6JjgckHbg?t=1143). 
+
+To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clunky compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
+
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
 The syntax for this element, at its simplest level, is as follows:
@@ -22,6 +30,10 @@ The syntax for this element, at its simplest level, is as follows:
 ```
 
 If no url is specified before the hash symbol, then the code will assume the id exists and is searchable via document.getElementById().
+
+TODO:
+
+If the href starts with some special names:  _host, or _parent, then the search for the template with the given name will be done locally.  _host means the first ancestor parent which has shadow DOM.  _parent is literally the parent node.
 
 You can specify parameters the referenced template can retrieve via the set attribute, which is a semi-colon delimited list of name/value pairs (using the colon as the assignment operator):
 
@@ -70,7 +82,7 @@ The boolean attribute/property set-props indicates that, after appending DOM con
 <xtal-json-editor get-props="watch:myJson" notify-props></xtal-json-editor>
 ```
 
-The *c-c* element will set the watch property of *xta-json-editor* to the value of the myJson property.
+The *c-c* element will set the watch property of *xtal-json-editor* to the value of the myJson property.
 
 The my-json attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if get-props is set to "watch:myJson" then the developer is responsible for ensuring that the c-c element's myJson property gets assigned (and receives updates of) the value in question.
 
@@ -92,11 +104,12 @@ The c-c element bubbles an event up when it clones the HTML Template.  One can a
 
 ```JavaScript
     onClone: function (e) {
-        e.srcElement.attachEventHandlers(this, e.detail.clone);
+        const myCCElement = e.srcElement;
+        myCCElement.attachEventHandlers(this, e.detail.clone);
     },
 ```
-  
-**It is important to note that the markup used to support specifying event listeners differs from the Polymer way of declaratively attaching event handlers**. c-c uses:
+
+As you can see, a c-c instance has a built-in method called attachEventHandlers.  **It is important to note that attachEvent expects slightly different mark-up to support specifying event listeners. It differs from the Polymer way of declaratively attaching event handlers**. c-c uses:
 
 ```html
 <span call-myMethodName-on="click">Click here</span>
@@ -110,7 +123,7 @@ as opposed to the more familiar Polymer syntax:
 
 This deviation allows the code base for the c-c element to be smaller and faster (maybe).
 
-You can have multiple events map to the same method by using a pipe deliminted list in the value of the attribute, e.g. "blur|click"
+You can have multiple events map to the same method by using a pipe delimited list in the value of the attribute, e.g. "blur|click"
 
 ### Preprocessing
 
