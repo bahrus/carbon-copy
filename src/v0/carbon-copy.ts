@@ -196,6 +196,13 @@ export interface ICarbonCopy{
             });
             
         }
+        getHostShadow(){
+            let parentElement = this.parentElement;
+            while(parentElement){
+                if(parentElement.shadowRoot) return parentElement.shadowRoot;
+                parentElement = parentElement.parentElement;
+            }
+        }
         loadHref() {
             this._once = true;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
@@ -225,6 +232,13 @@ export interface ICarbonCopy{
                 this.append(document, id, null, url);
                 return;
             }
+            if(url === '_host'){
+                const host = this.getHostShadow();
+                if(!host) throw 'Unable to find host';
+                this.append(host, id, null, url);
+                return;
+            }
+            
             const isAbsTests = ['https://', '/', '//', 'http://'];
             let isAbsolute = false;
             for (let i = 0, ii = isAbsTests.length; i < ii; i++) {

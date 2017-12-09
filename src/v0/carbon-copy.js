@@ -156,6 +156,14 @@
                 });
             });
         }
+        getHostShadow() {
+            let parentElement = this.parentElement;
+            while (parentElement) {
+                if (parentElement.shadowRoot)
+                    return parentElement.shadowRoot;
+                parentElement = parentElement.parentElement;
+            }
+        }
         loadHref() {
             this._once = true;
             //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
@@ -187,6 +195,13 @@
             const id = splitHref[1];
             if (url.length === 0) {
                 this.append(document, id, null, url);
+                return;
+            }
+            if (url === '_host') {
+                const host = this.getHostShadow();
+                if (!host)
+                    throw 'Unable to find host';
+                this.append(host, id, null, url);
                 return;
             }
             const isAbsTests = ['https://', '/', '//', 'http://'];
