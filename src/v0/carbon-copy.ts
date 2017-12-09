@@ -196,7 +196,7 @@ export interface ICarbonCopy{
             });
             
         }
-        getHostShadow(){
+        get_h(){
             let parentElement = this.parentElement;
             while(parentElement){
                 if(parentElement.shadowRoot) return parentElement.shadowRoot;
@@ -233,8 +233,8 @@ export interface ICarbonCopy{
                 return;
             }
             if(url === '_host'){
-                const host = this.getHostShadow();
-                if(!host) throw 'Unable to find host';
+                const host = this.get_h();
+                //if(!host) throw 'Unable to find host';
                 this.append(host, id, null, url);
                 return;
             }
