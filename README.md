@@ -200,38 +200,31 @@ zenmu gives similar special treatment to the template tag.  So the markup above 
 #### Preprocessing directive # 2:  Outer Wrapping
 
 ```html
-  <li wrap-in="dom-repeat@repeat:[[items]](template">
-    <span>[[item.name]]</span>
+  <li wrap-in="dom-if@if:[[myTest]](template">
+    <span>[[myName]]</span>
   </li>
 ```
 
 becomes
 
 ```html
-    <dom-repeat repeat="[[items]]">
-        <template>
-            <li>
-                <span>[[item.name]]</span>
-            </li>
-        </template>
-    </dom-repeat>
+<dom-if if="[[myTest]]">
+    <template>
+        <li>
+            <span>[[myName]]</span>
+        </li>
+    </template>
+</dom-if>
 ```
 
 We think it is a common pattern to have the primary attribute match the second part of the custom element tag name.  This, combined with the assumption of the template tag name, allows the markup to be shortened even further:
 
 ```html
-  <li wrap-in="dom-repeat@:[[items]](">
-    <span>[[item.name]]</span>
+  <li wrap-in="dom-if@:[[myTest]](">
+    <span>[[someInfo]]</span>
   </li>
 ```
 
-NB:  Polymer's dom-repeat element doesn't actually follow my grand observation.  It uses items="[[]]", which maybe is more intuitive than
-
-```html
-<dom-repeat repeat="[[items]]">
-```
-
-So the "common pattern" may not actually be that common.
 
 One could fret about the fact that we could easily run into scenarios where the zenmu syntax breaks down due to one of the special characters -- . @ or # needing to appear in an unusual place -- e.g. an attribute value needs to contain the @ character.  Rather than create difficult to remember rules for these scenarios, simply revert to more verbose syntax.
 
@@ -265,7 +258,7 @@ transforms into:
             };
             exportconst.bar = 'hello';
             exportconst.baz = 5;
-            customElements.get('c-c').symbols['https://domain.com/path/to/myFile.html#scriptA'] = exportconst;
+            import.meta['exports'] = exportconst; 
         })();
     </script>
 ```
