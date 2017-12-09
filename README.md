@@ -16,9 +16,9 @@ Why is this useful?
 
 In the age of HTTP/2, the need for a robust client-side include increases, as it can benefit from the superior caching that HTTP/2 affords without too much penalty from breaking up a page.  This can be extremely useful for static content generators, where common markup appears multiple times.
 
-It can also be useful when utilizing a functional renderer like lit-html.  If large sections of the output are not bound to any dynamic properties, those large sections could be referenced via the c-c element.  This would allow those sections to be encoded in HTML, and parsed by the fast c++ compiler, rather than the not [quite so fast JavaScript parser](https://youtu.be/Io6JjgckHbg?t=1143). 
+It can also be useful when utilizing a functional renderer like lit-html.  If large sections of the output are not bound to any client-side dynamic properties, those large sections could be referenced via the c-c element.   This would allow those sections to be encoded in HTML, and parsed by the fast c++ compiler, rather than the not [quite so fast JavaScript parser](https://youtu.be/Io6JjgckHbg?t=1143). 
 
-To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clunky compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
+To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clumy compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
 
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
@@ -31,9 +31,7 @@ The syntax for this element, at its simplest level, is as follows:
 
 If no url is specified before the hash symbol, then the code will assume the id exists and is searchable via document.getElementById().
 
-TODO:
-
-If the href starts with some special names:  _host, or _parent, then the search for the template with the given name will be done locally.  _host means the first ancestor parent which has shadow DOM.  _parent is literally the parent node.
+If the href before the hash is "_host", then the search for the template with the given id will be done within the first ancestor parent which has shadow DOM.  
 
 You can specify parameters the referenced template can retrieve via the set attribute, which is a semi-colon delimited list of name/value pairs (using the colon as the assignment operator):
 
