@@ -21,7 +21,7 @@ The syntax for this element, at its simplest level, is as follows:
 </c-c>
 ```
 
-If no url is specified before the hash symbol, then the code will assume the id exists and is searchable via document.getElementById.
+If no url is specified before the hash symbol, then the code will assume the id exists and is searchable via document.getElementById().
 
 You can specify parameters the referenced template can retrieve via the set attribute, which is a semi-colon delimited list of name/value pairs (using the colon as the assignment operator):
 
@@ -51,7 +51,66 @@ However, the attribute stamp-href modifies the behavior in the following ways:
 - Previous template imports will be hidden
 - If you go back to the original template import href, it will unhide what was there.  Thus any editing or navigation done within that DOM tree will persist.
 
-This allows one to switch between already loaded pages instaneously, similar to Polymer's iron-pages element.
+This allows one to switch between already loaded pages instantaneously, similar to Polymer's iron-pages element.
+
+
+### Child Property Propagation
+
+When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We would like to be able to wire that up via markup.  The solution is described below. 
+
+In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute:
+
+```html
+<c-c href="JsonEditorSnippet.html#jes" set-props my-json="[[generatedJson]]"></c-c>
+```
+
+The boolean attribute/property set-props indicates that, after appending DOM content, it should search for elements with attributes like shown below:
+
+```html
+<xtal-json-editor get-props="watch:myJson" notify-props></xtal-json-editor>
+```
+
+The *c-c* element will set the watch property of *xta-json-editor* to the value of the myJson property.
+
+The my-json attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if get-props is set to "watch:myJson" then the developer is responsible for ensuring that the c-c element's myJson property gets assigned (and receives updates of) the value in question.
+
+The combination of the set-props c-c element and the get-props attribute on a child DOM node creates a "live" connection so updates in the container get passed down repeatedly.
+
+### Event bubbling
+
+The c-c element also searches for child custom element tags with attribute notify-props.  For each such element, *c-c* checks if (for now) the custom element uses the Polymer static properties getter to provide reflection on the properties of the custom element.  Support for other custom element libraries, like SkateJS, Stencil, etc. will be forthcoming assuming they support similar reflection.  *c-c* sifts through these properties, and sets up a listener on each property which is marked "notify", which will then pass the value to the host element using the Polymer convention "[property-name]-changed".  See demo/PolymerTests/PolymerTest.html for an example.
+
+### Event attaching
+
+The c-c element bubbles an event up when it clones the HTML Template.  One can attach (in a Polymer element) an event handler for this event declaratively:
+
+```html
+                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-c-c-cloned="onClone"
+                ></c-c>
+```
+  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded:
+
+```JavaScript
+    onClone: function (e) {
+        e.srcElement.attachEventHandlers(this, e.detail.clone);
+    },
+```
+  
+**It is important to note that the markup used to support specifying event listeners differs from the Polymer way of declaratively attaching event handlers**. c-c uses:
+
+```html
+<span call-myMethodName-on="click">Click here</span>
+```
+
+as opposed to the more familiar Polymer syntax:
+
+```html
+<span on-click="myMethodName">Click here</span>
+```
+
+This deviation allows the code base for the c-c element to be smaller and faster (maybe).
+
+You can have multiple events map to the same method by using a pipe deliminted list in the value of the attribute, e.g. "blur|click"
 
 ### Preprocessing
 
@@ -124,6 +183,7 @@ zenmu gives similar special treatment to the template tag.  So the markup above 
 </dom-bind>
 ```
 
+
 #### Preprocessing directive # 2:  Outer Wrapping
 
 ```html
@@ -162,64 +222,6 @@ So the "common pattern" may not actually be that common.
 
 One could fret about the fact that we could easily run into scenarios where the zenmu syntax breaks down due to one of the special characters -- . @ or # needing to appear in an unusual place -- e.g. an attribute value needs to contain the @ character.  Rather than create difficult to remember rules for these scenarios, simply revert to more verbose syntax.
 
-### Child Property Propagation
-
-When we dynamically add elements in the DOM, these added elements don't immediately benefit from the usual property flow paradigm.  We would like to be able to wire that up via markup.  The solution is described below. 
-
-In the containing document, we turn the c-c element into a property setter c-c element by utilizing "set-props" attribute:
-
-```html
-<c-c href="JsonEditorSnippet.html#jes" set-props watch-test="[[generatedJson]]"></c-c>
-```
-
-The flag set-props indicates that after appending DOM content, it should search for elements with attributes like shown below:
-
-```html
-<xtal-json-editor get-props="watch:watchTest" notify-props></xtal-json-editor>
-```
-
-The *c-c* element will set the watch property of *xta-json-editor* to the value of the watch-test.
-
-The watch-test attribute shown above is an example of a binding within a Polymer -- [or Oracle Jet?](https://blogs.oracle.com/developers/announcing-oracle-jet-40-and-web-components) -- element.  But that is not required.  What is key is that somehow if get-props is set to "watch:watchTest" then the developer is responsible for ensuring that the c-c element's watchTest property gets assigned (and receives updates of) the value in question.
-
-
-The combination of the set-props c-c element and the get-props attribute on a child DOM node creates a connection just like if the target element (xtal-json-editor in this case) were directly embedded in the containing page.
-
-### Event bubbling
-
-The c-c element also searches for child custom element tags with attribute notify-props.  For each such element, *c-c* checks if (for now) the custom element uses the Polymer static properties getter to provide reflection on the properties of the custom element.  Support for other custom element libraries, like SkateJS, Stencil, etc. will be forthcoming assuming the the equivalent integration is applicable.  *c-c* sifts through these properties, and sets up a listener on each property which is marked "notify", which will then pass the value to the host element using the Polymer convention "[property-name]-changed".  See demo/PolymerTests/PolymerTest.html for an example.
-
-### Event attaching
-
-The c-c element bubbles an event up when it clones the HTML Template.  One can attach (in a Polymer element) an event handler for this event declaratively:
-
-```html
-                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-c-c-cloned="onClone"
-                ></c-c>
-```
-  This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded:
-
-```JavaScript
-    onClone: function (e) {
-        e.srcElement.attachEventHandlers(this, e.detail.clone);
-    },
-```
-  
-**It is important to note that the markup used to support specifying event listeners differs from the Polymer way of declaratively event handlers**. c-c uses:
-
-```html
-<span call-myMethodName-on="click">Click here</span>
-```
-
-as opposed to the more familiar Polymer syntax:
-
-```html
-<span on-click="myMethodName">Click here</span>
-```
-
-This deviation allows the code base for the c-c element to be smaller and faster (maybe).
-
-You can have multiple events map to the same method by using a pipe deliminted list in the value of the attribute, e.g. "blur|click"
 
 
 ## Future enhancements:
