@@ -16,7 +16,7 @@ function cc_resolver(doc: Document | HTMLTemplateElement, cc: ICarbonCopy){
                 case 'IFRAME':
                 case 'SCRIPT':
                     const src = hrefOrScriptTag.getAttribute('src');
-                    if(src.startsWith('http')) return;
+                    if(!src || src.startsWith('http')) return;
                     const newSrc = cc.absolute(cc._absUrl, src);
                     hrefOrScriptTag.setAttribute('src', newSrc);
                     break;
