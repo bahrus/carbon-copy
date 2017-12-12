@@ -14,11 +14,13 @@ The carbon copy element, \<carbon-copy\> or \<c-c\> for short, allows one to dec
 
 Why is this useful?
 
-In the age of HTTP/2, the need for a robust client-side include increases, as it can benefit from the superior caching that HTTP/2 affords without too much penalty from breaking up a page.  This can be extremely useful for static content generators, where common markup appears multiple times.
+1) In the age of HTTP/2, the need for a robust client-side include increases, as it can benefit from the superior caching that HTTP/2 affords without too much penalty from breaking up a page.  This can be extremely useful for static content generators, where common markup appears multiple times.
 
-It can also be useful when utilizing a functional renderer like lit-html.  If large sections of the output are not bound to any client-side dynamic properties, those large sections could be referenced via the c-c element.   This would allow those sections to be encoded in HTML, and parsed by the fast c++ compiler, rather than the not [quite so fast JavaScript parser](https://youtu.be/Io6JjgckHbg?t=1143). 
+2) \<c-c\> allows you to define a Polymer component from an HTML file, without the help of the (deprecated?) HTMLImport proposal.  While it may be some time before chrome removes native HTMLImport support, and while the polyfill could be used ad infinitum, this web component is ~55% the size, and we believe is a more "intuitive" library, especially for those who are looking for a traditional client-side include capability.
 
-To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clumy compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
+3)  It can also be useful when utilizing a functional renderer like lit-html.  If large sections of the output are not bound to any client-side dynamic properties, those large sections could be referenced via the c-c element.   This would allow those sections to be encoded in HTML, and parsed by the fast c++ compiler, rather than the not [quite so fast JavaScript parser](https://youtu.be/Io6JjgckHbg?t=1143). 
+
+To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clumys compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
 
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
@@ -51,6 +53,35 @@ You can also set attributes and classes similarly.
 ```html
     <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do;"></c-c>
 ```
+
+### Defining a Polymer component in an html file without using HTMLImports
+
+In a separate html, define an HTML template:
+
+```html
+<template id="newPolymerElementTest">
+    <dom-module id='my-component'>
+        <template>
+            I am here
+        </template>
+    </dom-module>
+    <script type="module">
+        class MyComponent extends Polymer.Element{
+            static get is(){return 'my-component';}
+        }
+        customElements.define(MyComponent.is, MyComponent);
+    </script>
+</template>
+```
+
+Then in the referencing file, just add:
+
+```html
+<c-c href="path/to/include.html#newPolymerElementTest"></c-c>
+<my-component></my-component>
+```
+
+et voilà!
 
 ### Changing href
 
