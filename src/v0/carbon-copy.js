@@ -92,7 +92,7 @@
                     child.setAttribute(hs, this._href);
                 }
             }
-            this.de(p + 'cloned', {
+            this.de('dom-change', {
                 clone: clone
             });
             const newNode = this.appendChild(clone);

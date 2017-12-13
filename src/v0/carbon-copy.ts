@@ -132,10 +132,11 @@ export interface ICarbonCopy{
                     child.setAttribute(hs, this._href);
                 }
             }
-            this.de(p + 'cloned',{
+            this.de('dom-change',{
                 clone: clone 
              });
             const newNode = this.appendChild(clone);
+
             
             if(this._set_props){
                 this.qsa('[get-props]', this).forEach(el =>{

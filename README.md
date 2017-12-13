@@ -16,11 +16,11 @@ Why is this useful?
 
 1) In the age of HTTP/2, the need for a robust client-side include increases, as it can benefit from the superior caching that HTTP/2 affords without too much penalty from breaking up a page.  This can be extremely useful for static content generators, where common markup appears multiple times.
 
-2) \<c-c\> allows you to define a Polymer component from an HTML file, without the help of the (deprecated?) HTMLImport proposal.  While it may be some time before chrome removes native HTMLImport support, and while the polyfill could be used ad infinitum, this web component is ~55% the size, and we believe is a more "intuitive" library, especially for those who are looking for a traditional client-side include capability.
+2) \<c-c\> allows you to define a Polymer component from an HTML file, without the help of the (deprecated?) HTMLImport proposal.  While it may be some time before Chrome removes native HTMLImport support, and while the polyfill could be used ad infinitum, this web component is ~55% the size, and we believe is a more "intuitive" library, especially for those who are looking for a traditional client-side include capability.
 
 3)  It can also be useful when utilizing a functional renderer like lit-html.  If large sections of the output are not bound to any client-side dynamic properties, those large sections could be referenced via the c-c element.   This would allow those sections to be encoded in HTML, and parsed by the fast c++ compiler, rather than the not [quite so fast JavaScript parser](https://youtu.be/Io6JjgckHbg?t=1143). 
 
-To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clumys compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
+To keep things small and simple, c-c does provide support for dynamically inserting different data into each instance, but the syntax for doing so is a little clumsy compared to other templating engines.  I would not even categorize c-c as a templating engine.  It's just a custom element that has some hooks for plugging in content.
 
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
@@ -81,7 +81,7 @@ Then in the referencing file, just add:
 <my-component></my-component>
 ```
 
-et voilà!
+*et voilà!*
 
 ### Changing href
 
@@ -126,7 +126,7 @@ The c-c element also searches for child custom element tags with attribute notif
 The c-c element bubbles an event up when it clones the HTML Template.  One can attach (in a Polymer element) an event handler for this event declaratively:
 
 ```html
-                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-c-c-cloned="onClone"
+                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-dom-change="onClone"
                 ></c-c>
 ```
   This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded:
