@@ -65,7 +65,7 @@ In a separate html, define an HTML template:
             I am here
         </template>
     </dom-module>
-    <script type="module">
+    <script type="module" cc-head-element>
         class MyComponent extends Polymer.Element{
             static get is(){return 'my-component';}
         }
@@ -82,6 +82,8 @@ Then in the referencing file, just add:
 ```
 
 *et voilà!*
+
+Note the presence of the cc-head-element attribute.  Carbon copy looks for that attribute, and if present, moves the script tag to document.head.  This is inspired by [this issue and suggestion from Polymer team](https://github.com/webcomponents/webcomponentsjs/issues/470), to be compatible with Firefox.
 
 ### Changing href
 
