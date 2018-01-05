@@ -122,6 +122,10 @@ export interface ICarbonCopy{
             //     //https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
 
             const clone = document.importNode(templ.content, true) as HTMLDocument;
+            //inspired by https://github.com/google/ioweb2015/blob/master/app/scripts/helper/router.js#L27
+            const otherTargets = this.qsa('[cc-head-element]', clone);
+            otherTargets.forEach(target => target.remove());
+            
             if(this._stamp_href){
                 this.qsa('[' + ic + ']').forEach(initialChild => {
                     initialChild.style.display = 'none' 
@@ -136,7 +140,11 @@ export interface ICarbonCopy{
                 clone: clone 
              });
             const newNode = this.appendChild(clone);
-
+             otherTargets.forEach(target =>{
+                var script = document.createElement('script');
+                script.text = target['text'] || target.textContent || target.innerHTML;
+                document.head.appendChild(script);
+             })
             
             if(this._set_props){
                 this.qsa('[get-props]', this).forEach(el =>{

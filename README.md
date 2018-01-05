@@ -126,8 +126,8 @@ The c-c element also searches for child custom element tags with attribute notif
 The c-c element bubbles an event up when it clones the HTML Template.  One can attach (in a Polymer element) an event handler for this event declaratively:
 
 ```html
-                <c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-dom-change="onClone"
-                ></c-c>
+<c-c href="IncludeFolder/JsonEditorSnippet.html#jes" on-dom-change="onClone"
+></c-c>
 ```
   This allows the host element to establish event listeners, based on declarative markup within the content the c-c element loaded:
 
