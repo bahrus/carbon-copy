@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>carbon-copy demo</title>
-    <script src="zenmu.js"></script>
-    <script src="cc_resolver.js"></script>
+    <!-- <script src="zenmu.js"></script>
+    <script src="cc_resolver.js"></script> -->
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <script async src="../src/v0/carbon-copy.js"></script>
+    <!-- <script async src="../src/v0/carbon-copy.js"></script> -->
+    <script type="module" async src="../c-c.js"></script>
 
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
@@ -26,6 +27,23 @@
       <demo-snippet style="width:900px">
         <template>
           <template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
+          <template id="beautiful">
+            <div><c-c get="subjectIs"></c-c> beautiful</div>
+          </template>
+          <template id="down">
+              <div>So don't you bring me down today</div>
+          </template> 
+          <template id="chorus">
+            <c-c copy template-id="beautiful"></c-c> 
+            <div>No matter what they say</div>
+            <div prop-pronoun>Words <c-c get="verb1"></c-c> bring <c-c get="pronoun"></c-c> down</div>
+            <div>Oh no</div>
+             <c-c copy template-id="beautiful"></c-c> 
+            <div>In every single way</div>
+            <div prop-pronoun>Yes words  <c-c get="verb2"></c-c> bring <c-c get="pronoun"></c-c> down</div>
+            <div>Oh no</div>
+            <c-c copy template-id="down"></c-c> 
+        </template>
           <p>Don't look at me</p>
           <p>
             <div>Everyday is so wonderful</div>
@@ -36,7 +54,8 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></c-c>
+            <c-c copy template-id="chorus"></c-c>
+            <!-- <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></c-c> -->
           </p>
           <p>
               

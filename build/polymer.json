@@ -3,6 +3,7 @@
   "fragments": [],
   "sources": [
     "src\\v0\\carbon-copy.js",
+    "c-c-core.js",
     "index.html"
   ],
   "extraDependencies": [
