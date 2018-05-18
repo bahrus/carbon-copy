@@ -1,6 +1,24 @@
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/bahrus/carbon-copy)
+
 # \<carbon-copy\>
 
-Copy a template inside a DOM node
+Copy a template inside a DOM node.  ~900B (minified/gzipped).
+
+Syntax:
+
+```html
+<template id="beautiful">
+    <div>
+        <slot name="subjectIs"></slot> beautiful
+    </div>
+</template>
+...
+<c-c copy template-id="beautiful">
+    <span slot="subjectIs">
+        You are
+    </span>
+</c-c>
+```
 
 ## Install the Polymer-CLI
 
