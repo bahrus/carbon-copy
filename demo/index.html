@@ -1,116 +1,140 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>carbon-copy demo</title>
-    <!-- <script src="zenmu.js"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>carbon-copy demo</title>
+  <!-- <script src="zenmu.js"></script>
     <script src="cc_resolver.js"></script> -->
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-    <!-- <script async src="../src/v0/carbon-copy.js"></script> -->
-    <script type="module" async src="../c-c.js"></script>
+  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <!-- <script async src="../src/v0/carbon-copy.js"></script> -->
+  <script type="module" async src="../c-c.js"></script>
 
-    <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-      </style>
-    </custom-style>
-  </head>
-  <body>
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </custom-style>
+</head>
 
-    <div class="vertical-section-container centered">
-      <h3>Beautiful</h3>
-      <h4>Christina Aguilera</h4>
-      <template id="noMatter">No matter what we <c-c get="verb"></c-c> (no matter what we <c-c get="verb"></c-c>)</template>
-      <template id="beautiful">
-        <div><c-c get="subjectIs"></c-c> beautiful</div>
-      </template>
-      <template id="down">
-        <div>So don't you bring me down today</div>
+<body>
+
+  <div class="vertical-section-container centered">
+    <h3>Beautiful</h3>
+    <h4>Christina Aguilera</h4>
+    <template id="noMatter">No matter what we
+      <c-c get="verb"></c-c> (no matter what we
+      <c-c get="verb"></c-c>)</template>
+    <template id="beautiful">
+      <div>
+        <slot name="subjectIs"></slot> beautiful</div>
+    </template>
+    <template id="down">
+      <div>So don't you bring me down today</div>
     </template>
     <template id="chorus">
-      <c-c copy template-id="beautiful"></c-c> 
+      <c-c copy template-id="beautiful">
+        <span slot="subjectIs">
+          <slot name="subjectIs1"></slot>
+        </span>
+      </c-c>
       <div>No matter what they say</div>
-      <div prop-pronoun>Words <slot name="verb1"></slot> bring <slot name="pronoun"/> down</div>
+      <div prop-pronoun>Words
+        <slot name="verb1"></slot> bring
+        <slot name="pronoun1"></slot> down</div>
       <div>Oh no</div>
       <c-c copy template-id="beautiful">
-        <div hidden>
-          <span slot="subjectIs"><slot name="subectIs"></slot></span>
-        </div>
-      </c-c> 
+        <span slot="subjectIs">
+          <slot name="subjectIs2"></slot>
+        </span>
+      </c-c>
       <div>In every single way</div>
-      <div prop-pronoun>Yes words  <slot name="verb2"></slot> bring <c-c get="pronoun"></c-c> down</div>
+      <div prop-pronoun>Yes words
+        <slot name="verb2"></slot> bring
+        <slot name="pronoun2"></slot> down</div>
       <div>Oh no</div>
-      <c-c copy template-id="down"></c-c> 
-  </template>
-      <demo-snippet style="width:900px">
-        <template>
-          
-          
-           
-          
-          <p>Don't look at me</p>
-          <p>
-            <div>Everyday is so wonderful</div>
-            <div>Then suddenly</div>
-            <div>It's hard to breathe</div>
-            <div>Now and then I get insecure</div>
-            <div>From all the pain</div>
-            <div>I'm so ashamed</div>
-          </p>
-          <p>
-            <c-c copy template-id="chorus" has-slots>
-                  <span slot="verb1" >can't</span>
-                  <span slot="pronoun">me</span>
-                  <span slot="subjectIs">You are</span>
-            </c-c>
-            <!-- <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></c-c> -->
-          </p>
-          <p>
-              
-            <div>To all your friends you're delirious</div>
-            <div>So consumed</div>
-            <div>In all your doom, ooh</div>
-            <div>Trying hard to fill the emptiness</div>
-            <div>The pieces gone</div>
-            <div>Left the puzzle undone</div>
-            <div>Ain't that the way it is</div>
-          </p>
-          <p>
-              <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:You are;pronoun:you;verb1:can't;verb2:can't"></c-c>
-          </p>
-          <br>
-            <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do"></c-c><br>
-            <c-c href="#noMatter" set="verb:say"></c-c>
-            <div>We're the song inside the tune (yeah, oh yeah)</div>
-            <div>Full of beautiful mistakes</div>
-          <p>
-            <div>And everywhere we go (and everywhere we go)</div>
-            <div>The sun will always shine (the sun will always, always, shine)</div>
-            <div>And tomorrow we might awake</div>
-            <div>On the other side</div>
-          </p>
-          <p>
-              <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:We are;pronoun:us;verb1:won't;verb2:can't"></c-c>
-          </p>
-          <p>
-            <div>Oh, oh</div>
-            <div>Don't you bring me down today</div>
-            <div>Don't you bring me down, ooh</div>
-            <div>Today</div>
-          </p>
-          
-          <p>Notes:  "No matter what we do" line is editable.  Look at markup / readme to understand why</p>
-        </template>
+      <c-c copy template-id="down"></c-c>
+    </template>
+    <demo-snippet style="width:900px">
+      <template>
 
-        
-         
 
-      </demo-snippet>
-    </div>
-  </body>
+
+
+        <p>Don't look at me</p>
+        <p>
+          <div>Everyday is so wonderful</div>
+          <div>Then suddenly</div>
+          <div>It's hard to breathe</div>
+          <div>Now and then I get insecure</div>
+          <div>From all the pain</div>
+          <div>I'm so ashamed</div>
+        </p>
+        <p>
+          <c-c copy template-id="chorus">
+            <span slot="verb1">can't</span>
+            <span slot="verb2">can't</span>
+            <span slot="pronoun1">me</span>
+            <span slot="pronoun2">me</span>
+            <span slot="subjectIs1">I am</span>
+            <span slot="subjectIs2">I am</span>
+          </c-c>
+          <!-- <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></c-c> -->
+        </p>
+        <p>
+
+          <div>To all your friends you're delirious</div>
+          <div>So consumed</div>
+          <div>In all your doom, ooh</div>
+          <div>Trying hard to fill the emptiness</div>
+          <div>The pieces gone</div>
+          <div>Left the puzzle undone</div>
+          <div>Ain't that the way it is</div>
+        </p>
+        <p>
+          <c-c copy template-id="chorus">
+            <span slot="verb1">can't</span>
+            <span slot="verb2">can't</span>
+            <span slot="pronoun1">you</span>
+            <span slot="pronoun2">you</span>
+            <span slot="subjectIs1">You are</span>
+            <span slot="subjectIs2">You are</span>
+          </c-c>
+        </p>
+        <br>
+        <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do"></c-c>
+        <br>
+        <c-c href="#noMatter" set="verb:say"></c-c>
+        <div>We're the song inside the tune (yeah, oh yeah)</div>
+        <div>Full of beautiful mistakes</div>
+        <p>
+          <div>And everywhere we go (and everywhere we go)</div>
+          <div>The sun will always shine (the sun will always, always, shine)</div>
+          <div>And tomorrow we might awake</div>
+          <div>On the other side</div>
+        </p>
+        <p>
+          <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:We are;pronoun:us;verb1:won't;verb2:can't"></c-c>
+        </p>
+        <p>
+          <div>Oh, oh</div>
+          <div>Don't you bring me down today</div>
+          <div>Don't you bring me down, ooh</div>
+          <div>Today</div>
+        </p>
+
+        <p>Notes: "No matter what we do" line is editable. Look at markup / readme to understand why</p>
+      </template>
+
+
+
+
+    </demo-snippet>
+  </div>
+</body>
 
 </html>
