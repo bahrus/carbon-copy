@@ -1,7 +1,6 @@
 {
   "sources":[
-    "src/v0/carbon-copy.js",
-    "c-c-core.js"
+    "c-c.js"
   ],
   "lint": {
     "rules": [

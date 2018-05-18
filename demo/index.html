@@ -26,9 +26,9 @@
   <div class="vertical-section-container centered">
     <h3>Beautiful</h3>
     <h4>Christina Aguilera</h4>
-    <template id="noMatter">No matter what we
-      <c-c get="verb"></c-c> (no matter what we
-      <c-c get="verb"></c-c>)</template>
+    <template id="no-matter">No matter what we
+      <slot name="verb1"></slot> (no matter what we
+      <slot name="verb2"></slot>)</template>
     <template id="beautiful">
       <div>
         <slot name="subjectIs"></slot> beautiful</div>
@@ -106,9 +106,15 @@
           </c-c>
         </p>
         <br>
-        <c-c href="#noMatter" verb-props="parentNode.contentEditable:true" set="verb:do"></c-c>
+        <c-c copy template-id="no-matter">
+          <span slot="verb1">do</span>
+          <span slot="verb2">do</span>
+        </c-c>
         <br>
-        <c-c href="#noMatter" set="verb:say"></c-c>
+        <c-c copy template-id="no-matter">
+          <span slot="verb1">say</span>
+          <span slot="verb2">say</span>
+        </c-c>
         <div>We're the song inside the tune (yeah, oh yeah)</div>
         <div>Full of beautiful mistakes</div>
         <p>
@@ -118,7 +124,14 @@
           <div>On the other side</div>
         </p>
         <p>
-          <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:We are;pronoun:us;verb1:won't;verb2:can't"></c-c>
+          <c-c copy template-id="chorus">
+            <span slot="verb1">won't</span>
+            <span slot="verb2">can't</span>
+            <span slot="pronoun1">us</span>
+            <span slot="pronoun2">us</span>
+            <span slot="subjectIs1">We are</span>
+            <span slot="subjectIs2">We are</span>
+          </c-c> 
         </p>
         <p>
           <div>Oh, oh</div>
@@ -127,7 +140,6 @@
           <div>Today</div>
         </p>
 
-        <p>Notes: "No matter what we do" line is editable. Look at markup / readme to understand why</p>
       </template>
 
 

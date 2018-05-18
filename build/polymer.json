@@ -2,12 +2,11 @@
   "entrypoint": "index.html",
   "fragments": [],
   "sources": [
-    "src\\v0\\carbon-copy.js",
-    "c-c-core.js",
+    "c-c.js",
     "index.html"
   ],
   "extraDependencies": [
-    "bower_components\\webcomponentsjs\\*.js"
+    "bower_components/webcomponentsjs/*.js"
   ],
   "builds": [
     {
@@ -29,5 +28,6 @@
     "rules": [
       "polymer-2"
     ]
-  }
+  },
+  "moduleResolution": "node"
 }

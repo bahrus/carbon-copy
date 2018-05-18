@@ -1,1 +1,0 @@
-(function(){class a extends HTMLElement{}})();
