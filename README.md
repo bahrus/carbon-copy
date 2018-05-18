@@ -2,6 +2,8 @@
 
 # \<carbon-copy\>
 
+NB:  The carbon-copy element would like to convey this to you: "I'll probably be greatly impacted by the widely anticipated [template instantiation](https://www.npmjs.com/package/@matthewp/template-instantiation) proposal, rendering me largely (or totally) superfluous.  Sniff!"
+
 Copy an HTML Template into DOM, and more, with this 1.9kb (gzipped, minified) web component.
 
 There are a number of scenarios where a snippet of HTML must be copied (repeatedly) into the DOM tree.  This is partly what the Template Element [was designed for:](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)

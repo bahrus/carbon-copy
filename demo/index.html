@@ -36,11 +36,15 @@
           <template id="chorus">
             <c-c copy template-id="beautiful"></c-c> 
             <div>No matter what they say</div>
-            <div prop-pronoun>Words <c-c get="verb1"></c-c> bring <c-c get="pronoun"></c-c> down</div>
+            <div prop-pronoun>Words <slot name="verb1"/> bring <slot name="pronoun"/> down</div>
             <div>Oh no</div>
-             <c-c copy template-id="beautiful"></c-c> 
+            <c-c copy template-id="beautiful">
+              <div hidden>
+                <span slot="subjectIs"><slot name="subectIs"></slot></span>
+              </div>
+            </c-c> 
             <div>In every single way</div>
-            <div prop-pronoun>Yes words  <c-c get="verb2"></c-c> bring <c-c get="pronoun"></c-c> down</div>
+            <div prop-pronoun>Yes words  <slot name="verb2"></slot> bring <c-c get="pronoun"></c-c> down</div>
             <div>Oh no</div>
             <c-c copy template-id="down"></c-c> 
         </template>
@@ -54,7 +58,14 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <c-c copy template-id="chorus"></c-c>
+            <c-c copy template-id="chorus" has-slots>
+              <div role="lightChildren">
+                  <span slot="verb1" >can't</span>
+                  <span slot="pronoun">me</span>
+                  <span slot="subjectIs">You are</span>
+              </div>
+
+            </c-c>
             <!-- <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></c-c> -->
           </p>
           <p>

@@ -1,6 +1,10 @@
 
 const template_id = 'template-id';
 const copy = 'copy';
+// const hasSlots = 'has-slots';
+export function qsa(css, from?: HTMLElement | Document | DocumentFragment) : HTMLElement[]{
+    return  [].slice.call((from ? from : this).querySelectorAll(css));
+}
 
 /**
 * `carbon-copy`
@@ -26,6 +30,7 @@ export class CC extends HTMLElement{
         })
    
     }
+    static registering : {[key: string]: boolean} = {};
     _host: HTMLElement | ShadowRoot;
     get host(){
         return this._host;
@@ -48,6 +53,7 @@ export class CC extends HTMLElement{
     set templateId(val){
         this.setAttribute(template_id, val);
     }
+   
     attributeChangedCallback(name: string, oldValue: string, newValue: string){
         switch(name){
             case copy:
@@ -56,39 +62,88 @@ export class CC extends HTMLElement{
             case template_id:
                 this._templateId = newValue;
                 break;
+            // case hasSlots:
+            //     this._hasSlots = newValue !== null;
+            //     break;
         }
         this.onPropsChange();
     }
 
     getHost(el: HTMLElement){
+        if(this._host) return this._host;
         const parent = el.parentNode as HTMLElement;
         if(parent.nodeType === 11 || parent.tagName === 'C-C'){
-            this._host = parent['host'];
-            return;
+            const host = parent['host'];
+            if(host){
+                this._host = host;
+            }else{
+                this._host = parent
+            }
+            return this._host;
         }
         if(parent.shadowRoot){
             this._host = parent;
-            return;
+            return this._host;
         }
         if(parent.tagName === 'HTML'){
             this._host = parent;
-            return;
+            return this._host;
         }
-        this.getHost(parent);
+        return this.getHost(parent);
     }
     connectedCallback(){
-        this.getHost(this);
+        this._upgradeProperties([copy, 'templateId'])
+        //this.getHost(this);
+        
         this.onPropsChange();
     }
-    onPropsChange(){
-        if(!this._host || !this._copy || !this._templateId) return;
-        const template = this._host.querySelector('#' + this._templateId) as HTMLTemplateElement;
-        if(template.dataset.src && !template.getAttribute('loaded')){
-            throw "not supported yet"
+    _ceName:string;
+    get ceName(){
+        if(!this._ceName){
+            this._ceName = 'c-c-' + this._templateId.split('_').join('-');
         }
-        const clone = template.content.cloneNode(true);
-        this.appendChild(clone);
+        return this._ceName;
     }
+    createCE(template: HTMLTemplateElement){
+        customElements.define(this.ceName, class extends HTMLElement{
+            constructor(){
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.appendChild(template.content.cloneNode(true));
+            }
+        })
+    }
+    onPropsChange(){
+        if(!this._copy || !this._templateId) return;
+        if(!customElements.get(this.ceName)){
+            if(!CC.registering[this.ceName]){
+                CC.registering[this.ceName] = true;
+                let template = self[this._templateId] as HTMLTemplateElement;
+                if(!template){
+                    const host = this.getHost(this);
+                    if(!host){
+                        debugger;
+                    }
+                    template = host.querySelector('#' + this._templateId);
+                }
+                if(template.dataset.src && !template.getAttribute('loaded')){
+                    throw "not supported yet"
+                }
+                this.createCE(template);
+            }
+        }
+        customElements.whenDefined(this.ceName).then(() =>{
+            const ce = document.createElement(this.ceName);
+            this.childNodes.forEach(child =>{
+                ce.appendChild(child);
+            })
+            this.innerHTML = '';
+            this.appendChild(ce);
+        })
+
+    }
+    _lightChildren: {[key: string]: HTMLElement};
+
 }
 if(!customElements.get(CC.is)){
     customElements.define('c-c', CC);
