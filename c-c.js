@@ -1,9 +1,5 @@
 const template_id = 'template-id';
 const copy = 'copy';
-// const hasSlots = 'has-slots';
-// export function qsa(css, from?: HTMLElement | Document | DocumentFragment) : HTMLElement[]{
-//     return  [].slice.call((from ? from : this).querySelectorAll(css));
-// }
 /**
 * `carbon-copy`
 * Dependency free web component that allows copying templates.
@@ -62,28 +58,6 @@ export class CC extends HTMLElement {
         }
         this.onPropsChange();
     }
-    // getHost(el: HTMLElement){
-    //     if(this._host) return this._host;
-    //     const parent = el.parentNode as HTMLElement;
-    //     if(parent.nodeType === 11 || parent.tagName === 'C-C'){
-    //         const host = parent['host'];
-    //         if(host){
-    //             this._host = host;
-    //         }else{
-    //             this._host = parent
-    //         }
-    //         return this._host;
-    //     }
-    //     if(parent.shadowRoot){
-    //         this._host = parent;
-    //         return this._host;
-    //     }
-    //     if(parent.tagName === 'HTML'){
-    //         this._host = parent;
-    //         return this._host;
-    //     }
-    //     return this.getHost(parent);
-    // }
     connectedCallback() {
         this._upgradeProperties([copy, 'templateId']);
         //this.getHost(this);
@@ -112,13 +86,6 @@ export class CC extends HTMLElement {
             if (!CC.registering[this.ceName]) {
                 CC.registering[this.ceName] = true;
                 let template = self[this._templateId];
-                // if(!template){
-                //     const host = this.getHost(this);
-                //     if(!host){
-                //         debugger;
-                //     }
-                //     template = host.querySelector('#' + this._templateId);
-                // }
                 if (template.dataset.src && !template.getAttribute('loaded')) {
                     throw "not supported yet";
                 }

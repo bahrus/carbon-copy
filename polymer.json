@@ -1,6 +1,7 @@
 {
   "sources":[
-    "c-c.js"
+    "c-c.js",
+    "carbon-copy.js"
   ],
   "lint": {
     "rules": [
@@ -10,11 +11,15 @@
   "builds":[
     {
       "name": "ES5",
-      "js": {"minify": true, "compile": true}
+      "js": {"minify": true, "compile": true},
+      "html": {"minify": true},
+      "css" : {"minify": true}
     },
     {
       "name": "ES6",
-      "js": {"minify": true, "compile": false}
+      "js": {"minify": true, "compile": false},
+      "html": {"minify": true},
+      "css" : {"minify": true}
     }    
   ]
 }

@@ -1,7 +1,28 @@
-const fs = require('fs-extra')
-try{
-    fs.copySync('build/ES5/src/v0/carbon-copy.js', 'build/ES5/carbon-copy.js')
-    fs.copySync('build/ES6/src/v0/carbon-copy.js', 'build/ES6/carbon-copy.js')
-}catch(err){
-    console.error(err);
+//@ts-check
+const fs = require('fs')
+function processFile(filePath, newLines){
+    const contents = fs.readFileSync(filePath, 'utf8');
+    const lines = contents.split('\n');
+    lines.forEach(line =>{
+        const tl = line.trimLeft();
+        if(tl.startsWith('import ')) return;
+        if(tl.startsWith('export ')){
+            newLines.push(line.replace('export ', ''));
+        }else{
+            newLines.push(line);
+        }
+        
+    })
 }
+const newLines = [];
+processFile('c-c.js', newLines);
+let newContent = `
+//@ts-check
+(function () {
+${newLines.join('\n')}
+})();  
+    `;
+fs.writeFileSync("carbon-copy.js", newContent, 'utf8');
+
+
+

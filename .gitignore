@@ -1,11 +1,1 @@
-/bower_components
-/demo/PolymerTests/bower_components
-/*.exe
-/node_modules
-/*.pem
-/build/ES5/bower_components
-/build/ES5/index.html
-/build/ES6/bower_components
-/build/ES6/index.html
-/build/ES6/src
-/build/ES5/src
+/node_modules/

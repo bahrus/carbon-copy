@@ -3,6 +3,7 @@
   "fragments": [],
   "sources": [
     "c-c.js",
+    "carbon-copy.js",
     "index.html"
   ],
   "extraDependencies": [
@@ -14,6 +15,12 @@
       "js": {
         "minify": true,
         "compile": true
+      },
+      "html": {
+        "minify": true
+      },
+      "css": {
+        "minify": true
       }
     },
     {
@@ -21,6 +28,12 @@
       "js": {
         "minify": true,
         "compile": false
+      },
+      "html": {
+        "minify": true
+      },
+      "css": {
+        "minify": true
       }
     }
   ],
