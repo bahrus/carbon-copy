@@ -2,9 +2,9 @@
 const template_id = 'template-id';
 const copy = 'copy';
 // const hasSlots = 'has-slots';
-export function qsa(css, from?: HTMLElement | Document | DocumentFragment) : HTMLElement[]{
-    return  [].slice.call((from ? from : this).querySelectorAll(css));
-}
+// export function qsa(css, from?: HTMLElement | Document | DocumentFragment) : HTMLElement[]{
+//     return  [].slice.call((from ? from : this).querySelectorAll(css));
+// }
 
 /**
 * `carbon-copy`
@@ -31,10 +31,10 @@ export class CC extends HTMLElement{
    
     }
     static registering : {[key: string]: boolean} = {};
-    _host: HTMLElement | ShadowRoot;
-    get host(){
-        return this._host;
-    }
+    // _host: HTMLElement | ShadowRoot;
+    // get host(){
+    //     return this._host;
+    // }
     _copy: boolean;
     get copy(){
         return this._copy;
@@ -69,28 +69,28 @@ export class CC extends HTMLElement{
         this.onPropsChange();
     }
 
-    getHost(el: HTMLElement){
-        if(this._host) return this._host;
-        const parent = el.parentNode as HTMLElement;
-        if(parent.nodeType === 11 || parent.tagName === 'C-C'){
-            const host = parent['host'];
-            if(host){
-                this._host = host;
-            }else{
-                this._host = parent
-            }
-            return this._host;
-        }
-        if(parent.shadowRoot){
-            this._host = parent;
-            return this._host;
-        }
-        if(parent.tagName === 'HTML'){
-            this._host = parent;
-            return this._host;
-        }
-        return this.getHost(parent);
-    }
+    // getHost(el: HTMLElement){
+    //     if(this._host) return this._host;
+    //     const parent = el.parentNode as HTMLElement;
+    //     if(parent.nodeType === 11 || parent.tagName === 'C-C'){
+    //         const host = parent['host'];
+    //         if(host){
+    //             this._host = host;
+    //         }else{
+    //             this._host = parent
+    //         }
+    //         return this._host;
+    //     }
+    //     if(parent.shadowRoot){
+    //         this._host = parent;
+    //         return this._host;
+    //     }
+    //     if(parent.tagName === 'HTML'){
+    //         this._host = parent;
+    //         return this._host;
+    //     }
+    //     return this.getHost(parent);
+    // }
     connectedCallback(){
         this._upgradeProperties([copy, 'templateId'])
         //this.getHost(this);
@@ -113,19 +113,21 @@ export class CC extends HTMLElement{
             }
         })
     }
+    _alreadyRegistered = false;
     onPropsChange(){
-        if(!this._copy || !this._templateId) return;
+        if(!this._copy || !this._templateId || this._alreadyRegistered) return;
+        this._alreadyRegistered = true;
         if(!customElements.get(this.ceName)){
             if(!CC.registering[this.ceName]){
                 CC.registering[this.ceName] = true;
                 let template = self[this._templateId] as HTMLTemplateElement;
-                if(!template){
-                    const host = this.getHost(this);
-                    if(!host){
-                        debugger;
-                    }
-                    template = host.querySelector('#' + this._templateId);
-                }
+                // if(!template){
+                //     const host = this.getHost(this);
+                //     if(!host){
+                //         debugger;
+                //     }
+                //     template = host.querySelector('#' + this._templateId);
+                // }
                 if(template.dataset.src && !template.getAttribute('loaded')){
                     throw "not supported yet"
                 }
@@ -134,10 +136,9 @@ export class CC extends HTMLElement{
         }
         customElements.whenDefined(this.ceName).then(() =>{
             const ce = document.createElement(this.ceName);
-            this.childNodes.forEach(child =>{
-                ce.appendChild(child);
-            })
-            this.innerHTML = '';
+            while (this.childNodes.length > 0) {
+                ce.appendChild(this.childNodes[0]);
+            }
             this.appendChild(ce);
         })
 
