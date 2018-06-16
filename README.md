@@ -13,7 +13,7 @@ Syntax:
         <slot name="verb2"></slot>)
       </template>
 ...
-<c-c copy template-id="beautiful">
+<c-c copy template-id="no-matter">
     <span slot="verb1">
         do
     </span>
