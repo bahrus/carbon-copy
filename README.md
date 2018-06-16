@@ -4,18 +4,21 @@
 
 Copy a template inside a DOM node.  ~900B (minified/gzipped).
 
+
 Syntax:
 
 ```html
-<template id="beautiful">
-    <div>
-        <slot name="subjectIs"></slot> beautiful
-    </div>
-</template>
+      <template id="no-matter">No matter what we
+        <slot name="verb1"></slot> (no matter what we
+        <slot name="verb2"></slot>)
+      </template>
 ...
 <c-c copy template-id="beautiful">
-    <span slot="subjectIs">
-        You are
+    <span slot="verb1">
+        do
+    </span>
+    <span slot="verb1">
+        say
     </span>
 </c-c>
 ```
