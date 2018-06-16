@@ -3,6 +3,9 @@
   "version": "0.1.9",
   "description": "Copy a template inside a DOM node",
   "main": "carbon-copy.js",
+  "repository": "https://github.com/bahrus/carbon-copy",
+  "author": "bahrus <anderson.bruce.b@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "@polymer/polymer": "^3.0.0"
   },
