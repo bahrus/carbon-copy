@@ -27,10 +27,7 @@ export class CC extends HTMLElement{
    
     }
     static registering : {[key: string]: boolean} = {};
-    // _host: HTMLElement | ShadowRoot;
-    // get host(){
-    //     return this._host;
-    // }
+
     _copy: boolean;
     get copy(){
         return this._copy;
@@ -43,6 +40,7 @@ export class CC extends HTMLElement{
         }
     }
     _templateId: string;
+    _prevId: string;
     get templateId(){
         return this._templateId;
     }
@@ -56,11 +54,9 @@ export class CC extends HTMLElement{
                 this._copy = newValue !== null;
                 break;
             case template_id:
+                this._prevId = oldValue;
                 this._templateId = newValue;
                 break;
-            // case hasSlots:
-            //     this._hasSlots = newValue !== null;
-            //     break;
         }
         this.onPropsChange();
     }
@@ -68,19 +64,14 @@ export class CC extends HTMLElement{
     
     connectedCallback(){
         this._upgradeProperties([copy, 'templateId'])
-        //this.getHost(this);
-        
         this.onPropsChange();
     }
-    _ceName:string;
-    get ceName(){
-        if(!this._ceName){
-            this._ceName = 'c-c-' + this._templateId.split('_').join('-');
-        }
-        return this._ceName;
+    //_ceName:string;
+    getCEName(templateId: string){
+        return 'c-c-' + templateId.split('_').join('-');
     }
     createCE(template: HTMLTemplateElement){
-        customElements.define(this.ceName, class extends HTMLElement{
+        customElements.define(this.getCEName(template.id), class extends HTMLElement{
             constructor(){
                 super();
                 this.attachShadow({ mode: 'open' });
@@ -92,23 +83,46 @@ export class CC extends HTMLElement{
     onPropsChange(){
         if(!this._copy || !this._templateId || this._alreadyRegistered) return;
         this._alreadyRegistered = true;
-        if(!customElements.get(this.ceName)){
-            if(!CC.registering[this.ceName]){
-                CC.registering[this.ceName] = true;
+        const newCEName = this.getCEName(this._templateId);
+        if(!customElements.get(newCEName)){
+            if(!CC.registering[newCEName]){
+                CC.registering[newCEName] = true;
                 let template = self[this._templateId] as HTMLTemplateElement;
                 
                 if(template.dataset.src && !template.getAttribute('loaded')){
-                    throw "not supported yet"
+                    const config : MutationObserverInit = {
+                        attributeFilter: ['loaded'],
+                        attributes: true,
+                    }
+                    const mutationObserver = new MutationObserver((mr: MutationRecord[])  =>{
+                        this.createCE(template);
+                        mutationObserver.disconnect();
+                    });
+                    mutationObserver.observe(template, config);
+                }else{
+                    this.createCE(template);
                 }
-                this.createCE(template);
+               
             }
         }
-        customElements.whenDefined(this.ceName).then(() =>{
-            const ce = document.createElement(this.ceName);
-            while (this.childNodes.length > 0) {
-                ce.appendChild(this.childNodes[0]);
+        customElements.whenDefined(newCEName).then(() =>{
+            //const name = newCEName;
+            if(this._prevId){
+                const prevEl = this.querySelector(this.getCEName(this._prevId)) as HTMLElement;
+                if(prevEl) prevEl.style.display = 'none';
+            }else{
+                const prevEl = this.querySelector(newCEName) as HTMLElement;
+                if(prevEl){
+                    prevEl.style.display = 'block';
+                }else{
+                    const ce = document.createElement(newCEName);
+                    while (this.childNodes.length > 0) {
+                        ce.appendChild(this.childNodes[0]);
+                    }
+                    this.appendChild(ce);
+                }
             }
-            this.appendChild(ce);
+
         })
 
     }

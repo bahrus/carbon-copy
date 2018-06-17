@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Multi page test</title>
+        <script type="module" src="https://unpkg.com/templ-mount@0.0.6/templ-mount.js?module"></script>
+        <script type="module" src="../c-c.js"></script>
+        <template id="page1" data-src="page1.html"></template>
+        <template data-src="page2.html"></template>
+    </head>
+    <body>
+        <templ-mount></templ-mount>
+        <c-c copy template-id="page1"></c-c>
+    </body>
+</html>
