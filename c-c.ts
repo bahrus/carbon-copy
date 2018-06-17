@@ -61,9 +61,16 @@ export class CC extends HTMLElement{
         this.onPropsChange();
     }
 
-    
+    _connected: boolean;
+    _originalChildren = [];
     connectedCallback(){
-        this._upgradeProperties([copy, 'templateId'])
+        this._upgradeProperties([copy, 'templateId']);
+        //this._originalChildren = this.childNodes;
+        this.childNodes.forEach(node =>{
+            this._originalChildren.push(node.cloneNode(true));
+        })
+        this.innerHTML = '';
+        this._connected = true;
         this.onPropsChange();
     }
     //_ceName:string;
@@ -79,17 +86,17 @@ export class CC extends HTMLElement{
             }
         })
     }
-    _alreadyRegistered = false;
+    //_alreadyRegistered = false;
     onPropsChange(){
-        if(!this._copy || !this._templateId || this._alreadyRegistered) return;
-        this._alreadyRegistered = true;
+        if(!this._copy || !this._templateId || !this._connected) return;
+        //this._alreadyRegistered = true;
         const newCEName = this.getCEName(this._templateId);
         if(!customElements.get(newCEName)){
             if(!CC.registering[newCEName]){
                 CC.registering[newCEName] = true;
                 let template = self[this._templateId] as HTMLTemplateElement;
                 
-                if(template.dataset.src && !template.getAttribute('loaded')){
+                if(template.dataset.src && !template.hasAttribute('loaded')){
                     const config : MutationObserverInit = {
                         attributeFilter: ['loaded'],
                         attributes: true,
@@ -110,17 +117,19 @@ export class CC extends HTMLElement{
             if(this._prevId){
                 const prevEl = this.querySelector(this.getCEName(this._prevId)) as HTMLElement;
                 if(prevEl) prevEl.style.display = 'none';
+            }
+            const prevEl = this.querySelector(newCEName) as HTMLElement;
+            if(prevEl){
+                prevEl.style.display = 'block';
             }else{
-                const prevEl = this.querySelector(newCEName) as HTMLElement;
-                if(prevEl){
-                    prevEl.style.display = 'block';
-                }else{
-                    const ce = document.createElement(newCEName);
-                    while (this.childNodes.length > 0) {
-                        ce.appendChild(this.childNodes[0]);
-                    }
-                    this.appendChild(ce);
-                }
+                const ce = document.createElement(newCEName);
+                this._originalChildren.forEach(child => {
+                    ce.appendChild(child.cloneNode(true));
+                })
+                // while (this.childNodes.length > 0) {
+                //     ce.appendChild(this.childNodes[0]);
+                // }
+                this.appendChild(ce);
             }
 
         })

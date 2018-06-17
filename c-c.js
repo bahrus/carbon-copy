@@ -12,7 +12,7 @@ const copy = 'copy';
 export class CC extends HTMLElement {
     constructor() {
         super(...arguments);
-        this._alreadyRegistered = false;
+        this._originalChildren = [];
     }
     static get is() { return 'c-c'; }
     static get observedAttributes() {
@@ -58,6 +58,12 @@ export class CC extends HTMLElement {
     }
     connectedCallback() {
         this._upgradeProperties([copy, 'templateId']);
+        //this._originalChildren = this.childNodes;
+        this.childNodes.forEach(node => {
+            this._originalChildren.push(node.cloneNode(true));
+        });
+        this.innerHTML = '';
+        this._connected = true;
         this.onPropsChange();
     }
     //_ceName:string;
@@ -73,16 +79,17 @@ export class CC extends HTMLElement {
             }
         });
     }
+    //_alreadyRegistered = false;
     onPropsChange() {
-        if (!this._copy || !this._templateId || this._alreadyRegistered)
+        if (!this._copy || !this._templateId || !this._connected)
             return;
-        this._alreadyRegistered = true;
+        //this._alreadyRegistered = true;
         const newCEName = this.getCEName(this._templateId);
         if (!customElements.get(newCEName)) {
             if (!CC.registering[newCEName]) {
                 CC.registering[newCEName] = true;
                 let template = self[this._templateId];
-                if (template.dataset.src && !template.getAttribute('loaded')) {
+                if (template.dataset.src && !template.hasAttribute('loaded')) {
                     const config = {
                         attributeFilter: ['loaded'],
                         attributes: true,
@@ -105,18 +112,19 @@ export class CC extends HTMLElement {
                 if (prevEl)
                     prevEl.style.display = 'none';
             }
+            const prevEl = this.querySelector(newCEName);
+            if (prevEl) {
+                prevEl.style.display = 'block';
+            }
             else {
-                const prevEl = this.querySelector(newCEName);
-                if (prevEl) {
-                    prevEl.style.display = 'block';
-                }
-                else {
-                    const ce = document.createElement(newCEName);
-                    while (this.childNodes.length > 0) {
-                        ce.appendChild(this.childNodes[0]);
-                    }
-                    this.appendChild(ce);
-                }
+                const ce = document.createElement(newCEName);
+                this._originalChildren.forEach(child => {
+                    ce.appendChild(child.cloneNode(true));
+                });
+                // while (this.childNodes.length > 0) {
+                //     ce.appendChild(this.childNodes[0]);
+                // }
+                this.appendChild(ce);
             }
         });
     }

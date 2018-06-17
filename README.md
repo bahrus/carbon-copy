@@ -2,7 +2,7 @@
 
 # \<carbon-copy\>
 
-Copy a template inside a DOM node.  ~900B (minified/gzipped).
+Copy a template inside a DOM node.  ~1kbB (minified/gzipped).
 
 
 Syntax:
@@ -22,6 +22,8 @@ Syntax:
     </span>
 </c-c>
 ```
+
+c-c can be used, combined with templ-mount, to provide an alternative to iron-pages.
 
 ## Install the Polymer-CLI
 
