@@ -1,6 +1,6 @@
 {
   "name": "carbon-copy",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Copy a template inside a DOM node",
   "main": "carbon-copy.js",
   "repository": "https://github.com/bahrus/carbon-copy",
