@@ -1,6 +1,7 @@
 
 const template_id = 'template-id';
 const copy = 'copy';
+const noshadow = 'noshadow';
 
 /**
 * `carbon-copy`
@@ -14,7 +15,7 @@ const copy = 'copy';
 export class CC extends HTMLElement{
     static get is(){return 'c-c';}
     static get observedAttributes() {
-        return [copy, template_id];
+        return [copy, template_id, noshadow];
     }
     _upgradeProperties(props: string[]) {
         props.forEach(prop =>{
@@ -47,6 +48,18 @@ export class CC extends HTMLElement{
     set templateId(val){
         this.setAttribute(template_id, val);
     }
+
+    _noshadow: boolean;
+    get noshadow(){
+        return this._noshadow;
+    }
+    set noshadow(val){
+        if(val) {
+            this.setAttribute(noshadow, '');
+        }else{
+            this.removeAttribute(noshadow);
+        }
+    }
    
     attributeChangedCallback(name: string, oldValue: string, newValue: string){
         switch(name){
@@ -56,6 +69,9 @@ export class CC extends HTMLElement{
             case template_id:
                 this._prevId = oldValue;
                 this._templateId = newValue;
+                break;
+            case noshadow:
+                this._noshadow = newValue !== null;
                 break;
         }
         this.onPropsChange();
@@ -78,13 +94,22 @@ export class CC extends HTMLElement{
         return 'c-c-' + templateId.split('_').join('-');
     }
     createCE(template: HTMLTemplateElement){
-        customElements.define(this.getCEName(template.id), class extends HTMLElement{
-            constructor(){
-                super();
-                this.attachShadow({ mode: 'open' });
-                this.shadowRoot.appendChild(template.content.cloneNode(true));
-            }
-        })
+        if(this._noshadow){
+            customElements.define(this.getCEName(template.id), class extends HTMLElement{
+                connectedCallback(){
+                    this.appendChild(template.content.cloneNode(true));
+                }
+            })
+        }else{
+            customElements.define(this.getCEName(template.id), class extends HTMLElement{
+                constructor(){
+                    super();
+                    this.attachShadow({ mode: 'open' });
+                    this.shadowRoot.appendChild(template.content.cloneNode(true));
+                }
+            })
+        }
+
     }
     //_alreadyRegistered = false;
     onPropsChange(){

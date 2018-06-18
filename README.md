@@ -25,6 +25,8 @@ Syntax:
 
 c-c can be used, combined with templ-mount, to provide an alternative to iron-pages.
 
+c-c generates a custom element on the fly, with name c-c-[template-id].  It will use shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."
+
 ## Install the Polymer-CLI
 
 First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install your element's dependencies, then run `polymer serve` to serve your element locally.
