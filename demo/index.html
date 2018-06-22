@@ -8,17 +8,10 @@
 
     <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <script type="module">
-      import '@polymer/iron-demo-helpers/demo-pages-shared-styles';
-      import '@polymer/iron-demo-helpers/demo-snippet';
-    </script>
 
     <script type="module" src="../c-c.js"></script>
 
-    <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-      </style>
-    </custom-style>
+
   </head>
   <body>
     <div class="vertical-section-container centered">
@@ -36,7 +29,7 @@
         <div>So don't you bring me down today</div>
       </template>
       <template id="chorus">
-        <c-c copy template-id="beautiful">
+        <c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs1"></slot>
           </span>
@@ -46,7 +39,7 @@
           <slot name="verb1"></slot> bring
           <slot name="pronoun1"></slot> down</div>
         <div>Oh no</div>
-        <c-c copy template-id="beautiful">
+        <c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs2"></slot>
           </span>
@@ -56,10 +49,9 @@
           <slot name="verb2"></slot> bring
           <slot name="pronoun2"></slot> down</div>
         <div>Oh no</div>
-        <c-c copy template-id="down"></c-c>
+        <c-c copy from="/down"></c-c>
       </template>
-      <demo-snippet style="width:900px">
-        <template>
+
   
   
   
@@ -74,7 +66,7 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <c-c copy template-id="chorus">
+            <c-c copy from="/chorus">
               <span slot="verb1">can't</span>
               <span slot="verb2">can't</span>
               <span slot="pronoun1">me</span>
@@ -95,7 +87,7 @@
             <div>Ain't that the way it is</div>
           </p>
           <p>
-            <c-c copy template-id="chorus">
+            <c-c copy from="/chorus">
               <span slot="verb1">can't</span>
               <span slot="verb2">can't</span>
               <span slot="pronoun1">you</span>
@@ -105,12 +97,12 @@
             </c-c>
           </p>
           <br>
-          <c-c copy template-id="no-matter">
+          <c-c copy from="/no-matter">
             <span slot="verb1">do</span>
             <span slot="verb2">do</span>
           </c-c>
           <br>
-          <c-c copy template-id="no-matter">
+          <c-c copy from="/no-matter">
             <span slot="verb1">say</span>
             <span slot="verb2">say</span>
           </c-c>
@@ -123,7 +115,7 @@
             <div>On the other side</div>
           </p>
           <p>
-            <c-c copy template-id="chorus">
+            <c-c copy from="/chorus">
               <span slot="verb1">won't</span>
               <span slot="verb2">can't</span>
               <span slot="pronoun1">us</span>
@@ -138,13 +130,7 @@
             <div>Don't you bring me down, ooh</div>
             <div>Today</div>
           </p>
-  
-        </template>
-  
-  
-  
-  
-      </demo-snippet>
+
     </div>
   </body>
 </html>

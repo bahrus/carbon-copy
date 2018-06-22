@@ -1,4 +1,4 @@
-const template_id = 'template-id';
+const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
 /**
@@ -17,7 +17,7 @@ export class CC extends HTMLElement {
     }
     static get is() { return 'c-c'; }
     static get observedAttributes() {
-        return [copy, template_id, noshadow];
+        return [copy, from, noshadow];
     }
     _upgradeProperties(props) {
         props.forEach(prop => {
@@ -39,11 +39,11 @@ export class CC extends HTMLElement {
             this.removeAttribute(copy);
         }
     }
-    get templateId() {
-        return this._templateId;
+    get from() {
+        return this._from;
     }
-    set templateId(val) {
-        this.setAttribute(template_id, val);
+    set from(val) {
+        this.setAttribute(from, val);
     }
     get noshadow() {
         return this._noshadow;
@@ -61,9 +61,9 @@ export class CC extends HTMLElement {
             case copy:
                 this._copy = newValue !== null;
                 break;
-            case template_id:
+            case from:
                 this._prevId = oldValue;
-                this._templateId = newValue;
+                this._from = newValue;
                 break;
             case noshadow:
                 this._noshadow = newValue !== null;
@@ -72,7 +72,7 @@ export class CC extends HTMLElement {
         this.onPropsChange();
     }
     connectedCallback() {
-        this._upgradeProperties([copy, 'templateId']);
+        this._upgradeProperties([copy, from]);
         //this._originalChildren = this.childNodes;
         this.childNodes.forEach(node => {
             this._originalChildren.push(node.cloneNode(true));
@@ -103,16 +103,50 @@ export class CC extends HTMLElement {
             });
         }
     }
-    //_alreadyRegistered = false;
+    getHost(el, level, maxLevel) {
+        let parent;
+        do {
+            parent = el.parentNode;
+            if (parent.nodeType === 11) {
+                const newLevel = level + 1;
+                if (newLevel === maxLevel)
+                    return parent['host'];
+                return this.getHost(parent['host'], newLevel, maxLevel);
+            }
+            else if (parent.tagName === 'BODY') {
+                return parent;
+            }
+        } while (parent);
+    }
     onPropsChange() {
-        if (!this._copy || !this._templateId || !this._connected)
+        if (!this._copy || !this._from || !this._connected)
             return;
         //this._alreadyRegistered = true;
-        const newCEName = this.getCEName(this._templateId);
+        const fromTokens = this._from.split('/');
+        const fromName = fromTokens[0] || fromTokens[1];
+        const newCEName = this.getCEName(fromName);
         if (!customElements.get(newCEName)) {
             if (!CC.registering[newCEName]) {
                 CC.registering[newCEName] = true;
-                let template = self[this._templateId];
+                let template;
+                if (!fromTokens[0]) {
+                    template = self[fromName];
+                }
+                else {
+                    //const path = this._from.split('/');
+                    //const id = path[path.length - 1];
+                    const host = this.getHost(this, 0, fromTokens.length);
+                    if (host) {
+                        if (host.shadowRoot) {
+                            template = host.shadowRoot.getElementById(fromName);
+                            if (!template)
+                                template = host.getElementById(fromName);
+                        }
+                        else {
+                            template = host.getElementById(fromName);
+                        }
+                    }
+                }
                 if (template.dataset.src && !template.hasAttribute('loaded')) {
                     const config = {
                         attributeFilter: ['loaded'],

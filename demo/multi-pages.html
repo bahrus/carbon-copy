@@ -9,13 +9,13 @@
         <script>
             function switchPages(){
                 const cc = document.querySelector('c-c');
-                cc.templateId = cc.templateId === 'page1' ? 'page2' : 'page1';
+                cc.from = cc.from === 'page1' ? 'page2' : 'page1';
             }
         </script>
     </head>
     <body>
         <templ-mount></templ-mount>
-        <c-c copy template-id="page1" noshadow></c-c>
+        <c-c copy from="page1" noshadow></c-c>
 
         <button onclick="switchPages()">Switch</button>
     </body>
