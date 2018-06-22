@@ -20,18 +20,30 @@ export class CC extends XtallatX(HTMLElement) {
     static get observedAttributes() {
         return [copy, from, noshadow];
     }
+    /**
+     * @type{boolean}
+     * Must be true / present for template copy to proceed.
+     */
     get copy() {
         return this._copy;
     }
     set copy(val) {
         this.attr(copy, val, '');
     }
+    /**
+     * Id of template to import.
+     * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.
+     * If from starts with "../" then the search is done one level up, etc.
+     */
     get from() {
         return this._from;
     }
     set from(val) {
         this.attr(from, val);
     }
+    /**
+     * Don't use shadow DOM
+     */
     get noshadow() {
         return this._noshadow;
     }
