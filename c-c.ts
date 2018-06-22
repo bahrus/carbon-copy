@@ -1,4 +1,4 @@
-
+import {XtallatX} from 'xtal-latx/xtal-latx.js'
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
@@ -12,20 +12,10 @@ const noshadow = 'noshadow';
 * @polymer
 * @demo demo/index.html
 */
-export class CC extends HTMLElement{
+export class CC extends XtallatX(HTMLElement){
     static get is(){return 'c-c';}
     static get observedAttributes() {
         return [copy, from, noshadow];
-    }
-    _upgradeProperties(props: string[]) {
-        props.forEach(prop =>{
-            if (this.hasOwnProperty(prop)) {
-                let value = this[prop];
-                delete this[prop];
-                this[prop] = value;
-            }
-        })
-   
     }
     static registering : {[key: string]: boolean} = {};
 
@@ -34,11 +24,7 @@ export class CC extends HTMLElement{
         return this._copy;
     }
     set copy(val: boolean){
-        if(val) {
-            this.setAttribute(copy, '');
-        }else{
-            this.removeAttribute(copy);
-        }
+        this.attr(copy, val, '');
     }
     _from: string;
     _prevId: string;
@@ -46,7 +32,7 @@ export class CC extends HTMLElement{
         return this._from;
     }
     set from(val){
-        this.setAttribute(from, val);
+        this.attr(from, val);
     }
 
     _noshadow: boolean;
@@ -54,11 +40,7 @@ export class CC extends HTMLElement{
         return this._noshadow;
     }
     set noshadow(val){
-        if(val) {
-            this.setAttribute(noshadow, '');
-        }else{
-            this.removeAttribute(noshadow);
-        }
+        this.attr(noshadow, val, '');
     }
    
     attributeChangedCallback(name: string, oldValue: string, newValue: string){
@@ -125,7 +107,7 @@ export class CC extends HTMLElement{
         }while(parent)
     }
     onPropsChange(){
-        if(!this._copy || !this._from || !this._connected) return;
+        if(!this._copy || !this._from || !this._connected || this.disabled) return;
         //this._alreadyRegistered = true;
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
@@ -139,7 +121,7 @@ export class CC extends HTMLElement{
                 }else{
                     //const path = this._from.split('/');
                     //const id = path[path.length - 1];
-                    const host = this.getHost(this, 0, fromTokens.length);
+                    const host = this.getHost(<any>this as HTMLElement, 0, fromTokens.length);
                     if(host){
                         if(host.shadowRoot){
                             template = host.shadowRoot.getElementById(fromName);

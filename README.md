@@ -2,7 +2,7 @@
 
 # \<carbon-copy\>
 
-Copy a template inside a DOM node.  ~1.2kb (minified/gzipped).
+Copy a template inside a DOM node.  ~1.4kb (minified/gzipped).
 
 
 Syntax:

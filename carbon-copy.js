@@ -1,6 +1,54 @@
 
-//@ts-check
-(function () {
+    //@ts-check
+    (function () {
+    const disabled = 'disabled';
+function XtallatX(superClass) {
+    return class extends superClass {
+        static get observedAttributes() {
+            return [disabled];
+        }
+        get disabled() {
+            return this._disabled;
+        }
+        set disabled(val) {
+            this.attr(disabled, val, '');
+        }
+        attr(name, val, trueVal) {
+            if (val) {
+                this.setAttribute(name, trueVal || val);
+            }
+            else {
+                this.removeAttribute(name);
+            }
+        }
+        attributeChangedCallback(name, oldVal, newVal) {
+            switch (name) {
+                case disabled:
+                    this._disabled = newVal !== null;
+                    break;
+            }
+        }
+        de(name, detail) {
+            const newEvent = new CustomEvent(name + '-changed', {
+                detail: detail,
+                bubbles: true,
+                composed: false,
+            });
+            this.dispatchEvent(newEvent);
+            return newEvent;
+        }
+        _upgradeProperties(props) {
+            props.forEach(prop => {
+                if (this.hasOwnProperty(prop)) {
+                    let value = this[prop];
+                    delete this[prop];
+                    this[prop] = value;
+                }
+            });
+        }
+    };
+}
+//# sourceMappingURL=xtal-latx.js.map
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
@@ -13,7 +61,7 @@ const noshadow = 'noshadow';
 * @polymer
 * @demo demo/index.html
 */
-class CC extends HTMLElement {
+class CC extends XtallatX(HTMLElement) {
     constructor() {
         super(...arguments);
         this._originalChildren = [];
@@ -22,42 +70,23 @@ class CC extends HTMLElement {
     static get observedAttributes() {
         return [copy, from, noshadow];
     }
-    _upgradeProperties(props) {
-        props.forEach(prop => {
-            if (this.hasOwnProperty(prop)) {
-                let value = this[prop];
-                delete this[prop];
-                this[prop] = value;
-            }
-        });
-    }
     get copy() {
         return this._copy;
     }
     set copy(val) {
-        if (val) {
-            this.setAttribute(copy, '');
-        }
-        else {
-            this.removeAttribute(copy);
-        }
+        this.attr(copy, val, '');
     }
     get from() {
         return this._from;
     }
     set from(val) {
-        this.setAttribute(from, val);
+        this.attr(from, val);
     }
     get noshadow() {
         return this._noshadow;
     }
     set noshadow(val) {
-        if (val) {
-            this.setAttribute(noshadow, '');
-        }
-        else {
-            this.removeAttribute(noshadow);
-        }
+        this.attr(noshadow, val, '');
     }
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
@@ -122,7 +151,7 @@ class CC extends HTMLElement {
         } while (parent);
     }
     onPropsChange() {
-        if (!this._copy || !this._from || !this._connected)
+        if (!this._copy || !this._from || !this._connected || this.disabled)
             return;
         //this._alreadyRegistered = true;
         const fromTokens = this._from.split('/');
@@ -195,5 +224,5 @@ if (!customElements.get(CC.is)) {
     customElements.define('c-c', CC);
 }
 //# sourceMappingURL=c-c.js.map
-})();  
-    
+    })();  
+        
