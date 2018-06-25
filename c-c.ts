@@ -106,17 +106,17 @@ export class CC extends XtallatX(HTMLElement){
 
     }
     getHost(el: HTMLElement, level: number, maxLevel : number){
-        let parent : HTMLElement;
-        do{
-            parent = el.parentNode as HTMLElement;
+        let parent = el;
+        while(parent = parent.parentElement){
             if(parent.nodeType === 11){
                 const newLevel = level + 1;
                 if(newLevel === maxLevel) return parent['host'];
                 return this.getHost(parent['host'], newLevel, maxLevel);
-            }else if(parent.tagName === 'BODY'){
+            }else if(parent.tagName === 'HTML'){
                 return parent;
             }
-        }while(parent)
+            
+        }
     }
     onPropsChange(){
         if(!this._copy || !this._from || !this._connected || this.disabled) return;
@@ -139,12 +139,11 @@ export class CC extends XtallatX(HTMLElement){
                             template = host.shadowRoot.getElementById(fromName);
                             if(!template) template = host.getElementById(fromName);
                         }else{
-                            template = host.getElementById(fromName);
+                            template = host.querySelector('#' + fromName);
                         }
                     }
 
                 }
-                
                 if(template.dataset.src && !template.hasAttribute('loaded')){
                     const config : MutationObserverInit = {
                         attributeFilter: ['loaded'],
