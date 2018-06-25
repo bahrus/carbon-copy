@@ -106,7 +106,7 @@ class CC extends XtallatX(HTMLElement) {
                 this._copy = newValue !== null;
                 break;
             case from:
-                this._prevId = oldValue;
+                //this._prevId = oldValue;
                 this._from = newValue;
                 break;
             case noshadow:
@@ -148,19 +148,18 @@ class CC extends XtallatX(HTMLElement) {
         }
     }
     getHost(el, level, maxLevel) {
-        let parent;
-        do {
-            parent = el.parentNode;
+        let parent = el;
+        while (parent = parent.parentElement) {
             if (parent.nodeType === 11) {
                 const newLevel = level + 1;
                 if (newLevel === maxLevel)
                     return parent['host'];
                 return this.getHost(parent['host'], newLevel, maxLevel);
             }
-            else if (parent.tagName === 'BODY') {
+            else if (parent.tagName === 'HTML') {
                 return parent;
             }
-        } while (parent);
+        }
     }
     onPropsChange() {
         if (!this._copy || !this._from || !this._connected || this.disabled)
@@ -169,6 +168,8 @@ class CC extends XtallatX(HTMLElement) {
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
         const newCEName = this.getCEName(fromName);
+        const prevId = this._prevId;
+        this._prevId = newCEName;
         if (!customElements.get(newCEName)) {
             if (!CC.registering[newCEName]) {
                 CC.registering[newCEName] = true;
@@ -187,7 +188,7 @@ class CC extends XtallatX(HTMLElement) {
                                 template = host.getElementById(fromName);
                         }
                         else {
-                            template = host.getElementById(fromName);
+                            template = host.querySelector('#' + fromName);
                         }
                     }
                 }
@@ -209,8 +210,8 @@ class CC extends XtallatX(HTMLElement) {
         }
         customElements.whenDefined(newCEName).then(() => {
             //const name = newCEName;
-            if (this._prevId) {
-                const prevEl = this.querySelector(this.getCEName(this._prevId));
+            if (prevId) {
+                const prevEl = this.querySelector(prevId);
                 if (prevEl)
                     prevEl.style.display = 'none';
             }

@@ -61,7 +61,7 @@ export class CC extends XtallatX(HTMLElement){
                 this._copy = newValue !== null;
                 break;
             case from:
-                this._prevId = oldValue;
+                //this._prevId = oldValue;
                 this._from = newValue;
                 break;
             case noshadow:
@@ -124,6 +124,8 @@ export class CC extends XtallatX(HTMLElement){
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
         const newCEName = this.getCEName(fromName);
+        const prevId = this._prevId;
+        this._prevId = newCEName;
         if(!customElements.get(newCEName)){
             if(!CC.registering[newCEName]){
                 CC.registering[newCEName] = true;
@@ -162,8 +164,8 @@ export class CC extends XtallatX(HTMLElement){
         }
         customElements.whenDefined(newCEName).then(() =>{
             //const name = newCEName;
-            if(this._prevId){
-                const prevEl = this.querySelector(this.getCEName(this._prevId)) as HTMLElement;
+            if(prevId){
+                const prevEl = this.querySelector(prevId) as HTMLElement;
                 if(prevEl) prevEl.style.display = 'none';
             }
             const prevEl = this.querySelector(newCEName) as HTMLElement;
