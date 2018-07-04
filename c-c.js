@@ -96,7 +96,7 @@ export class CC extends XtallatX(HTMLElement) {
     }
     createCE(template) {
         const ceName = this.getCEName(template.id);
-        const propsAttrs = template.dataset.str_props;
+        const propsAttrs = template.dataset.strProps;
         const parsedProps = propsAttrs ? propsAttrs.split(',') : [];
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {

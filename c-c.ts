@@ -106,7 +106,7 @@ export class CC extends XtallatX(HTMLElement) {
     }
     createCE(template: HTMLTemplateElement) {
         const ceName = this.getCEName(template.id);
-        const propsAttrs = template.dataset.str_props;
+        const propsAttrs = template.dataset.strProps;
         const parsedProps = propsAttrs ? propsAttrs.split(',') : [];
         if (this._noshadow) {
 

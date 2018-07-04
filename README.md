@@ -2,7 +2,7 @@
 
 # \<carbon-copy\>
 
-Copy a template inside a DOM node.  ~1.4kb (minified/gzipped).
+Copy a template inside a DOM node.  ~1.6kb (minified/gzipped).
 
 
 Syntax:
@@ -28,7 +28,21 @@ c-c can be used, combined with templ-mount, to provide an alternative to iron-pa
 
 It can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
 
-c-c generates a custom element on the fly, with name c-c-[from].  It will use shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."
+## Codeless Web Components
+
+c-c generates a custom element on the fly, with name c-c-[from].  It uses shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."  Doing so will prevent the slot mechanism from working.  Hopefully, if template instantion becomes a thing, it will provide an alternative for this scenario.
+
+The template can specify a list of string properties to add to the automatically generated web component:
+
+```html
+<template id="pow" data-str-props="name,rank,serial_number">
+    <div>
+        <slot name="subjectIs"></slot> 
+    </div>
+</template>
+```
+
+If the web component's property is set, it will reflect to an attribute with the same name.
 
 ## Install the Polymer-CLI
 
