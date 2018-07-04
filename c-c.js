@@ -79,22 +79,52 @@ export class CC extends XtallatX(HTMLElement) {
     getCEName(templateId) {
         return 'c-c-' + templateId.split('_').join('-');
     }
+    defineProps(name, template, newClass, props) {
+        props.forEach(prop => {
+            Object.defineProperty(newClass.prototype, prop, {
+                get: () => {
+                    return this['_' + prop];
+                },
+                set: function (val) {
+                    this.attr(prop, val);
+                },
+                enumerable: true,
+                configurable: true,
+            });
+        });
+        customElements.define(name, newClass);
+    }
     createCE(template) {
+        const ceName = this.getCEName(template.id);
+        const propsAttrs = template.dataset.str_props;
+        const parsedProps = propsAttrs ? propsAttrs.split(',') : [];
         if (this._noshadow) {
-            customElements.define(this.getCEName(template.id), class extends HTMLElement {
+            class newClass extends XtallatX(HTMLElement) {
                 connectedCallback() {
+                    this._upgradeProperties(parsedProps);
                     this.appendChild(template.content.cloneNode(true));
                 }
-            });
+                static get observedAttributes() { return parsedProps; }
+                attributeChangedCallback(name, oldVal, newVal) {
+                    this['_' + name] = newVal;
+                }
+            }
+            this.defineProps(ceName, template, newClass, parsedProps);
         }
         else {
-            customElements.define(this.getCEName(template.id), class extends HTMLElement {
+            class newClass extends XtallatX(HTMLElement) {
                 constructor() {
                     super();
+                    this._upgradeProperties(parsedProps);
                     this.attachShadow({ mode: 'open' });
                     this.shadowRoot.appendChild(template.content.cloneNode(true));
                 }
-            });
+                static get observedAttributes() { return parsedProps; }
+                attributeChangedCallback(name, oldVal, newVal) {
+                    this['_' + name] = newVal;
+                }
+            }
+            this.defineProps(ceName, template, newClass, parsedProps);
         }
     }
     getHost(el, level, maxLevel) {

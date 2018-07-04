@@ -22,7 +22,7 @@ Syntax:
 </c-c>
 ```
 
-Templates can come from outside any shadow DOM if the value of from starts with a slash.  If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  If from starts with "../" then the search is done one level up, etc.
+Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  If from starts with "../" then the search is done one level up, etc.
 
 c-c can be used, combined with templ-mount, to provide an alternative to iron-pages.
 
