@@ -125,8 +125,9 @@ class CC extends XtallatX(HTMLElement) {
         this._connected = true;
         this.onPropsChange();
     }
-    //_ceName:string;
     getCEName(templateId) {
+        if (templateId.indexOf('-') > -1)
+            return templateId;
         return 'c-c-' + templateId.split('_').join('-');
     }
     defineProps(name, template, newClass, props) {
@@ -201,7 +202,7 @@ class CC extends XtallatX(HTMLElement) {
         }
     }
     onPropsChange() {
-        if (!this._copy || !this._from || !this._connected || this.disabled)
+        if (!this._from || !this._connected || this.disabled)
             return;
         //this._alreadyRegistered = true;
         const fromTokens = this._from.split('/');
@@ -247,6 +248,8 @@ class CC extends XtallatX(HTMLElement) {
                 }
             }
         }
+        if (!this._copy)
+            return;
         customElements.whenDefined(newCEName).then(() => {
             //const name = newCEName;
             if (prevId) {
