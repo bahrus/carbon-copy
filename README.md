@@ -6,7 +6,7 @@
 
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
-Copy a template inside a DOM node.  ~1.6kb (minified/gzipped).
+Copy a template inside a DOM node.  ~1.7kb (minified/gzipped).
 
 
 Syntax:
@@ -36,6 +36,8 @@ It can also be used in a kind of "Reverse Polish Notation" version of Polymer's 
 
 c-c generates a custom element on the fly, with name c-c-[from].  It uses shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."  Doing so will prevent the slot mechanism from working.  Hopefully, if template instantion becomes a thing, it will provide an alternative for this scenario.
 
+### String properties
+
 The template can specify a list of string properties to add to the automatically generated web component:
 
 ```html
@@ -47,6 +49,23 @@ The template can specify a list of string properties to add to the automatically
 ```
 
 If the web component's property is set, it will reflect to an attribute with the same name.
+
+### Attaching methods to the generated custom element
+
+```html
+      <script type="module ish" data-methods="true">
+        ({
+          fn: function(){
+            console.log(this);
+            return this;
+          }
+        })
+      </script>
+      <template id="beautiful" data-str-props="a,b,c">
+        <div>
+          <slot name="subjectIs"></slot> beautiful</div>
+      </template>
+```
 
 ## Install the Polymer-CLI
 

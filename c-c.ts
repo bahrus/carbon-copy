@@ -101,9 +101,18 @@ export class CC extends XtallatX(HTMLElement) {
                 configurable: true,
             });            
         })
-
+        this.defineMethods(newClass, template);
         customElements.define(name, newClass);
     }
+    defineMethods(newClass, template:HTMLTemplateElement){
+        const prevSibling = template.previousElementSibling as HTMLElement;
+        if(!prevSibling || !prevSibling.dataset.methods) return;
+        const evalScript = eval(prevSibling.innerHTML);
+        for(const fn in evalScript){
+            newClass.prototype[fn] = evalScript[fn];
+        }
+    }
+    
     createCE(template: HTMLTemplateElement) {
         const ceName = this.getCEName(template.id);
         const propsAttrs = template.dataset.strProps;
