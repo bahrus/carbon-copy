@@ -4,19 +4,21 @@
         <title>Multi page test</title>
         <script type="module" src="https://unpkg.com/templ-mount@0.0.6/templ-mount.js?module"></script>
         <script type="module" src="../c-c.js"></script>
-        <template id="page1" data-src="page1.html"></template>
-        <template id="page2" data-src="page2.html"></template>
+        <template id="page-1" data-src="page1.html"></template>
+        <template id="page-2" data-src="page2.html"></template>
         <script>
             function switchPages(){
                 const cc = document.querySelector('c-c');
-                cc.from = cc.from === '/page1' ? '/page2' : '/page1';
+                cc.from = cc.from === '/page-1' ? '/page-2' : '/page1';
             }
         </script>
+         <c-c from="/page-1"></c-c>
     </head>
     <body>
         <templ-mount></templ-mount>
-        <c-c copy from="/page1" noshadow></c-c>
-
+       
+        <!-- <c-c copy from="/page1" noshadow></c-c> -->
+        <page-1></page-1>
         <button onclick="switchPages()">Switch</button>
     </body>
 </html>
