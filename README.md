@@ -58,6 +58,9 @@ If the web component's property is set, it will reflect to an attribute with the
           fn: function(){
             console.log(this);
             return this;
+          },
+          onPropsChange: function(name, oldVal, newVal){
+              ...
           }
         })
       </script>
@@ -66,6 +69,8 @@ If the web component's property is set, it will reflect to an attribute with the
           <slot name="subjectIs"></slot> beautiful</div>
       </template>
 ```
+
+All attribute changes call onPropsChange if it is defined.
 
 ## Install the Polymer-CLI
 

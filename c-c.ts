@@ -105,6 +105,10 @@ export class CC extends XtallatX(HTMLElement) {
         customElements.define(name, newClass);
     }
     defineMethods(newClass, template:HTMLTemplateElement){
+        newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
+            this['_' + name] = newVal;
+            if(this.onPropsChange) this.onPropsChange(name, oldVal, newVal);
+        }
         const prevSibling = template.previousElementSibling as HTMLElement;
         if(!prevSibling || !prevSibling.dataset.methods) return;
         const evalScript = eval(prevSibling.innerHTML);
@@ -125,9 +129,9 @@ export class CC extends XtallatX(HTMLElement) {
                     this.appendChild(template.content.cloneNode(true));
                 }
                 static get observedAttributes(){return parsedProps;}
-                attributeChangedCallback(name: string, oldVal: string, newVal: string){
-                    this['_' + name] = newVal;
-                }
+                // attributeChangedCallback(name: string, oldVal: string, newVal: string){
+                //     this['_' + name] = newVal;
+                // }
             }
             this.defineProps(ceName, template, newClass, parsedProps);
         } else {
@@ -139,9 +143,9 @@ export class CC extends XtallatX(HTMLElement) {
                     this.shadowRoot.appendChild(template.content.cloneNode(true));
                 }
                 static get observedAttributes(){return parsedProps;}
-                attributeChangedCallback(name: string, oldVal: string, newVal: string){
-                    this['_' + name] = newVal;
-                }
+                // attributeChangedCallback(name: string, oldVal: string, newVal: string){
+                //     this['_' + name] = newVal;
+                // }
             }
             this.defineProps(ceName, template, newClass, parsedProps);
             

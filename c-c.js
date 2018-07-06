@@ -96,6 +96,11 @@ export class CC extends XtallatX(HTMLElement) {
         customElements.define(name, newClass);
     }
     defineMethods(newClass, template) {
+        newClass.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
+            this['_' + name] = newVal;
+            if (this.onPropsChange)
+                this.onPropsChange(name, oldVal, newVal);
+        };
         const prevSibling = template.previousElementSibling;
         if (!prevSibling || !prevSibling.dataset.methods)
             return;
@@ -115,9 +120,6 @@ export class CC extends XtallatX(HTMLElement) {
                     this.appendChild(template.content.cloneNode(true));
                 }
                 static get observedAttributes() { return parsedProps; }
-                attributeChangedCallback(name, oldVal, newVal) {
-                    this['_' + name] = newVal;
-                }
             }
             this.defineProps(ceName, template, newClass, parsedProps);
         }
@@ -130,9 +132,6 @@ export class CC extends XtallatX(HTMLElement) {
                     this.shadowRoot.appendChild(template.content.cloneNode(true));
                 }
                 static get observedAttributes() { return parsedProps; }
-                attributeChangedCallback(name, oldVal, newVal) {
-                    this['_' + name] = newVal;
-                }
             }
             this.defineProps(ceName, template, newClass, parsedProps);
         }
