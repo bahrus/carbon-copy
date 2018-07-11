@@ -35,6 +35,19 @@
       "css": {
         "minify": true
       }
+    },
+    {
+      "name": "ES5-no-mini",
+      "js": {
+        "minify": false,
+        "compile": true
+      },
+      "html": {
+        "minify": false
+      },
+      "css": {
+        "minify": false
+      }
     }
   ],
   "lint": {
