@@ -224,7 +224,7 @@ function (_XtallatX) {
             }
           }
 
-          if (template.dataset.src && !template.hasAttribute('loaded')) {
+          if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
             var config = {
               attributeFilter: ['loaded'],
               attributes: true

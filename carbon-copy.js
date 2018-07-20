@@ -232,7 +232,7 @@ class CC extends XtallatX(HTMLElement) {
                         }
                     }
                 }
-                if (template.dataset.src && !template.hasAttribute('loaded')) {
+                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
                     const config = {
                         attributeFilter: ['loaded'],
                         attributes: true,

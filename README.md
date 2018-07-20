@@ -8,7 +8,6 @@ Note that there are other client-side include web components you may want to com
 
 Copy a template inside a DOM node.  ~1.7kb (minified/gzipped).
 
-
 Syntax:
 
 ```html
@@ -26,9 +25,11 @@ Syntax:
 </c-c>
 ```
 
+Note the use of the attribute "copy".  If this is present, you can modify the value of "from" dynamically, and it will clone the contents of the referenced template (based on id).  If an existing template has already been copied, and the from value changes, the existing inner DOM gets hidden via display:none.  If the value of "/from" reverts back, that original DOM will be reshown (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies.
+
 Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  If from starts with "../" then the search is done one level up, etc.
 
-c-c can be used, combined with templ-mount, to provide an alternative to iron-pages.
+
 
 It can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
 
@@ -37,6 +38,32 @@ It can also be used in a kind of "Reverse Polish Notation" version of Polymer's 
 c-c generates a custom element on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).  
 
 It uses shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."  Doing so will prevent the slot mechanism from working.  Hopefully, if template instantion becomes a thing, it will provide an alternative for this scenario.
+
+So here are the steps to create a web component using c-c:
+
+Step 1.  Define a template:
+
+```html
+<template id="hello-world">
+    Hello, world
+</template>
+```
+
+Step 2.  Register the web component
+
+```html
+<c-c from="/hello-world"></c-c>
+```
+
+Step 3.  Add your web component to the page
+
+```html
+<body>
+    <hello-world></hello-world>
+</body>
+```
+
+Step 4.  Stare into the abyss. 
 
 ### String properties
 
@@ -55,7 +82,7 @@ If the web component's property is set, it will reflect to an attribute with the
 ### Attaching methods to the generated custom element
 
 ```html
-      <script type="module ish" data-methods="true">
+      <script nomodule data-methods="true">
         ({
           fn: function(){
             console.log(this);
