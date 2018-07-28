@@ -14,23 +14,9 @@ import {BCC} from './b-c-c.js';
 export class CC extends BCC {
     static get is() { return 'c-c'; }
 
-    static registering: { [key: string]: boolean } = {};
+  
 
-
-    _prevId: string;
-
-
-
-
-
-    
-    _originalChildren = [];
-
-    getCEName(templateId: string) {
-        if(templateId.indexOf('-') > -1) return templateId;
-        return 'c-c-' + templateId.split('_').join('-');
-    }
-    defineProps(name: string, template: HTMLTemplateElement, newClass, props: string[], isObj: boolean){
+    defineProps(name: string, template: HTMLTemplateElement, newClass: any, props: string[], isObj: boolean){
         if(isObj){
             props.forEach(prop =>{
                 Object.defineProperty(newClass.prototype, prop, {
@@ -65,7 +51,7 @@ export class CC extends BCC {
         
         
     }
-    defineMethods(newClass, template:HTMLTemplateElement){
+    defineMethods(newClass: any, template:HTMLTemplateElement){
         newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
             this['_' + name] = newVal;
             if(this.onPropsChange) this.onPropsChange(name, oldVal, newVal);
@@ -123,89 +109,8 @@ export class CC extends BCC {
         }
         
     }
-    getHost(el: HTMLElement, level: number, maxLevel: number) {
-        let parent = el;
-        while (parent = parent.parentElement) {
-            if (parent.nodeType === 11) {
-                const newLevel = level + 1;
-                if (newLevel === maxLevel) return parent['host'];
-                return this.getHost(parent['host'], newLevel, maxLevel);
-            } else if (parent.tagName === 'HTML') {
-                return parent;
-            }
 
-        }
-    }
-    onPropsChange() {
-        if (!this._from || !this._connected || this.disabled) return;
-        //this._alreadyRegistered = true;
-        const fromTokens = this._from.split('/');
-        const fromName = fromTokens[0] || fromTokens[1];
-        const newCEName = this.getCEName(fromName);
-        const prevId = this._prevId;
-        this._prevId = newCEName;
-        if (!customElements.get(newCEName)) {
-            if (!CC.registering[newCEName]) {
-                CC.registering[newCEName] = true;
-                let template: HTMLTemplateElement;
-                if (!fromTokens[0]) {
-                    template = self[fromName];
-                } else {
-                    //const path = this._from.split('/');
-                    //const id = path[path.length - 1];
-                    const host = this.getHost(<any>this as HTMLElement, 0, fromTokens.length);
-                    if (host) {
-                        if (host.shadowRoot) {
-                            template = host.shadowRoot.getElementById(fromName);
-                            if (!template) template = host.getElementById(fromName);
-                        } else {
-                            template = host.querySelector('#' + fromName);
-                        }
-                    }
 
-                }
-                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
-                    const config: MutationObserverInit = {
-                        attributeFilter: ['loaded'],
-                        attributes: true,
-                    }
-                    const mutationObserver = new MutationObserver((mr: MutationRecord[]) => {
-                        this.createCE(template);
-                        mutationObserver.disconnect();
-                    });
-                    mutationObserver.observe(template, config);
-                } else {
-                    this.createCE(template);
-                }
-
-            }
-        }
-        if(!this._copy) return;
-        customElements.whenDefined(newCEName).then(() => {
-
-            //const name = newCEName;
-            if (prevId) {
-                const prevEl = this.querySelector(prevId) as HTMLElement;
-                if (prevEl) prevEl.style.display = 'none';
-            }
-            const prevEl = this.querySelector(newCEName) as HTMLElement;
-            if (prevEl) {
-                prevEl.style.display = 'block';
-            } else {
-                const ce = document.createElement(newCEName);
-                this._originalChildren.forEach(child => {
-                    ce.appendChild(child.cloneNode(true));
-                })
-                // while (this.childNodes.length > 0) {
-                //     ce.appendChild(this.childNodes[0]);
-                // }
-                this.appendChild(ce);
-            }
-
-        })
-
-    }
-    _lightChildren: { [key: string]: HTMLElement };
 
 }
 if (!customElements.get(CC.is)) {

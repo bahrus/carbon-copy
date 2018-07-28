@@ -10,16 +10,7 @@ import { BCC } from './b-c-c.js';
 * @demo demo/index.html
 */
 export class CC extends BCC {
-    constructor() {
-        super(...arguments);
-        this._originalChildren = [];
-    }
     static get is() { return 'c-c'; }
-    getCEName(templateId) {
-        if (templateId.indexOf('-') > -1)
-            return templateId;
-        return 'c-c-' + templateId.split('_').join('-');
-    }
     defineProps(name, template, newClass, props, isObj) {
         if (isObj) {
             props.forEach(prop => {
@@ -108,94 +99,7 @@ export class CC extends BCC {
             customElements.define(ceName, newClass);
         }
     }
-    getHost(el, level, maxLevel) {
-        let parent = el;
-        while (parent = parent.parentElement) {
-            if (parent.nodeType === 11) {
-                const newLevel = level + 1;
-                if (newLevel === maxLevel)
-                    return parent['host'];
-                return this.getHost(parent['host'], newLevel, maxLevel);
-            }
-            else if (parent.tagName === 'HTML') {
-                return parent;
-            }
-        }
-    }
-    onPropsChange() {
-        if (!this._from || !this._connected || this.disabled)
-            return;
-        //this._alreadyRegistered = true;
-        const fromTokens = this._from.split('/');
-        const fromName = fromTokens[0] || fromTokens[1];
-        const newCEName = this.getCEName(fromName);
-        const prevId = this._prevId;
-        this._prevId = newCEName;
-        if (!customElements.get(newCEName)) {
-            if (!CC.registering[newCEName]) {
-                CC.registering[newCEName] = true;
-                let template;
-                if (!fromTokens[0]) {
-                    template = self[fromName];
-                }
-                else {
-                    //const path = this._from.split('/');
-                    //const id = path[path.length - 1];
-                    const host = this.getHost(this, 0, fromTokens.length);
-                    if (host) {
-                        if (host.shadowRoot) {
-                            template = host.shadowRoot.getElementById(fromName);
-                            if (!template)
-                                template = host.getElementById(fromName);
-                        }
-                        else {
-                            template = host.querySelector('#' + fromName);
-                        }
-                    }
-                }
-                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
-                    const config = {
-                        attributeFilter: ['loaded'],
-                        attributes: true,
-                    };
-                    const mutationObserver = new MutationObserver((mr) => {
-                        this.createCE(template);
-                        mutationObserver.disconnect();
-                    });
-                    mutationObserver.observe(template, config);
-                }
-                else {
-                    this.createCE(template);
-                }
-            }
-        }
-        if (!this._copy)
-            return;
-        customElements.whenDefined(newCEName).then(() => {
-            //const name = newCEName;
-            if (prevId) {
-                const prevEl = this.querySelector(prevId);
-                if (prevEl)
-                    prevEl.style.display = 'none';
-            }
-            const prevEl = this.querySelector(newCEName);
-            if (prevEl) {
-                prevEl.style.display = 'block';
-            }
-            else {
-                const ce = document.createElement(newCEName);
-                this._originalChildren.forEach(child => {
-                    ce.appendChild(child.cloneNode(true));
-                });
-                // while (this.childNodes.length > 0) {
-                //     ce.appendChild(this.childNodes[0]);
-                // }
-                this.appendChild(ce);
-            }
-        });
-    }
 }
-CC.registering = {};
 if (!customElements.get(CC.is)) {
     customElements.define(CC.is, CC);
 }

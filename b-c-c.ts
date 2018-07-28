@@ -19,7 +19,9 @@ export class BCC extends XtallatX(HTMLElement) {
         return [copy, from, noshadow];
     }
 
-    _from: string;
+    static registering: { [key: string]: boolean } = {};
+
+    _from!: string;
 
     /**
      * Id of template to import.
@@ -32,7 +34,7 @@ export class BCC extends XtallatX(HTMLElement) {
     set from(val) {
         this.attr(from, val);
     }
-    _copy: boolean;
+    _copy!: boolean;
     /**
      * @type{boolean}
      * Must be true / present for template copy to proceed.
@@ -43,7 +45,7 @@ export class BCC extends XtallatX(HTMLElement) {
     set copy(val: boolean) {
         this.attr(copy, val, '');
     }
-    _noshadow: boolean;
+    _noshadow!: boolean;
     /**
      * Don't use shadow DOM 
      */
@@ -70,17 +72,130 @@ export class BCC extends XtallatX(HTMLElement) {
         this.onPropsChange();
     }
 
-    _connected: boolean;
+    _connected!: boolean;
 
     connectedCallback() {
         this._upgradeProperties([copy, from]);
         //this._originalChildren = this.childNodes;
-        this.childNodes.forEach(node => {
-            this._originalChildren.push(node.cloneNode(true));
+        this.childNodes.forEach((node : Element) => {
+            this._originalChildren.push(node.cloneNode(true) as HTMLElement);
         })
         this.innerHTML = '';
         this._connected = true;
         this.onPropsChange();
+    }
+
+    getCEName(templateId: string) {
+        if(templateId.indexOf('-') > -1) return templateId;
+        return 'c-c-' + templateId.split('_').join('-');
+    }
+
+    getHost(el: HTMLElement, level: number, maxLevel: number) : HTMLElement | null {
+        let parent : HTMLElement | null = el;
+        while (parent = parent.parentElement) {
+            if (parent.nodeType === 11) {
+                const newLevel = level + 1;
+                if (newLevel === maxLevel) return (<any>parent)['host'] as HTMLElement;
+                return this.getHost((<any>parent)['host'], newLevel, maxLevel);
+            } else if (parent.tagName === 'HTML') {
+                return parent;
+            }
+        }
+        return null;
+    }
+    _originalChildren  = [] as HTMLElement[];
+    _prevId!: string;
+    onPropsChange() {
+        if (!this._from || !this._connected || this.disabled) return;
+        //this._alreadyRegistered = true;
+        const fromTokens = this._from.split('/');
+        const fromName = fromTokens[0] || fromTokens[1];
+        const newCEName = this.getCEName(fromName);
+        const prevId = this._prevId;
+        this._prevId = newCEName;
+        if (!customElements.get(newCEName)) {
+            if (!BCC.registering[newCEName]) {
+                BCC.registering[newCEName] = true;
+                let template: HTMLTemplateElement | null = null;
+                if (!fromTokens[0]) {
+                    template = (<any>self)[fromName];
+                } else {
+                    //const path = this._from.split('/');
+                    //const id = path[path.length - 1];
+                    const host = this.getHost(<any>this as HTMLElement, 0, fromTokens.length);
+                    if (host) {
+                        const cssSelector = '#' + fromName;
+                        if (host.shadowRoot) {
+                            template = host.shadowRoot.querySelector(cssSelector);
+                        }
+                        if (!template) template = host.querySelector(cssSelector);
+                    }
+
+                }
+                if(!template) throw '404';
+                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
+                    const config: MutationObserverInit = {
+                        attributeFilter: ['loaded'],
+                        attributes: true,
+                    }
+                    const mutationObserver = new MutationObserver((mr: MutationRecord[]) => {
+                        this.createCE(template as HTMLTemplateElement);
+                        mutationObserver.disconnect();
+                    });
+                    mutationObserver.observe(template, config);
+                } else {
+                    this.createCE(template);
+                }
+
+            }
+        }
+        if(!this._copy) return;
+        
+        customElements.whenDefined(newCEName).then(() => {
+
+            //const name = newCEName;
+            if (prevId) {
+                const prevEl = this.querySelector(prevId) as HTMLElement;
+                if (prevEl) prevEl.style.display = 'none';
+            }
+            const prevEl = this.querySelector(newCEName) as HTMLElement;
+            if (prevEl) {
+                prevEl.style.display = 'block';
+            } else {
+                const ce = document.createElement(newCEName);
+                this._originalChildren.forEach(child => {
+                    ce.appendChild(child.cloneNode(true));
+                })
+                // while (this.childNodes.length > 0) {
+                //     ce.appendChild(this.childNodes[0]);
+                // }
+                this.appendChild(ce);
+            }
+
+        })
+
+    }
+
+    createCE(template: HTMLTemplateElement) {
+        const ceName = this.getCEName(template.id);
+        if (this._noshadow) {
+            class newClass extends HTMLElement {
+                connectedCallback() {
+                    this.appendChild(template.content.cloneNode(true));
+                }
+            }
+            customElements.define(ceName, newClass);
+        } else {
+            class newClass extends HTMLElement {
+                constructor() {
+                    super();
+                    this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true));
+                }
+
+            }
+            customElements.define(ceName, newClass);
+        }
+        
     }
 }
 if (!customElements.get(BCC.is)) {
