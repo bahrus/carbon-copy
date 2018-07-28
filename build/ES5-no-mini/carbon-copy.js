@@ -9,8 +9,12 @@
         babelHelpers.inherits(_class, _superClass);
 
         function _class() {
+          var _this;
+
           babelHelpers.classCallCheck(this, _class);
-          return babelHelpers.possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+          _this = babelHelpers.possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+          _this._evCount = {};
+          return _this;
         }
 
         babelHelpers.createClass(_class, [{
@@ -21,6 +25,19 @@
             } else {
               this.removeAttribute(name);
             }
+          }
+        }, {
+          key: "incAttr",
+          value: function incAttr(name) {
+            var ec = this._evCount;
+
+            if (name in ec) {
+              ec[name]++;
+            } else {
+              ec[name] = 0;
+            }
+
+            this.attr(name, ec[name].toString());
           }
         }, {
           key: "attributeChangedCallback",
@@ -34,24 +51,26 @@
         }, {
           key: "de",
           value: function de(name, detail) {
-            var newEvent = new CustomEvent(name + '-changed', {
+            var eventName = name + '-changed';
+            var newEvent = new CustomEvent(eventName, {
               detail: detail,
               bubbles: true,
               composed: false
             });
             this.dispatchEvent(newEvent);
+            this.incAttr(eventName);
             return newEvent;
           }
         }, {
           key: "_upgradeProperties",
           value: function _upgradeProperties(props) {
-            var _this = this;
+            var _this2 = this;
 
             props.forEach(function (prop) {
-              if (_this.hasOwnProperty(prop)) {
-                var value = _this[prop];
-                delete _this[prop];
-                _this[prop] = value;
+              if (_this2.hasOwnProperty(prop)) {
+                var value = _this2[prop];
+                delete _this2[prop];
+                _this2[prop] = value;
               }
             });
           }
@@ -94,12 +113,12 @@
     babelHelpers.inherits(CC, _XtallatX);
 
     function CC() {
-      var _this2;
+      var _this3;
 
       babelHelpers.classCallCheck(this, CC);
-      _this2 = babelHelpers.possibleConstructorReturn(this, (CC.__proto__ || Object.getPrototypeOf(CC)).apply(this, arguments));
-      _this2._originalChildren = [];
-      return _this2;
+      _this3 = babelHelpers.possibleConstructorReturn(this, (CC.__proto__ || Object.getPrototypeOf(CC)).apply(this, arguments));
+      _this3._originalChildren = [];
+      return _this3;
     }
 
     babelHelpers.createClass(CC, [{
@@ -125,13 +144,13 @@
     }, {
       key: "connectedCallback",
       value: function connectedCallback() {
-        var _this3 = this;
+        var _this4 = this;
 
         this._upgradeProperties([copy, from]); //this._originalChildren = this.childNodes;
 
 
         this.childNodes.forEach(function (node) {
-          _this3._originalChildren.push(node.cloneNode(true));
+          _this4._originalChildren.push(node.cloneNode(true));
         });
         this.innerHTML = '';
         this._connected = true;
@@ -145,23 +164,41 @@
       }
     }, {
       key: "defineProps",
-      value: function defineProps(name, template, newClass, props) {
-        var _this4 = this;
+      value: function defineProps(name, template, newClass, props, isObj) {
+        var _this5 = this;
 
-        props.forEach(function (prop) {
-          Object.defineProperty(newClass.prototype, prop, {
-            get: function get() {
-              return _this4['_' + prop];
-            },
-            set: function set(val) {
-              this.attr(prop, val);
-            },
-            enumerable: true,
-            configurable: true
+        if (isObj) {
+          props.forEach(function (prop) {
+            Object.defineProperty(newClass.prototype, prop, {
+              get: function get() {
+                return _this5['_' + prop];
+              },
+              set: function set(val) {
+                this['_' + prop];
+                this.de(prop, {
+                  value: val
+                });
+              },
+              enumerable: true,
+              configurable: true
+            });
           });
-        });
+        } else {
+          props.forEach(function (prop) {
+            Object.defineProperty(newClass.prototype, prop, {
+              get: function get() {
+                return _this5['_' + prop];
+              },
+              set: function set(val) {
+                this.attr(prop, val);
+              },
+              enumerable: true,
+              configurable: true
+            });
+          });
+        }
+
         this.defineMethods(newClass, template);
-        customElements.define(name, newClass);
       }
     }, {
       key: "defineMethods",
@@ -182,9 +219,14 @@
     }, {
       key: "createCE",
       value: function createCE(template) {
-        var ceName = this.getCEName(template.id);
-        var propsAttrs = template.dataset.strProps;
-        var parsedProps = propsAttrs ? propsAttrs.split(',') : [];
+        var ceName = this.getCEName(template.id); //if(customElements.get(ceName)) return;
+
+        var ds = template.dataset;
+        var strPropsAttr = ds.strProps;
+        var parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
+        var objPropsAttr = ds.objProps;
+        var parsedObjProps = objPropsAttr ? objPropsAttr.split(',') : [];
+        var allProps = parsedStrProps.concat(parsedObjProps);
 
         if (this._noshadow) {
           var newClass =
@@ -200,20 +242,23 @@
             babelHelpers.createClass(newClass, [{
               key: "connectedCallback",
               value: function connectedCallback() {
-                this._upgradeProperties(parsedProps);
+                this._upgradeProperties(allProps);
 
+                this._connected = true;
                 this.appendChild(template.content.cloneNode(true));
               }
             }], [{
               key: "observedAttributes",
               get: function get() {
-                return parsedProps;
+                return parsedStrProps;
               }
             }]);
             return newClass;
           }(XtallatX(HTMLElement));
 
-          this.defineProps(ceName, template, newClass, parsedProps);
+          this.defineProps(ceName, template, newClass, parsedStrProps, false);
+          this.defineProps(ceName, template, newClass, parsedObjProps, true);
+          customElements.define(ceName, newClass);
         } else {
           var _newClass =
           /*#__PURE__*/
@@ -221,32 +266,39 @@
             babelHelpers.inherits(_newClass, _XtallatX3);
 
             function _newClass() {
-              var _this5;
+              var _this6;
 
               babelHelpers.classCallCheck(this, _newClass);
-              _this5 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+              _this6 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
 
-              _this5._upgradeProperties(parsedProps);
-
-              _this5.attachShadow({
+              _this6.attachShadow({
                 mode: 'open'
               });
 
-              _this5.shadowRoot.appendChild(template.content.cloneNode(true));
+              _this6.shadowRoot.appendChild(template.content.cloneNode(true));
 
-              return _this5;
+              return _this6;
             }
 
-            babelHelpers.createClass(_newClass, null, [{
+            babelHelpers.createClass(_newClass, [{
+              key: "connectedCallback",
+              value: function connectedCallback() {
+                this._connected = true;
+
+                this._upgradeProperties(allProps);
+              }
+            }], [{
               key: "observedAttributes",
               get: function get() {
-                return parsedProps;
+                return parsedStrProps;
               }
             }]);
             return _newClass;
           }(XtallatX(HTMLElement));
 
-          this.defineProps(ceName, template, _newClass, parsedProps);
+          this.defineProps(ceName, template, _newClass, parsedStrProps, false);
+          this.defineProps(ceName, template, _newClass, parsedObjProps, true);
+          customElements.define(ceName, _newClass);
         }
       }
     }, {
@@ -267,7 +319,7 @@
     }, {
       key: "onPropsChange",
       value: function onPropsChange() {
-        var _this6 = this;
+        var _this7 = this;
 
         if (!this._from || !this._connected || this.disabled) return; //this._alreadyRegistered = true;
 
@@ -306,7 +358,7 @@
                 attributes: true
               };
               var mutationObserver = new MutationObserver(function (mr) {
-                _this6.createCE(template);
+                _this7.createCE(template);
 
                 mutationObserver.disconnect();
               });
@@ -321,26 +373,26 @@
         customElements.whenDefined(newCEName).then(function () {
           //const name = newCEName;
           if (prevId) {
-            var _prevEl = _this6.querySelector(prevId);
+            var _prevEl = _this7.querySelector(prevId);
 
             if (_prevEl) _prevEl.style.display = 'none';
           }
 
-          var prevEl = _this6.querySelector(newCEName);
+          var prevEl = _this7.querySelector(newCEName);
 
           if (prevEl) {
             prevEl.style.display = 'block';
           } else {
             var ce = document.createElement(newCEName);
 
-            _this6._originalChildren.forEach(function (child) {
+            _this7._originalChildren.forEach(function (child) {
               ce.appendChild(child.cloneNode(true));
             }); // while (this.childNodes.length > 0) {
             //     ce.appendChild(this.childNodes[0]);
             // }
 
 
-            _this6.appendChild(ce);
+            _this7.appendChild(ce);
           }
         });
       }

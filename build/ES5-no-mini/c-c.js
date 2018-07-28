@@ -69,23 +69,41 @@ function (_XtallatX) {
     }
   }, {
     key: "defineProps",
-    value: function defineProps(name, template, newClass, props) {
+    value: function defineProps(name, template, newClass, props, isObj) {
       var _this3 = this;
 
-      props.forEach(function (prop) {
-        Object.defineProperty(newClass.prototype, prop, {
-          get: function get() {
-            return _this3['_' + prop];
-          },
-          set: function set(val) {
-            this.attr(prop, val);
-          },
-          enumerable: true,
-          configurable: true
+      if (isObj) {
+        props.forEach(function (prop) {
+          Object.defineProperty(newClass.prototype, prop, {
+            get: function get() {
+              return _this3['_' + prop];
+            },
+            set: function set(val) {
+              this['_' + prop];
+              this.de(prop, {
+                value: val
+              });
+            },
+            enumerable: true,
+            configurable: true
+          });
         });
-      });
+      } else {
+        props.forEach(function (prop) {
+          Object.defineProperty(newClass.prototype, prop, {
+            get: function get() {
+              return _this3['_' + prop];
+            },
+            set: function set(val) {
+              this.attr(prop, val);
+            },
+            enumerable: true,
+            configurable: true
+          });
+        });
+      }
+
       this.defineMethods(newClass, template);
-      customElements.define(name, newClass);
     }
   }, {
     key: "defineMethods",
@@ -106,9 +124,14 @@ function (_XtallatX) {
   }, {
     key: "createCE",
     value: function createCE(template) {
-      var ceName = this.getCEName(template.id);
-      var propsAttrs = template.dataset.strProps;
-      var parsedProps = propsAttrs ? propsAttrs.split(',') : [];
+      var ceName = this.getCEName(template.id); //if(customElements.get(ceName)) return;
+
+      var ds = template.dataset;
+      var strPropsAttr = ds.strProps;
+      var parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
+      var objPropsAttr = ds.objProps;
+      var parsedObjProps = objPropsAttr ? objPropsAttr.split(',') : [];
+      var allProps = parsedStrProps.concat(parsedObjProps);
 
       if (this._noshadow) {
         var newClass =
@@ -124,20 +147,23 @@ function (_XtallatX) {
           babelHelpers.createClass(newClass, [{
             key: "connectedCallback",
             value: function connectedCallback() {
-              this._upgradeProperties(parsedProps);
+              this._upgradeProperties(allProps);
 
+              this._connected = true;
               this.appendChild(template.content.cloneNode(true));
             }
           }], [{
             key: "observedAttributes",
             get: function get() {
-              return parsedProps;
+              return parsedStrProps;
             }
           }]);
           return newClass;
         }(XtallatX(HTMLElement));
 
-        this.defineProps(ceName, template, newClass, parsedProps);
+        this.defineProps(ceName, template, newClass, parsedStrProps, false);
+        this.defineProps(ceName, template, newClass, parsedObjProps, true);
+        customElements.define(ceName, newClass);
       } else {
         var _newClass =
         /*#__PURE__*/
@@ -150,8 +176,6 @@ function (_XtallatX) {
             babelHelpers.classCallCheck(this, _newClass);
             _this4 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
 
-            _this4._upgradeProperties(parsedProps);
-
             _this4.attachShadow({
               mode: 'open'
             });
@@ -161,16 +185,25 @@ function (_XtallatX) {
             return _this4;
           }
 
-          babelHelpers.createClass(_newClass, null, [{
+          babelHelpers.createClass(_newClass, [{
+            key: "connectedCallback",
+            value: function connectedCallback() {
+              this._connected = true;
+
+              this._upgradeProperties(allProps);
+            }
+          }], [{
             key: "observedAttributes",
             get: function get() {
-              return parsedProps;
+              return parsedStrProps;
             }
           }]);
           return _newClass;
         }(XtallatX(HTMLElement));
 
-        this.defineProps(ceName, template, _newClass, parsedProps);
+        this.defineProps(ceName, template, _newClass, parsedStrProps, false);
+        this.defineProps(ceName, template, _newClass, parsedObjProps, true);
+        customElements.define(ceName, _newClass);
       }
     }
   }, {

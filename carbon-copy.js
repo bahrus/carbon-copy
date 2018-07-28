@@ -4,6 +4,10 @@
     const disabled = 'disabled';
 function XtallatX(superClass) {
     return class extends superClass {
+        constructor() {
+            super(...arguments);
+            this._evCount = {};
+        }
         static get observedAttributes() {
             return [disabled];
         }
@@ -21,6 +25,16 @@ function XtallatX(superClass) {
                 this.removeAttribute(name);
             }
         }
+        incAttr(name) {
+            const ec = this._evCount;
+            if (name in ec) {
+                ec[name]++;
+            }
+            else {
+                ec[name] = 0;
+            }
+            this.attr(name, ec[name].toString());
+        }
         attributeChangedCallback(name, oldVal, newVal) {
             switch (name) {
                 case disabled:
@@ -29,12 +43,14 @@ function XtallatX(superClass) {
             }
         }
         de(name, detail) {
-            const newEvent = new CustomEvent(name + '-changed', {
+            const eventName = name + '-changed';
+            const newEvent = new CustomEvent(eventName, {
                 detail: detail,
                 bubbles: true,
                 composed: false,
             });
             this.dispatchEvent(newEvent);
+            this.incAttr(eventName);
             return newEvent;
         }
         _upgradeProperties(props) {
@@ -130,21 +146,39 @@ class CC extends XtallatX(HTMLElement) {
             return templateId;
         return 'c-c-' + templateId.split('_').join('-');
     }
-    defineProps(name, template, newClass, props) {
-        props.forEach(prop => {
-            Object.defineProperty(newClass.prototype, prop, {
-                get: () => {
-                    return this['_' + prop];
-                },
-                set: function (val) {
-                    this.attr(prop, val);
-                },
-                enumerable: true,
-                configurable: true,
+    defineProps(name, template, newClass, props, isObj) {
+        if (isObj) {
+            props.forEach(prop => {
+                Object.defineProperty(newClass.prototype, prop, {
+                    get: () => {
+                        return this['_' + prop];
+                    },
+                    set: function (val) {
+                        this['_' + prop];
+                        this.de(prop, {
+                            value: val
+                        });
+                    },
+                    enumerable: true,
+                    configurable: true,
+                });
             });
-        });
+        }
+        else {
+            props.forEach(prop => {
+                Object.defineProperty(newClass.prototype, prop, {
+                    get: () => {
+                        return this['_' + prop];
+                    },
+                    set: function (val) {
+                        this.attr(prop, val);
+                    },
+                    enumerable: true,
+                    configurable: true,
+                });
+            });
+        }
         this.defineMethods(newClass, template);
-        customElements.define(name, newClass);
     }
     defineMethods(newClass, template) {
         newClass.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
@@ -162,29 +196,42 @@ class CC extends XtallatX(HTMLElement) {
     }
     createCE(template) {
         const ceName = this.getCEName(template.id);
-        const propsAttrs = template.dataset.strProps;
-        const parsedProps = propsAttrs ? propsAttrs.split(',') : [];
+        //if(customElements.get(ceName)) return;
+        const ds = template.dataset;
+        const strPropsAttr = ds.strProps;
+        const parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
+        const objPropsAttr = ds.objProps;
+        const parsedObjProps = objPropsAttr ? objPropsAttr.split(',') : [];
+        const allProps = parsedStrProps.concat(parsedObjProps);
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {
                 connectedCallback() {
-                    this._upgradeProperties(parsedProps);
+                    this._upgradeProperties(allProps);
+                    this._connected = true;
                     this.appendChild(template.content.cloneNode(true));
                 }
-                static get observedAttributes() { return parsedProps; }
+                static get observedAttributes() { return parsedStrProps; }
             }
-            this.defineProps(ceName, template, newClass, parsedProps);
+            this.defineProps(ceName, template, newClass, parsedStrProps, false);
+            this.defineProps(ceName, template, newClass, parsedObjProps, true);
+            customElements.define(ceName, newClass);
         }
         else {
             class newClass extends XtallatX(HTMLElement) {
                 constructor() {
                     super();
-                    this._upgradeProperties(parsedProps);
                     this.attachShadow({ mode: 'open' });
                     this.shadowRoot.appendChild(template.content.cloneNode(true));
                 }
-                static get observedAttributes() { return parsedProps; }
+                connectedCallback() {
+                    this._connected = true;
+                    this._upgradeProperties(allProps);
+                }
+                static get observedAttributes() { return parsedStrProps; }
             }
-            this.defineProps(ceName, template, newClass, parsedProps);
+            this.defineProps(ceName, template, newClass, parsedStrProps, false);
+            this.defineProps(ceName, template, newClass, parsedObjProps, true);
+            customElements.define(ceName, newClass);
         }
     }
     getHost(el, level, maxLevel) {
