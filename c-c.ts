@@ -3,7 +3,7 @@ import {BCC} from './b-c-c.js';
 
 
 /**
-* `carbon-copy`
+* `c-c`
 * Dependency free web component that allows copying templates.
 * 
 *
@@ -20,7 +20,7 @@ export class CC extends BCC {
         if(isObj){
             props.forEach(prop =>{
                 Object.defineProperty(newClass.prototype, prop, {
-                    get: () => { 
+                    get: function(){ 
                         return this['_' + prop]; 
                     },
                     set: function (val) {
@@ -36,7 +36,7 @@ export class CC extends BCC {
         }else{
             props.forEach(prop =>{
                 Object.defineProperty(newClass.prototype, prop, {
-                    get: () => { 
+                    get: function(){ 
                         return this['_' + prop]; 
                     },
                     set: function (val) {
@@ -52,15 +52,28 @@ export class CC extends BCC {
         
     }
     defineMethods(newClass: any, template:HTMLTemplateElement){
-        newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
-            this['_' + name] = newVal;
-            if(this.onPropsChange) this.onPropsChange(name, oldVal, newVal);
-        }
         const prevSibling = template.previousElementSibling as HTMLElement;
         if(!prevSibling || !prevSibling.dataset.methods) return;
         const evalScript = eval(prevSibling.innerHTML);
         for(const fn in evalScript){
             newClass.prototype[fn] = evalScript[fn];
+        }
+    }
+
+    addAttributeChangeCallback(newClass: any){
+        newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
+            let val: any = newVal;
+            let isObj = false;
+            const objProps = this.constructor.objProps;
+            if(objProps && objProps.indexOf(name) > -1){
+                val = JSON.parse(newVal);
+                isObj = true;
+            }
+            this['_' + name] = val;
+            this.de(name, {
+                value: val
+            });
+            if(this.onPropsChange) this.onPropsChange(name, oldVal, val);
         }
     }
     
@@ -76,6 +89,9 @@ export class CC extends BCC {
         if (this._noshadow) {
 
             class newClass extends XtallatX(HTMLElement) {
+                static getObjProps(){
+                    return parsedObjProps;
+                }
                 connectedCallback() {
                     this._upgradeProperties(allProps);
                     this._connected = true;
@@ -88,6 +104,9 @@ export class CC extends BCC {
             customElements.define(ceName, newClass);
         } else {
             class newClass extends XtallatX(HTMLElement) {
+                static get objProps(){
+                    return parsedObjProps;
+                }
                 constructor() {
                     super();
                     this.attachShadow({ mode: 'open' });
@@ -105,6 +124,7 @@ export class CC extends BCC {
             this.defineProps(ceName, template, newClass, parsedStrProps, false);
             this.defineProps(ceName, template, newClass, parsedObjProps, true);
             this.defineMethods(newClass, template);
+            this.addAttributeChangeCallback(newClass);
             customElements.define(ceName, newClass);
         }
         

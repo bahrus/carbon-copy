@@ -1,5 +1,7 @@
 {
   "sources":[
+    "b-c-c.js",
+    "b-c-c.iife.js",
     "c-c.js",
     "carbon-copy.js"
   ],

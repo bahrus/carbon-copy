@@ -6,7 +6,9 @@
 
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
-Copy a template inside a DOM node.  ~1.7kb (minified/gzipped).
+Copy a template inside a DOM node. 
+
+For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c  It is ~1.5 kb minified and gzipped.  It's functionality doesn't include the sections starting with "Adding string properties".  For the full functionality, use element c-c, which is defined by file c-c.js.  carbon-copy.js is an iife version of c-c.js.  It is ~2.0 kb minifed and gzipped.
 
 Syntax:
 
@@ -65,7 +67,7 @@ Step 3.  Add your web component to the page
 
 Step 4.  Stare into the abyss. 
 
-### String properties
+### Adding string properties
 
 The template can specify a list of string properties to add to the automatically generated web component:
 
@@ -100,6 +102,22 @@ If the web component's property is set, it will reflect to an attribute with the
 ```
 
 All attribute changes call onPropsChange if it is defined.
+
+### Adding Object Properties
+
+```html
+<template id="beautiful" data-data-obj-props="d,e">
+    <div>
+        <slot name="subjectIs"></slot> beautiful
+    </div>
+</template>
+```
+
+Object properties also observe attribute changes with the same name as the property, and also calls onPropsChange.
+
+If you set the attribute value for an object property, it will assume the string is JSON, and will parse it.
+
+Changes to object properties fire events with the name "[name of prop]-changed".
 
 ## Install the Polymer-CLI
 
