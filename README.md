@@ -39,7 +39,7 @@ It can also be used in a kind of "Reverse Polish Notation" version of Polymer's 
 
 c-c generates a custom element on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).  
 
-It uses shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."  Doing so will prevent the slot mechanism from working.  Hopefully, if template instantion becomes a thing, it will provide an alternative for this scenario.
+It uses shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."  Doing so will prevent the slot mechanism from working.  Hopefully, if template instantiation becomes a thing, it will provide an alternative for this scenario.
 
 So here are the steps to create a web component using c-c:
 
