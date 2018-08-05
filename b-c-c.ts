@@ -91,8 +91,8 @@ export class BCC extends XtallatX(HTMLElement) {
     }
 
     getHost(el: HTMLElement, level: number, maxLevel: number) : HTMLElement | null {
-        let parent : HTMLElement | null = el;
-        while (parent = parent.parentElement) {
+        let parent : any = el;
+        while (parent = (parent.parentElement || parent.parentNode)) {
             if (parent.nodeType === 11) {
                 const newLevel = level + 1;
                 if (newLevel === maxLevel) return (<any>parent)['host'] as HTMLElement;
@@ -132,7 +132,7 @@ export class BCC extends XtallatX(HTMLElement) {
                     }
 
                 }
-                if(!template) throw '404';
+                if(!template) throw '404: ' + fromName;
                 if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
                     const config: MutationObserverInit = {
                         attributeFilter: ['loaded'],

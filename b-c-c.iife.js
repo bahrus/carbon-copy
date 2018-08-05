@@ -148,7 +148,7 @@ class BCC extends XtallatX(HTMLElement) {
     }
     getHost(el, level, maxLevel) {
         let parent = el;
-        while (parent = parent.parentElement) {
+        while (parent = (parent.parentElement || parent.parentNode)) {
             if (parent.nodeType === 11) {
                 const newLevel = level + 1;
                 if (newLevel === maxLevel)
@@ -191,7 +191,7 @@ class BCC extends XtallatX(HTMLElement) {
                     }
                 }
                 if (!template)
-                    throw '404';
+                    throw '404: ' + fromName;
                 if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
                     const config = {
                         attributeFilter: ['loaded'],

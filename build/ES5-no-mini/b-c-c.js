@@ -72,7 +72,7 @@ function (_XtallatX) {
     value: function getHost(el, level, maxLevel) {
       var parent = el;
 
-      while (parent = parent.parentElement) {
+      while (parent = parent.parentElement || parent.parentNode) {
         if (parent.nodeType === 11) {
           var newLevel = level + 1;
           if (newLevel === maxLevel) return parent['host'];
@@ -121,7 +121,7 @@ function (_XtallatX) {
             }
           }
 
-          if (!template) throw '404';
+          if (!template) throw '404: ' + fromName;
 
           if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
             var config = {
