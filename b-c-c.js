@@ -82,7 +82,7 @@ export class BCC extends XtallatX(HTMLElement) {
     }
     getHost(el, level, maxLevel) {
         let parent = el;
-        while (parent = (parent.parentElement || parent.parentNode)) {
+        while (parent = (parent.parentNode)) {
             if (parent.nodeType === 11) {
                 const newLevel = level + 1;
                 if (newLevel === maxLevel)
