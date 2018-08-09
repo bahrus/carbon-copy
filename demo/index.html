@@ -26,6 +26,9 @@
           :host{
             background-color:pink;
           }
+          ::slotted(*){
+            background-color:mediumspringgreen;
+          }
         </style>
         No matter what we <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
       </template>
@@ -45,12 +48,20 @@
           div{
             background-color:burlywood;
           }
+          ::slotted(*){
+            color:orchid;
+          }
         </style>
         <div>
           <slot name="subjectIs"></slot> beautiful
         </div>
       </template>
       <template id="down">
+        <style>
+          div{
+            background-color:olivedrab;
+          }
+        </style>
         <div>So don't you bring me down today</div>
       </template>
       <template id="chorus">
@@ -105,7 +116,6 @@
               <span slot="subjectIs1">I am</span>
               <span slot="subjectIs2">I am</span>
             </b-c-c>
-            <!-- <b-c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></b-c-c> -->
           </p>
           <p>
   

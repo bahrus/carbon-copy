@@ -138,6 +138,9 @@ Changes to object properties fire events with the name "[name of prop]-changed".
           :host{
             background-color:pink;
           }
+          ::slotted(*){
+            background-color:mediumspringgreen;
+          }
         </style>
         No matter what we <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
       </template>
@@ -157,12 +160,20 @@ Changes to object properties fire events with the name "[name of prop]-changed".
           div{
             background-color:burlywood;
           }
+          ::slotted(*){
+            color:orchid;
+          }
         </style>
         <div>
           <slot name="subjectIs"></slot> beautiful
         </div>
       </template>
       <template id="down">
+        <style>
+          div{
+            background-color:olivedrab;
+          }
+        </style>
         <div>So don't you bring me down today</div>
       </template>
       <template id="chorus">
