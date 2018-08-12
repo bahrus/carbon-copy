@@ -106,7 +106,7 @@ All attribute changes call onPropsChange if it is defined.
 ### Adding Object Properties
 
 ```html
-<template id="beautiful" data-data-obj-props="d,e">
+<template id="beautiful" data-obj-props="d,e">
     <div>
         <slot name="subjectIs"></slot> beautiful
     </div>
