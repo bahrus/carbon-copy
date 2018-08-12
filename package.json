@@ -15,8 +15,5 @@
     "wct-browser-legacy": "^1.0.0",
     "@polymer/polymer": "^3.0.0",
     "jiife": "^0.0.2"
-  },
-  "scripts": {
-    "preversion": "node postbuild.js"
   }
 }
