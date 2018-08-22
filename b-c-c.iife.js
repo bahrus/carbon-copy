@@ -1,7 +1,15 @@
 
     //@ts-check
     (function () {
-    const disabled = 'disabled';
+    function define(custEl) {
+    let tagName = custEl.is;
+    if (customElements.get(tagName)) {
+        console.warn('Already registered ' + tagName);
+        return;
+    }
+    customElements.define(tagName, custEl);
+}
+const disabled = 'disabled';
 function XtallatX(superClass) {
     return class extends superClass {
         constructor() {
@@ -254,8 +262,6 @@ class BCC extends XtallatX(HTMLElement) {
     }
 }
 BCC.registering = {};
-if (!customElements.get(BCC.is)) {
-    customElements.define(BCC.is, BCC);
-}
+define(BCC);
     })();  
         

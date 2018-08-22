@@ -1,7 +1,15 @@
 
     //@ts-check
     (function () {
-    const disabled = 'disabled';
+    function define(custEl) {
+    let tagName = custEl.is;
+    if (customElements.get(tagName)) {
+        console.warn('Already registered ' + tagName);
+        return;
+    }
+    customElements.define(tagName, custEl);
+}
+const disabled = 'disabled';
 function XtallatX(superClass) {
     return class extends superClass {
         constructor() {
@@ -254,9 +262,7 @@ class BCC extends XtallatX(HTMLElement) {
     }
 }
 BCC.registering = {};
-if (!customElements.get(BCC.is)) {
-    customElements.define(BCC.is, BCC);
-}
+define(BCC);
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -276,7 +282,7 @@ class CC extends BCC {
                         return this['_' + prop];
                     },
                     set: function (val) {
-                        this['_' + prop];
+                        this['_' + prop] = val;
                         this.de(prop, {
                             value: val
                         });
@@ -329,7 +335,6 @@ class CC extends BCC {
     }
     createCE(template) {
         const ceName = this.getCEName(template.id);
-        //if(customElements.get(ceName)) return;
         const ds = template.dataset;
         const strPropsAttr = ds.strProps;
         const parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
@@ -338,6 +343,7 @@ class CC extends BCC {
         const allProps = parsedStrProps.concat(parsedObjProps);
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {
+                static get is() { return ceName; }
                 static getObjProps() {
                     return parsedObjProps;
                 }
@@ -350,7 +356,7 @@ class CC extends BCC {
             }
             this.defineProps(ceName, template, newClass, parsedStrProps, false);
             this.defineProps(ceName, template, newClass, parsedObjProps, true);
-            customElements.define(ceName, newClass);
+            define(newClass);
         }
         else {
             class newClass extends XtallatX(HTMLElement) {
@@ -376,8 +382,6 @@ class CC extends BCC {
         }
     }
 }
-if (!customElements.get(CC.is)) {
-    customElements.define(CC.is, CC);
-}
+define(CC);
     })();  
         

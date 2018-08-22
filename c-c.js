@@ -1,5 +1,6 @@
 import { XtallatX } from 'xtal-latx/xtal-latx.js';
 import { BCC } from './b-c-c.js';
+import { define } from 'xtal-latx/define.js';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -19,7 +20,7 @@ export class CC extends BCC {
                         return this['_' + prop];
                     },
                     set: function (val) {
-                        this['_' + prop];
+                        this['_' + prop] = val;
                         this.de(prop, {
                             value: val
                         });
@@ -72,7 +73,6 @@ export class CC extends BCC {
     }
     createCE(template) {
         const ceName = this.getCEName(template.id);
-        //if(customElements.get(ceName)) return;
         const ds = template.dataset;
         const strPropsAttr = ds.strProps;
         const parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
@@ -81,6 +81,7 @@ export class CC extends BCC {
         const allProps = parsedStrProps.concat(parsedObjProps);
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {
+                static get is() { return ceName; }
                 static getObjProps() {
                     return parsedObjProps;
                 }
@@ -93,7 +94,7 @@ export class CC extends BCC {
             }
             this.defineProps(ceName, template, newClass, parsedStrProps, false);
             this.defineProps(ceName, template, newClass, parsedObjProps, true);
-            customElements.define(ceName, newClass);
+            define(newClass);
         }
         else {
             class newClass extends XtallatX(HTMLElement) {
@@ -119,7 +120,5 @@ export class CC extends BCC {
         }
     }
 }
-if (!customElements.get(CC.is)) {
-    customElements.define(CC.is, CC);
-}
+define(CC);
 //# sourceMappingURL=c-c.js.map

@@ -1,5 +1,16 @@
 //@ts-check
 (function () {
+  function define(custEl) {
+    var tagName = custEl.is;
+
+    if (customElements.get(tagName)) {
+      console.warn('Already registered ' + tagName);
+      return;
+    }
+
+    customElements.define(tagName, custEl);
+  }
+
   var disabled = 'disabled';
 
   function XtallatX(superClass) {
@@ -369,10 +380,7 @@
   }(XtallatX(HTMLElement));
 
   BCC.registering = {};
-
-  if (!customElements.get(BCC.is)) {
-    customElements.define(BCC.is, BCC);
-  }
+  define(BCC);
   /**
   * `c-c`
   * Dependency free web component that allows copying templates.
@@ -382,7 +390,6 @@
   * @polymer
   * @demo demo/index.html
   */
-
 
   var CC =
   /*#__PURE__*/
@@ -404,7 +411,7 @@
                 return this['_' + prop];
               },
               set: function set(val) {
-                this['_' + prop];
+                this['_' + prop] = val;
                 this.de(prop, {
                   value: val
                 });
@@ -462,8 +469,7 @@
     }, {
       key: "createCE",
       value: function createCE(template) {
-        var ceName = this.getCEName(template.id); //if(customElements.get(ceName)) return;
-
+        var ceName = this.getCEName(template.id);
         var ds = template.dataset;
         var strPropsAttr = ds.strProps;
         var parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
@@ -496,6 +502,11 @@
                 return parsedObjProps;
               }
             }, {
+              key: "is",
+              get: function get() {
+                return ceName;
+              }
+            }, {
               key: "observedAttributes",
               get: function get() {
                 return allProps;
@@ -506,7 +517,7 @@
 
           this.defineProps(ceName, template, newClass, parsedStrProps, false);
           this.defineProps(ceName, template, newClass, parsedObjProps, true);
-          customElements.define(ceName, newClass);
+          define(newClass);
         } else {
           var _newClass2 =
           /*#__PURE__*/
@@ -566,7 +577,5 @@
     return CC;
   }(BCC);
 
-  if (!customElements.get(CC.is)) {
-    customElements.define(CC.is, CC);
-  }
+  define(CC);
 })();

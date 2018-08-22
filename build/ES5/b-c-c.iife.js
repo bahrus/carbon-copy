@@ -1,5 +1,16 @@
 //@ts-check
 (function () {
+  function define(custEl) {
+    var tagName = custEl.is;
+
+    if (customElements.get(tagName)) {
+      console.warn('Already registered ' + tagName);
+      return;
+    }
+
+    customElements.define(tagName, custEl);
+  }
+
   var disabled = 'disabled';
 
   function XtallatX(superClass) {
@@ -369,8 +380,5 @@
   }(XtallatX(HTMLElement));
 
   BCC.registering = {};
-
-  if (!customElements.get(BCC.is)) {
-    customElements.define(BCC.is, BCC);
-  }
+  define(BCC);
 })();

@@ -1,4 +1,5 @@
 import { XtallatX } from 'xtal-latx/xtal-latx.js';
+import { define } from 'xtal-latx/define.js';
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
@@ -189,7 +190,5 @@ export class BCC extends XtallatX(HTMLElement) {
     }
 }
 BCC.registering = {};
-if (!customElements.get(BCC.is)) {
-    customElements.define(BCC.is, BCC);
-}
+define(BCC);
 //# sourceMappingURL=b-c-c.js.map
