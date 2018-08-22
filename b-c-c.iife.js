@@ -18,12 +18,8 @@ function XtallatX(superClass) {
             this.attr(disabled, val, '');
         }
         attr(name, val, trueVal) {
-            if (val) {
-                this.setAttribute(name, trueVal || val);
-            }
-            else {
-                this.removeAttribute(name);
-            }
+            const setOrRemove = val ? 'set' : 'remove';
+            this[setOrRemove + 'Attribute'](name, trueVal || val);
         }
         to$(number) {
             const mod = number % 2;
@@ -68,7 +64,6 @@ function XtallatX(superClass) {
         }
     };
 }
-//# sourceMappingURL=xtal-latx.js.map
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
@@ -262,6 +257,5 @@ BCC.registering = {};
 if (!customElements.get(BCC.is)) {
     customElements.define(BCC.is, BCC);
 }
-//# sourceMappingURL=b-c-c.js.map
     })();  
         

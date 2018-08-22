@@ -20,11 +20,8 @@
         babelHelpers.createClass(_class, [{
           key: "attr",
           value: function attr(name, val, trueVal) {
-            if (val) {
-              this.setAttribute(name, trueVal || val);
-            } else {
-              this.removeAttribute(name);
-            }
+            var setOrRemove = val ? 'set' : 'remove';
+            this[setOrRemove + 'Attribute'](name, trueVal || val);
           }
         }, {
           key: "to$",
@@ -97,8 +94,7 @@
         return _class;
       }(superClass)
     );
-  } //# sourceMappingURL=xtal-latx.js.map
-
+  }
 
   var from = 'from';
   var copy = 'copy';
@@ -376,8 +372,7 @@
 
   if (!customElements.get(BCC.is)) {
     customElements.define(BCC.is, BCC);
-  } //# sourceMappingURL=b-c-c.js.map
-
+  }
   /**
   * `c-c`
   * Dependency free web component that allows copying templates.
@@ -573,6 +568,5 @@
 
   if (!customElements.get(CC.is)) {
     customElements.define(CC.is, CC);
-  } //# sourceMappingURL=c-c.js.map
-
+  }
 })();

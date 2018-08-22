@@ -24,7 +24,7 @@ export class CC extends BCC {
                         return this['_' + prop]; 
                     },
                     set: function (val) {
-                        this['_' + prop];
+                        this['_' + prop] = val;
                         this.de(prop,{
                             value: val
                         })
