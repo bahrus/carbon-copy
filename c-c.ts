@@ -88,7 +88,7 @@ export class CC extends BCC {
         }
     }
 
-    aacc(newClass: any){ //add attribe changed callback
+    private aacc(newClass: any){ //add attributee changed callback
         newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
             let val: any = newVal;
             let isObj = false;
@@ -177,7 +177,7 @@ export class CC extends BCC {
         if (this._noshadow) {
 
             class newClass extends XtallatX(HTMLElement) {
-                
+                static get is(){return ceName;}
                 static getObjProps(){
                     return parsedObjProps;
                 }

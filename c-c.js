@@ -165,6 +165,7 @@ export class CC extends BCC {
         const allProps = parsedStrProps.concat(parsedObjProps);
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {
+                static get is() { return ceName; }
                 static getObjProps() {
                     return parsedObjProps;
                 }

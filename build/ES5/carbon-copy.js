@@ -473,6 +473,11 @@
                 return parsedObjProps;
               }
             }, {
+              key: "is",
+              get: function get() {
+                return ceName;
+              }
+            }, {
               key: "observedAttributes",
               get: function get() {
                 return allProps;
