@@ -9,16 +9,18 @@
         <script>
             function switchPages(){
                 const cc = document.querySelector('c-c');
-                cc.from = cc.from === '/page-1' ? '/page-2' : '/page1';
+                cc.from = cc.from === '/page-1' ? '/page-2' : '/page-1';
             }
         </script>
-         <c-c from="/page-1"></c-c>
+         
     </head>
     <body>
         <templ-mount></templ-mount>
        
         <!-- <c-c copy from="/page1" noshadow></c-c> -->
-        <page-1></page-1>
+        
         <button onclick="switchPages()">Switch</button>
+
+        <c-c copy from="/page-1"></c-c>
     </body>
 </html>

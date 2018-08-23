@@ -3,7 +3,7 @@ import {define} from 'xtal-latx/define.js';
 
 const from = 'from';
 const copy = 'copy';
-const noshadow = 'noshadow';
+
 
 /**
 * `b-c-c`
@@ -17,10 +17,10 @@ const noshadow = 'noshadow';
 export class BCC extends XtallatX(HTMLElement) {
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
-        return [copy, from, noshadow];
+        return [copy, from];
     }
 
-    static registering: { [key: string]: boolean } = {};
+    
 
     _from!: string;
 
@@ -46,16 +46,7 @@ export class BCC extends XtallatX(HTMLElement) {
     set copy(val: boolean) {
         this.attr(copy, val, '');
     }
-    _noshadow!: boolean;
-    /**
-     * Don't use shadow DOM 
-     */
-    get noshadow() {
-        return this._noshadow;
-    }
-    set noshadow(val) {
-        this.attr(noshadow, val, '');
-    }
+
 
     attributeChangedCallback(name: string, oldValue: string, newValue: string) {
         switch (name) {
@@ -66,9 +57,7 @@ export class BCC extends XtallatX(HTMLElement) {
                 //this._prevId = oldValue;
                 this._from = newValue;
                 break;
-            case noshadow:
-                this._noshadow = newValue !== null;
-                break;
+            
         }
         this.onPropsChange();
     }
@@ -86,10 +75,7 @@ export class BCC extends XtallatX(HTMLElement) {
         this.onPropsChange();
     }
 
-    getCEName(templateId: string) {
-        if(templateId.indexOf('-') > -1) return templateId;
-        return 'c-c-' + templateId.split('_').join('-');
-    }
+
 
     getHost(el: HTMLElement, level: number, maxLevel: number) : HTMLElement | null {
         let parent : any = el;
@@ -104,99 +90,40 @@ export class BCC extends XtallatX(HTMLElement) {
         }
         return null;
     }
-    _originalChildren  = [] as HTMLElement[];
-    _prevId!: string;
-    onPropsChange() {
-        if (!this._from || !this._connected || this.disabled) return;
-        //this._alreadyRegistered = true;
+
+    getSrcTempl(){
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
-        const newCEName = this.getCEName(fromName);
-        const prevId = this._prevId;
-        this._prevId = newCEName;
-        if (!customElements.get(newCEName)) {
-            if (!BCC.registering[newCEName]) {
-                BCC.registering[newCEName] = true;
-                let template: HTMLTemplateElement | null = null;
-                if (!fromTokens[0]) {
-                    template = (<any>self)[fromName];
-                } else {
-                    //const path = this._from.split('/');
-                    //const id = path[path.length - 1];
-                    const host = this.getHost(<any>this as HTMLElement, 0, fromTokens.length);
-                    if (host) {
-                        const cssSelector = '#' + fromName;
-                        if (host.shadowRoot) {
-                            template = host.shadowRoot.querySelector(cssSelector);
-                        }
-                        if (!template) template = host.querySelector(cssSelector);
-                    }
-
-                }
-                if(!template) throw '404: ' + fromName;
-                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
-                    const config: MutationObserverInit = {
-                        attributeFilter: ['loaded'],
-                        attributes: true,
-                    }
-                    const mutationObserver = new MutationObserver((mr: MutationRecord[]) => {
-                        this.createCE(template as HTMLTemplateElement);
-                        mutationObserver.disconnect();
-                    });
-                    mutationObserver.observe(template, config);
-                } else {
-                    this.createCE(template);
-                }
-
-            }
-        }
-        if(!this._copy) return;
-        
-        customElements.whenDefined(newCEName).then(() => {
-
-            //const name = newCEName;
-            if (prevId) {
-                const prevEl = this.querySelector(prevId) as HTMLElement;
-                if (prevEl) prevEl.style.display = 'none';
-            }
-            const prevEl = this.querySelector(newCEName) as HTMLElement;
-            if (prevEl) {
-                prevEl.style.display = 'block';
-            } else {
-                const ce = document.createElement(newCEName);
-                this._originalChildren.forEach(child => {
-                    ce.appendChild(child.cloneNode(true));
-                })
-                // while (this.childNodes.length > 0) {
-                //     ce.appendChild(this.childNodes[0]);
-                // }
-                this.appendChild(ce);
-            }
-
-        })
-
-    }
-
-    createCE(template: HTMLTemplateElement) {
-        const ceName = this.getCEName(template.id);
-        if (this._noshadow) {
-            class newClass extends HTMLElement {
-                connectedCallback() {
-                    this.appendChild(template.content.cloneNode(true));
-                }
-            }
-            customElements.define(ceName, newClass);
+        let template: HTMLTemplateElement | null = null;
+        if (!fromTokens[0]) {
+            template = (<any>self)[fromName];
         } else {
-            class newClass extends HTMLElement {
-                constructor() {
-                    super();
-                    this.attachShadow({ mode: 'open' }).appendChild(template.content.cloneNode(true));
+            //const path = this._from.split('/');
+            //const id = path[path.length - 1];
+            const host = this.getHost(<any>this as HTMLElement, 0, fromTokens.length);
+            if (host) {
+                const cssSelector = '#' + fromName;
+                if (host.shadowRoot) {
+                    template = host.shadowRoot.querySelector(cssSelector);
                 }
-
+                if (!template) template = host.querySelector(cssSelector);
             }
-            customElements.define(ceName, newClass);
+
         }
-        
+        if(!template) throw '404: ' + fromName;
+        return template;
     }
+
+    _originalChildren  = [] as HTMLElement[];
+    //_prevId!: string;
+
+    onPropsChange() {
+        if (!this._from || !this._connected || this.disabled || !this._copy) return;
+        const template = this.getSrcTempl();
+        const clone = template.content.cloneNode(true);
+        this.appendChild(clone);
+    }
+
+
 }
 define(BCC);

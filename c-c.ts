@@ -2,7 +2,7 @@ import { XtallatX } from 'xtal-latx/xtal-latx.js';
 import {BCC} from './b-c-c.js';
 import {define} from 'xtal-latx/define.js';
 
-
+const noshadow = 'noshadow';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -14,10 +14,37 @@ import {define} from 'xtal-latx/define.js';
 */
 export class CC extends BCC {
     static get is() { return 'c-c'; }
+    static get observedAttributes(){
+        return super.observedAttributes.concat([noshadow])
+    }
 
+    static registering: { [key: string]: boolean } = {};
   
+    _noshadow!: boolean;
+    /**
+     * Don't use shadow DOM 
+     */
+    get noshadow() {
+        return this._noshadow;
+    }
+    set noshadow(val) {
+        this.attr(noshadow, val, '');
+    }
 
-    defineProps(name: string, template: HTMLTemplateElement, newClass: any, props: string[], isObj: boolean){
+    getCEName(templateId: string) {
+        if(templateId.indexOf('-') > -1) return templateId;
+        return 'c-c-' + templateId.split('_').join('-');
+    }
+
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+        switch (name) {
+            case noshadow:
+                this._noshadow = newValue !== null;
+                break;
+        }
+        super.attributeChangedCallback(name, oldValue, newValue);
+    }
+    dP(name: string, template: HTMLTemplateElement, newClass: any, props: string[], isObj: boolean){ //define Props
         if(isObj){
             props.forEach(prop =>{
                 Object.defineProperty(newClass.prototype, prop, {
@@ -52,7 +79,7 @@ export class CC extends BCC {
         
         
     }
-    defineMethods(newClass: any, template:HTMLTemplateElement){
+    dM(newClass: any, template:HTMLTemplateElement){ //define methods
         const prevSibling = template.previousElementSibling as HTMLElement;
         if(!prevSibling || !prevSibling.dataset.methods) return;
         const evalScript = eval(prevSibling.innerHTML);
@@ -61,7 +88,7 @@ export class CC extends BCC {
         }
     }
 
-    addAttributeChangeCallback(newClass: any){
+    aacc(newClass: any){ //add attribe changed callback
         newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
             let val: any = newVal;
             let isObj = false;
@@ -77,7 +104,68 @@ export class CC extends BCC {
             if(this.onPropsChange) this.onPropsChange(name, oldVal, val);
         }
     }
+
     
+    gn(){
+        const fromTokens = this._from.split('/');
+        const fromName = fromTokens[0] || fromTokens[1];
+        return this.getCEName(fromName);
+    }
+    sac(){
+        const t = (<any>this) as HTMLElement;
+        const activeCEName = this.gn();
+        for(let i = 0, ii = t.children.length; i < ii; i++){
+            const child = t.children[i] as HTMLElement;
+            if(child.tagName.toLowerCase() === activeCEName){
+                child.style.display = (<any>child).cc_orgD || 'block';
+            }else{
+                (<any>child).cc_orgD = child.style.display;
+                child.style.display = 'none';
+            }
+        }
+    }
+    onPropsChange() {
+        if (!this._from || !this._connected || this.disabled) return;
+        //this._alreadyRegistered = true;
+        const newCEName = this.gn();
+        
+        if (!customElements.get(newCEName)) {
+            if (!CC.registering[newCEName]) {
+                CC.registering[newCEName] = true;
+                const template = this.getSrcTempl() as HTMLTemplateElement;
+                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
+                    const config: MutationObserverInit = {
+                        attributeFilter: ['loaded'],
+                        attributes: true,
+                    }
+                    const mutationObserver = new MutationObserver((mr: MutationRecord[]) => {
+                        this.createCE(template as HTMLTemplateElement);
+                        mutationObserver.disconnect();
+                    });
+                    mutationObserver.observe(template, config);
+                } else {
+                    this.createCE(template);
+                }
+
+            }
+        }
+        if(!this._copy) return;
+        
+        customElements.whenDefined(newCEName).then(() => {
+            
+            const newEl = this.querySelector(newCEName) as HTMLElement;
+            if (!newEl) {
+                const ce = document.createElement(newCEName);
+                this._originalChildren.forEach(child => {
+                    ce.appendChild(child.cloneNode(true));
+                })
+                this.appendChild(ce);
+            }
+            this.sac();
+        })
+
+    }
+
     createCE(template: HTMLTemplateElement) {
         const ceName = this.getCEName(template.id);
         const ds = template.dataset;
@@ -89,7 +177,7 @@ export class CC extends BCC {
         if (this._noshadow) {
 
             class newClass extends XtallatX(HTMLElement) {
-                static get is(){return ceName;}
+                
                 static getObjProps(){
                     return parsedObjProps;
                 }
@@ -100,11 +188,12 @@ export class CC extends BCC {
                 }
                 static get observedAttributes(){return allProps;}
             }
-            this.defineProps(ceName, template, newClass, parsedStrProps, false);
-            this.defineProps(ceName, template, newClass, parsedObjProps, true);
+            this.dP(ceName, template, newClass, parsedStrProps, false);
+            this.dP(ceName, template, newClass, parsedObjProps, true);
             define(newClass);
         } else {
             class newClass extends XtallatX(HTMLElement) {
+                static get is(){return ceName;}
                 static get objProps(){
                     return parsedObjProps;
                 }
@@ -122,11 +211,11 @@ export class CC extends BCC {
                 //     this['_' + name] = newVal;
                 // }
             }
-            this.defineProps(ceName, template, newClass, parsedStrProps, false);
-            this.defineProps(ceName, template, newClass, parsedObjProps, true);
-            this.defineMethods(newClass, template);
-            this.addAttributeChangeCallback(newClass);
-            customElements.define(ceName, newClass);
+            this.dP(ceName, template, newClass, parsedStrProps, false);
+            this.dP(ceName, template, newClass, parsedObjProps, true);
+            this.dM(newClass, template);
+            this.aacc(newClass);
+            define(newClass);
         }
         
     }

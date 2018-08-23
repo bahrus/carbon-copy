@@ -1,6 +1,7 @@
 import { XtallatX } from "./node_modules/xtal-latx/xtal-latx.js";
 import { BCC } from './b-c-c.js';
 import { define } from "./node_modules/xtal-latx/define.js";
+var noshadow = 'noshadow';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -22,8 +23,25 @@ function (_BCC) {
   }
 
   babelHelpers.createClass(CC, [{
-    key: "defineProps",
-    value: function defineProps(name, template, newClass, props, isObj) {
+    key: "getCEName",
+    value: function getCEName(templateId) {
+      if (templateId.indexOf('-') > -1) return templateId;
+      return 'c-c-' + templateId.split('_').join('-');
+    }
+  }, {
+    key: "attributeChangedCallback",
+    value: function attributeChangedCallback(name, oldValue, newValue) {
+      switch (name) {
+        case noshadow:
+          this._noshadow = newValue !== null;
+          break;
+      }
+
+      babelHelpers.get(CC.prototype.__proto__ || Object.getPrototypeOf(CC.prototype), "attributeChangedCallback", this).call(this, name, oldValue, newValue);
+    }
+  }, {
+    key: "dP",
+    value: function dP(name, template, newClass, props, isObj) {
       if (isObj) {
         props.forEach(function (prop) {
           Object.defineProperty(newClass.prototype, prop, {
@@ -56,8 +74,8 @@ function (_BCC) {
       }
     }
   }, {
-    key: "defineMethods",
-    value: function defineMethods(newClass, template) {
+    key: "dM",
+    value: function dM(newClass, template) {
       var prevSibling = template.previousElementSibling;
       if (!prevSibling || !prevSibling.dataset.methods) return;
       var evalScript = eval(prevSibling.innerHTML);
@@ -67,8 +85,8 @@ function (_BCC) {
       }
     }
   }, {
-    key: "addAttributeChangeCallback",
-    value: function addAttributeChangeCallback(newClass) {
+    key: "aacc",
+    value: function aacc(newClass) {
       newClass.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
         var val = newVal;
         var isObj = false;
@@ -85,6 +103,79 @@ function (_BCC) {
         });
         if (this.onPropsChange) this.onPropsChange(name, oldVal, val);
       };
+    }
+  }, {
+    key: "gn",
+    value: function gn() {
+      var fromTokens = this._from.split('/');
+
+      var fromName = fromTokens[0] || fromTokens[1];
+      return this.getCEName(fromName);
+    }
+  }, {
+    key: "sac",
+    value: function sac() {
+      var t = this;
+      var activeCEName = this.gn();
+
+      for (var i = 0, ii = t.children.length; i < ii; i++) {
+        var child = t.children[i];
+
+        if (child.tagName.toLowerCase() === activeCEName) {
+          child.style.display = child.cc_orgD || 'block';
+        } else {
+          child.cc_orgD = child.style.display;
+          child.style.display = 'none';
+        }
+      }
+    }
+  }, {
+    key: "onPropsChange",
+    value: function onPropsChange() {
+      var _this = this;
+
+      if (!this._from || !this._connected || this.disabled) return; //this._alreadyRegistered = true;
+
+      var newCEName = this.gn();
+
+      if (!customElements.get(newCEName)) {
+        if (!CC.registering[newCEName]) {
+          CC.registering[newCEName] = true;
+          var template = this.getSrcTempl();
+
+          if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
+            var config = {
+              attributeFilter: ['loaded'],
+              attributes: true
+            };
+            var mutationObserver = new MutationObserver(function (mr) {
+              _this.createCE(template);
+
+              mutationObserver.disconnect();
+            });
+            mutationObserver.observe(template, config);
+          } else {
+            this.createCE(template);
+          }
+        }
+      }
+
+      if (!this._copy) return;
+      customElements.whenDefined(newCEName).then(function () {
+        var newEl = _this.querySelector(newCEName);
+
+        if (!newEl) {
+          var ce = document.createElement(newCEName);
+
+          _this._originalChildren.forEach(function (child) {
+            ce.appendChild(child.cloneNode(true));
+          });
+
+          _this.appendChild(ce);
+        }
+
+        _this.sac();
+      });
     }
   }, {
     key: "createCE",
@@ -122,11 +213,6 @@ function (_BCC) {
               return parsedObjProps;
             }
           }, {
-            key: "is",
-            get: function get() {
-              return ceName;
-            }
-          }, {
             key: "observedAttributes",
             get: function get() {
               return allProps;
@@ -135,8 +221,8 @@ function (_BCC) {
           return newClass;
         }(XtallatX(HTMLElement));
 
-        this.defineProps(ceName, template, newClass, parsedStrProps, false);
-        this.defineProps(ceName, template, newClass, parsedObjProps, true);
+        this.dP(ceName, template, newClass, parsedStrProps, false);
+        this.dP(ceName, template, newClass, parsedObjProps, true);
         define(newClass);
       } else {
         var _newClass =
@@ -144,6 +230,11 @@ function (_BCC) {
         function (_XtallatX2) {
           babelHelpers.inherits(_newClass, _XtallatX2);
           babelHelpers.createClass(_newClass, null, [{
+            key: "is",
+            get: function get() {
+              return ceName;
+            }
+          }, {
             key: "objProps",
             get: function get() {
               return parsedObjProps;
@@ -151,18 +242,18 @@ function (_BCC) {
           }]);
 
           function _newClass() {
-            var _this;
+            var _this2;
 
             babelHelpers.classCallCheck(this, _newClass);
-            _this = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+            _this2 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
 
-            _this.attachShadow({
+            _this2.attachShadow({
               mode: 'open'
             });
 
-            _this.shadowRoot.appendChild(template.content.cloneNode(true));
+            _this2.shadowRoot.appendChild(template.content.cloneNode(true));
 
-            return _this;
+            return _this2;
           }
 
           babelHelpers.createClass(_newClass, [{
@@ -181,19 +272,37 @@ function (_BCC) {
           return _newClass;
         }(XtallatX(HTMLElement));
 
-        this.defineProps(ceName, template, _newClass, parsedStrProps, false);
-        this.defineProps(ceName, template, _newClass, parsedObjProps, true);
-        this.defineMethods(_newClass, template);
-        this.addAttributeChangeCallback(_newClass);
-        customElements.define(ceName, _newClass);
+        this.dP(ceName, template, _newClass, parsedStrProps, false);
+        this.dP(ceName, template, _newClass, parsedObjProps, true);
+        this.dM(_newClass, template);
+        this.aacc(_newClass);
+        define(_newClass);
       }
+    }
+  }, {
+    key: "noshadow",
+
+    /**
+     * Don't use shadow DOM
+     */
+    get: function get() {
+      return this._noshadow;
+    },
+    set: function set(val) {
+      this.attr(noshadow, val, '');
     }
   }], [{
     key: "is",
     get: function get() {
       return 'c-c';
     }
+  }, {
+    key: "observedAttributes",
+    get: function get() {
+      return babelHelpers.get(CC.__proto__ || Object.getPrototypeOf(CC), "observedAttributes", this).concat([noshadow]);
+    }
   }]);
   return CC;
 }(BCC);
+CC.registering = {};
 define(CC); //# sourceMappingURL=c-c.js.map

@@ -1,6 +1,7 @@
 import { XtallatX } from 'xtal-latx/xtal-latx.js';
 import { BCC } from './b-c-c.js';
 import { define } from 'xtal-latx/define.js';
+const noshadow = 'noshadow';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -12,7 +13,32 @@ import { define } from 'xtal-latx/define.js';
 */
 export class CC extends BCC {
     static get is() { return 'c-c'; }
-    defineProps(name, template, newClass, props, isObj) {
+    static get observedAttributes() {
+        return super.observedAttributes.concat([noshadow]);
+    }
+    /**
+     * Don't use shadow DOM
+     */
+    get noshadow() {
+        return this._noshadow;
+    }
+    set noshadow(val) {
+        this.attr(noshadow, val, '');
+    }
+    getCEName(templateId) {
+        if (templateId.indexOf('-') > -1)
+            return templateId;
+        return 'c-c-' + templateId.split('_').join('-');
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+            case noshadow:
+                this._noshadow = newValue !== null;
+                break;
+        }
+        super.attributeChangedCallback(name, oldValue, newValue);
+    }
+    dP(name, template, newClass, props, isObj) {
         if (isObj) {
             props.forEach(prop => {
                 Object.defineProperty(newClass.prototype, prop, {
@@ -45,7 +71,7 @@ export class CC extends BCC {
             });
         }
     }
-    defineMethods(newClass, template) {
+    dM(newClass, template) {
         const prevSibling = template.previousElementSibling;
         if (!prevSibling || !prevSibling.dataset.methods)
             return;
@@ -54,7 +80,7 @@ export class CC extends BCC {
             newClass.prototype[fn] = evalScript[fn];
         }
     }
-    addAttributeChangeCallback(newClass) {
+    aacc(newClass) {
         newClass.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
             let val = newVal;
             let isObj = false;
@@ -71,6 +97,64 @@ export class CC extends BCC {
                 this.onPropsChange(name, oldVal, val);
         };
     }
+    gn() {
+        const fromTokens = this._from.split('/');
+        const fromName = fromTokens[0] || fromTokens[1];
+        return this.getCEName(fromName);
+    }
+    sac() {
+        const t = this;
+        const activeCEName = this.gn();
+        for (let i = 0, ii = t.children.length; i < ii; i++) {
+            const child = t.children[i];
+            if (child.tagName.toLowerCase() === activeCEName) {
+                child.style.display = child.cc_orgD || 'block';
+            }
+            else {
+                child.cc_orgD = child.style.display;
+                child.style.display = 'none';
+            }
+        }
+    }
+    onPropsChange() {
+        if (!this._from || !this._connected || this.disabled)
+            return;
+        //this._alreadyRegistered = true;
+        const newCEName = this.gn();
+        if (!customElements.get(newCEName)) {
+            if (!CC.registering[newCEName]) {
+                CC.registering[newCEName] = true;
+                const template = this.getSrcTempl();
+                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
+                    const config = {
+                        attributeFilter: ['loaded'],
+                        attributes: true,
+                    };
+                    const mutationObserver = new MutationObserver((mr) => {
+                        this.createCE(template);
+                        mutationObserver.disconnect();
+                    });
+                    mutationObserver.observe(template, config);
+                }
+                else {
+                    this.createCE(template);
+                }
+            }
+        }
+        if (!this._copy)
+            return;
+        customElements.whenDefined(newCEName).then(() => {
+            const newEl = this.querySelector(newCEName);
+            if (!newEl) {
+                const ce = document.createElement(newCEName);
+                this._originalChildren.forEach(child => {
+                    ce.appendChild(child.cloneNode(true));
+                });
+                this.appendChild(ce);
+            }
+            this.sac();
+        });
+    }
     createCE(template) {
         const ceName = this.getCEName(template.id);
         const ds = template.dataset;
@@ -81,7 +165,6 @@ export class CC extends BCC {
         const allProps = parsedStrProps.concat(parsedObjProps);
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {
-                static get is() { return ceName; }
                 static getObjProps() {
                     return parsedObjProps;
                 }
@@ -92,12 +175,13 @@ export class CC extends BCC {
                 }
                 static get observedAttributes() { return allProps; }
             }
-            this.defineProps(ceName, template, newClass, parsedStrProps, false);
-            this.defineProps(ceName, template, newClass, parsedObjProps, true);
+            this.dP(ceName, template, newClass, parsedStrProps, false);
+            this.dP(ceName, template, newClass, parsedObjProps, true);
             define(newClass);
         }
         else {
             class newClass extends XtallatX(HTMLElement) {
+                static get is() { return ceName; }
                 static get objProps() {
                     return parsedObjProps;
                 }
@@ -112,13 +196,14 @@ export class CC extends BCC {
                 }
                 static get observedAttributes() { return allProps; }
             }
-            this.defineProps(ceName, template, newClass, parsedStrProps, false);
-            this.defineProps(ceName, template, newClass, parsedObjProps, true);
-            this.defineMethods(newClass, template);
-            this.addAttributeChangeCallback(newClass);
-            customElements.define(ceName, newClass);
+            this.dP(ceName, template, newClass, parsedStrProps, false);
+            this.dP(ceName, template, newClass, parsedObjProps, true);
+            this.dM(newClass, template);
+            this.aacc(newClass);
+            define(newClass);
         }
     }
 }
+CC.registering = {};
 define(CC);
 //# sourceMappingURL=c-c.js.map

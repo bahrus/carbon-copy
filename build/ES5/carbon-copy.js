@@ -109,7 +109,6 @@
 
   var from = 'from';
   var copy = 'copy';
-  var noshadow = 'noshadow';
   /**
   * `b-c-c`
   * Dependency free web component that allows basic copying of templates.
@@ -146,10 +145,6 @@
             //this._prevId = oldValue;
             this._from = newValue;
             break;
-
-          case noshadow:
-            this._noshadow = newValue !== null;
-            break;
         }
 
         this.onPropsChange();
@@ -170,12 +165,6 @@
         this.onPropsChange();
       }
     }, {
-      key: "getCEName",
-      value: function getCEName(templateId) {
-        if (templateId.indexOf('-') > -1) return templateId;
-        return 'c-c-' + templateId.split('_').join('-');
-      }
-    }, {
       key: "getHost",
       value: function getHost(el, level, maxLevel) {
         var parent = el;
@@ -193,138 +182,42 @@
         return null;
       }
     }, {
-      key: "onPropsChange",
-      value: function onPropsChange() {
-        var _this5 = this;
-
-        if (!this._from || !this._connected || this.disabled) return; //this._alreadyRegistered = true;
-
+      key: "getSrcTempl",
+      value: function getSrcTempl() {
         var fromTokens = this._from.split('/');
 
         var fromName = fromTokens[0] || fromTokens[1];
-        var newCEName = this.getCEName(fromName);
-        var prevId = this._prevId;
-        this._prevId = newCEName;
+        var template = null;
 
-        if (!customElements.get(newCEName)) {
-          if (!BCC.registering[newCEName]) {
-            BCC.registering[newCEName] = true;
-            var template = null;
-
-            if (!fromTokens[0]) {
-              template = self[fromName];
-            } else {
-              //const path = this._from.split('/');
-              //const id = path[path.length - 1];
-              var host = this.getHost(this, 0, fromTokens.length);
-
-              if (host) {
-                var cssSelector = '#' + fromName;
-
-                if (host.shadowRoot) {
-                  template = host.shadowRoot.querySelector(cssSelector);
-                }
-
-                if (!template) template = host.querySelector(cssSelector);
-              }
-            }
-
-            if (!template) throw '404: ' + fromName;
-
-            if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
-              var config = {
-                attributeFilter: ['loaded'],
-                attributes: true
-              };
-              var mutationObserver = new MutationObserver(function (mr) {
-                _this5.createCE(template);
-
-                mutationObserver.disconnect();
-              });
-              mutationObserver.observe(template, config);
-            } else {
-              this.createCE(template);
-            }
-          }
-        }
-
-        if (!this._copy) return;
-        customElements.whenDefined(newCEName).then(function () {
-          //const name = newCEName;
-          if (prevId) {
-            var _prevEl = _this5.querySelector(prevId);
-
-            if (_prevEl) _prevEl.style.display = 'none';
-          }
-
-          var prevEl = _this5.querySelector(newCEName);
-
-          if (prevEl) {
-            prevEl.style.display = 'block';
-          } else {
-            var ce = document.createElement(newCEName);
-
-            _this5._originalChildren.forEach(function (child) {
-              ce.appendChild(child.cloneNode(true));
-            }); // while (this.childNodes.length > 0) {
-            //     ce.appendChild(this.childNodes[0]);
-            // }
-
-
-            _this5.appendChild(ce);
-          }
-        });
-      }
-    }, {
-      key: "createCE",
-      value: function createCE(template) {
-        var ceName = this.getCEName(template.id);
-
-        if (this._noshadow) {
-          var newClass =
-          /*#__PURE__*/
-          function (_HTMLElement) {
-            babelHelpers.inherits(newClass, _HTMLElement);
-
-            function newClass() {
-              babelHelpers.classCallCheck(this, newClass);
-              return babelHelpers.possibleConstructorReturn(this, (newClass.__proto__ || Object.getPrototypeOf(newClass)).apply(this, arguments));
-            }
-
-            babelHelpers.createClass(newClass, [{
-              key: "connectedCallback",
-              value: function connectedCallback() {
-                this.appendChild(template.content.cloneNode(true));
-              }
-            }]);
-            return newClass;
-          }(HTMLElement);
-
-          customElements.define(ceName, newClass);
+        if (!fromTokens[0]) {
+          template = self[fromName];
         } else {
-          var _newClass =
-          /*#__PURE__*/
-          function (_HTMLElement2) {
-            babelHelpers.inherits(_newClass, _HTMLElement2);
+          //const path = this._from.split('/');
+          //const id = path[path.length - 1];
+          var host = this.getHost(this, 0, fromTokens.length);
 
-            function _newClass() {
-              var _this6;
+          if (host) {
+            var cssSelector = '#' + fromName;
 
-              babelHelpers.classCallCheck(this, _newClass);
-              _this6 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
-
-              _this6.attachShadow({
-                mode: 'open'
-              }).appendChild(template.content.cloneNode(true));
-
-              return _this6;
+            if (host.shadowRoot) {
+              template = host.shadowRoot.querySelector(cssSelector);
             }
 
-            return _newClass;
-          }(HTMLElement);
-
-          customElements.define(ceName, _newClass);
+            if (!template) template = host.querySelector(cssSelector);
+          }
         }
+
+        if (!template) throw '404: ' + fromName;
+        return template;
+      } //_prevId!: string;
+
+    }, {
+      key: "onPropsChange",
+      value: function onPropsChange() {
+        if (!this._from || !this._connected || this.disabled || !this._copy) return;
+        var template = this.getSrcTempl();
+        var clone = template.content.cloneNode(true);
+        this.appendChild(clone);
       }
     }, {
       key: "from",
@@ -353,18 +246,6 @@
       set: function set(val) {
         this.attr(copy, val, '');
       }
-      /**
-       * Don't use shadow DOM
-       */
-
-    }, {
-      key: "noshadow",
-      get: function get() {
-        return this._noshadow;
-      },
-      set: function set(val) {
-        this.attr(noshadow, val, '');
-      }
     }], [{
       key: "is",
       get: function get() {
@@ -373,14 +254,14 @@
     }, {
       key: "observedAttributes",
       get: function get() {
-        return [copy, from, noshadow];
+        return [copy, from];
       }
     }]);
     return BCC;
   }(XtallatX(HTMLElement));
 
-  BCC.registering = {};
   define(BCC);
+  var noshadow = 'noshadow';
   /**
   * `c-c`
   * Dependency free web component that allows copying templates.
@@ -402,8 +283,25 @@
     }
 
     babelHelpers.createClass(CC, [{
-      key: "defineProps",
-      value: function defineProps(name, template, newClass, props, isObj) {
+      key: "getCEName",
+      value: function getCEName(templateId) {
+        if (templateId.indexOf('-') > -1) return templateId;
+        return 'c-c-' + templateId.split('_').join('-');
+      }
+    }, {
+      key: "attributeChangedCallback",
+      value: function attributeChangedCallback(name, oldValue, newValue) {
+        switch (name) {
+          case noshadow:
+            this._noshadow = newValue !== null;
+            break;
+        }
+
+        babelHelpers.get(CC.prototype.__proto__ || Object.getPrototypeOf(CC.prototype), "attributeChangedCallback", this).call(this, name, oldValue, newValue);
+      }
+    }, {
+      key: "dP",
+      value: function dP(name, template, newClass, props, isObj) {
         if (isObj) {
           props.forEach(function (prop) {
             Object.defineProperty(newClass.prototype, prop, {
@@ -436,8 +334,8 @@
         }
       }
     }, {
-      key: "defineMethods",
-      value: function defineMethods(newClass, template) {
+      key: "dM",
+      value: function dM(newClass, template) {
         var prevSibling = template.previousElementSibling;
         if (!prevSibling || !prevSibling.dataset.methods) return;
         var evalScript = eval(prevSibling.innerHTML);
@@ -447,8 +345,8 @@
         }
       }
     }, {
-      key: "addAttributeChangeCallback",
-      value: function addAttributeChangeCallback(newClass) {
+      key: "aacc",
+      value: function aacc(newClass) {
         newClass.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
           var val = newVal;
           var isObj = false;
@@ -465,6 +363,79 @@
           });
           if (this.onPropsChange) this.onPropsChange(name, oldVal, val);
         };
+      }
+    }, {
+      key: "gn",
+      value: function gn() {
+        var fromTokens = this._from.split('/');
+
+        var fromName = fromTokens[0] || fromTokens[1];
+        return this.getCEName(fromName);
+      }
+    }, {
+      key: "sac",
+      value: function sac() {
+        var t = this;
+        var activeCEName = this.gn();
+
+        for (var i = 0, ii = t.children.length; i < ii; i++) {
+          var child = t.children[i];
+
+          if (child.tagName.toLowerCase() === activeCEName) {
+            child.style.display = child.cc_orgD || 'block';
+          } else {
+            child.cc_orgD = child.style.display;
+            child.style.display = 'none';
+          }
+        }
+      }
+    }, {
+      key: "onPropsChange",
+      value: function onPropsChange() {
+        var _this5 = this;
+
+        if (!this._from || !this._connected || this.disabled) return; //this._alreadyRegistered = true;
+
+        var newCEName = this.gn();
+
+        if (!customElements.get(newCEName)) {
+          if (!CC.registering[newCEName]) {
+            CC.registering[newCEName] = true;
+            var template = this.getSrcTempl();
+
+            if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
+              var config = {
+                attributeFilter: ['loaded'],
+                attributes: true
+              };
+              var mutationObserver = new MutationObserver(function (mr) {
+                _this5.createCE(template);
+
+                mutationObserver.disconnect();
+              });
+              mutationObserver.observe(template, config);
+            } else {
+              this.createCE(template);
+            }
+          }
+        }
+
+        if (!this._copy) return;
+        customElements.whenDefined(newCEName).then(function () {
+          var newEl = _this5.querySelector(newCEName);
+
+          if (!newEl) {
+            var ce = document.createElement(newCEName);
+
+            _this5._originalChildren.forEach(function (child) {
+              ce.appendChild(child.cloneNode(true));
+            });
+
+            _this5.appendChild(ce);
+          }
+
+          _this5.sac();
+        });
       }
     }, {
       key: "createCE",
@@ -502,11 +473,6 @@
                 return parsedObjProps;
               }
             }, {
-              key: "is",
-              get: function get() {
-                return ceName;
-              }
-            }, {
               key: "observedAttributes",
               get: function get() {
                 return allProps;
@@ -515,37 +481,42 @@
             return newClass;
           }(XtallatX(HTMLElement));
 
-          this.defineProps(ceName, template, newClass, parsedStrProps, false);
-          this.defineProps(ceName, template, newClass, parsedObjProps, true);
+          this.dP(ceName, template, newClass, parsedStrProps, false);
+          this.dP(ceName, template, newClass, parsedObjProps, true);
           define(newClass);
         } else {
-          var _newClass2 =
+          var _newClass =
           /*#__PURE__*/
           function (_XtallatX3) {
-            babelHelpers.inherits(_newClass2, _XtallatX3);
-            babelHelpers.createClass(_newClass2, null, [{
+            babelHelpers.inherits(_newClass, _XtallatX3);
+            babelHelpers.createClass(_newClass, null, [{
+              key: "is",
+              get: function get() {
+                return ceName;
+              }
+            }, {
               key: "objProps",
               get: function get() {
                 return parsedObjProps;
               }
             }]);
 
-            function _newClass2() {
-              var _this7;
+            function _newClass() {
+              var _this6;
 
-              babelHelpers.classCallCheck(this, _newClass2);
-              _this7 = babelHelpers.possibleConstructorReturn(this, (_newClass2.__proto__ || Object.getPrototypeOf(_newClass2)).call(this));
+              babelHelpers.classCallCheck(this, _newClass);
+              _this6 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
 
-              _this7.attachShadow({
+              _this6.attachShadow({
                 mode: 'open'
               });
 
-              _this7.shadowRoot.appendChild(template.content.cloneNode(true));
+              _this6.shadowRoot.appendChild(template.content.cloneNode(true));
 
-              return _this7;
+              return _this6;
             }
 
-            babelHelpers.createClass(_newClass2, [{
+            babelHelpers.createClass(_newClass, [{
               key: "connectedCallback",
               value: function connectedCallback() {
                 this._connected = true;
@@ -558,24 +529,42 @@
                 return allProps;
               }
             }]);
-            return _newClass2;
+            return _newClass;
           }(XtallatX(HTMLElement));
 
-          this.defineProps(ceName, template, _newClass2, parsedStrProps, false);
-          this.defineProps(ceName, template, _newClass2, parsedObjProps, true);
-          this.defineMethods(_newClass2, template);
-          this.addAttributeChangeCallback(_newClass2);
-          customElements.define(ceName, _newClass2);
+          this.dP(ceName, template, _newClass, parsedStrProps, false);
+          this.dP(ceName, template, _newClass, parsedObjProps, true);
+          this.dM(_newClass, template);
+          this.aacc(_newClass);
+          define(_newClass);
         }
+      }
+    }, {
+      key: "noshadow",
+
+      /**
+       * Don't use shadow DOM
+       */
+      get: function get() {
+        return this._noshadow;
+      },
+      set: function set(val) {
+        this.attr(noshadow, val, '');
       }
     }], [{
       key: "is",
       get: function get() {
         return 'c-c';
       }
+    }, {
+      key: "observedAttributes",
+      get: function get() {
+        return babelHelpers.get(CC.__proto__ || Object.getPrototypeOf(CC), "observedAttributes", this).concat([noshadow]);
+      }
     }]);
     return CC;
   }(BCC);
 
+  CC.registering = {};
   define(CC);
 })();

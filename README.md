@@ -8,7 +8,9 @@ Note that there are other client-side include web components you may want to com
 
 Copy a template inside a DOM node. 
 
-For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c  It is ~1.5 kb minified and gzipped.  It's functionality doesn't include the sections starting with "Adding string properties".  For the full functionality, use element c-c, which is defined by file c-c.js.  carbon-copy.js is an iife version of c-c.js.  It is ~2.0 kb minifed and gzipped.
+For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c  It is ~1.2 kb minified and gzipped.  It just clones the source template into the innerHTML of gthe element.
+
+For the full functionality, use element c-c, which is defined by file c-c.js.  carbon-copy.js is an iife version of c-c.js.  It is ~2.2 kb minifed and gzipped.
 
 Syntax:
 

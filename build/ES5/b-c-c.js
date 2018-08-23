@@ -2,7 +2,6 @@ import { XtallatX } from "./node_modules/xtal-latx/xtal-latx.js";
 import { define } from "./node_modules/xtal-latx/define.js";
 var from = 'from';
 var copy = 'copy';
-var noshadow = 'noshadow';
 /**
 * `b-c-c`
 * Dependency free web component that allows basic copying of templates.
@@ -39,10 +38,6 @@ function (_XtallatX) {
           //this._prevId = oldValue;
           this._from = newValue;
           break;
-
-        case noshadow:
-          this._noshadow = newValue !== null;
-          break;
       }
 
       this.onPropsChange();
@@ -63,12 +58,6 @@ function (_XtallatX) {
       this.onPropsChange();
     }
   }, {
-    key: "getCEName",
-    value: function getCEName(templateId) {
-      if (templateId.indexOf('-') > -1) return templateId;
-      return 'c-c-' + templateId.split('_').join('-');
-    }
-  }, {
     key: "getHost",
     value: function getHost(el, level, maxLevel) {
       var parent = el;
@@ -86,138 +75,42 @@ function (_XtallatX) {
       return null;
     }
   }, {
-    key: "onPropsChange",
-    value: function onPropsChange() {
-      var _this3 = this;
-
-      if (!this._from || !this._connected || this.disabled) return; //this._alreadyRegistered = true;
-
+    key: "getSrcTempl",
+    value: function getSrcTempl() {
       var fromTokens = this._from.split('/');
 
       var fromName = fromTokens[0] || fromTokens[1];
-      var newCEName = this.getCEName(fromName);
-      var prevId = this._prevId;
-      this._prevId = newCEName;
+      var template = null;
 
-      if (!customElements.get(newCEName)) {
-        if (!BCC.registering[newCEName]) {
-          BCC.registering[newCEName] = true;
-          var template = null;
-
-          if (!fromTokens[0]) {
-            template = self[fromName];
-          } else {
-            //const path = this._from.split('/');
-            //const id = path[path.length - 1];
-            var host = this.getHost(this, 0, fromTokens.length);
-
-            if (host) {
-              var cssSelector = '#' + fromName;
-
-              if (host.shadowRoot) {
-                template = host.shadowRoot.querySelector(cssSelector);
-              }
-
-              if (!template) template = host.querySelector(cssSelector);
-            }
-          }
-
-          if (!template) throw '404: ' + fromName;
-
-          if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
-            var config = {
-              attributeFilter: ['loaded'],
-              attributes: true
-            };
-            var mutationObserver = new MutationObserver(function (mr) {
-              _this3.createCE(template);
-
-              mutationObserver.disconnect();
-            });
-            mutationObserver.observe(template, config);
-          } else {
-            this.createCE(template);
-          }
-        }
-      }
-
-      if (!this._copy) return;
-      customElements.whenDefined(newCEName).then(function () {
-        //const name = newCEName;
-        if (prevId) {
-          var _prevEl = _this3.querySelector(prevId);
-
-          if (_prevEl) _prevEl.style.display = 'none';
-        }
-
-        var prevEl = _this3.querySelector(newCEName);
-
-        if (prevEl) {
-          prevEl.style.display = 'block';
-        } else {
-          var ce = document.createElement(newCEName);
-
-          _this3._originalChildren.forEach(function (child) {
-            ce.appendChild(child.cloneNode(true));
-          }); // while (this.childNodes.length > 0) {
-          //     ce.appendChild(this.childNodes[0]);
-          // }
-
-
-          _this3.appendChild(ce);
-        }
-      });
-    }
-  }, {
-    key: "createCE",
-    value: function createCE(template) {
-      var ceName = this.getCEName(template.id);
-
-      if (this._noshadow) {
-        var newClass =
-        /*#__PURE__*/
-        function (_HTMLElement) {
-          babelHelpers.inherits(newClass, _HTMLElement);
-
-          function newClass() {
-            babelHelpers.classCallCheck(this, newClass);
-            return babelHelpers.possibleConstructorReturn(this, (newClass.__proto__ || Object.getPrototypeOf(newClass)).apply(this, arguments));
-          }
-
-          babelHelpers.createClass(newClass, [{
-            key: "connectedCallback",
-            value: function connectedCallback() {
-              this.appendChild(template.content.cloneNode(true));
-            }
-          }]);
-          return newClass;
-        }(HTMLElement);
-
-        customElements.define(ceName, newClass);
+      if (!fromTokens[0]) {
+        template = self[fromName];
       } else {
-        var _newClass =
-        /*#__PURE__*/
-        function (_HTMLElement2) {
-          babelHelpers.inherits(_newClass, _HTMLElement2);
+        //const path = this._from.split('/');
+        //const id = path[path.length - 1];
+        var host = this.getHost(this, 0, fromTokens.length);
 
-          function _newClass() {
-            var _this4;
+        if (host) {
+          var cssSelector = '#' + fromName;
 
-            babelHelpers.classCallCheck(this, _newClass);
-            _this4 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
-
-            _this4.attachShadow({
-              mode: 'open'
-            }).appendChild(template.content.cloneNode(true));
-
-            return _this4;
+          if (host.shadowRoot) {
+            template = host.shadowRoot.querySelector(cssSelector);
           }
 
-          return _newClass;
-        }(HTMLElement);
-
-        customElements.define(ceName, _newClass);
+          if (!template) template = host.querySelector(cssSelector);
+        }
       }
+
+      if (!template) throw '404: ' + fromName;
+      return template;
+    } //_prevId!: string;
+
+  }, {
+    key: "onPropsChange",
+    value: function onPropsChange() {
+      if (!this._from || !this._connected || this.disabled || !this._copy) return;
+      var template = this.getSrcTempl();
+      var clone = template.content.cloneNode(true);
+      this.appendChild(clone);
     }
   }, {
     key: "from",
@@ -246,18 +139,6 @@ function (_XtallatX) {
     set: function set(val) {
       this.attr(copy, val, '');
     }
-    /**
-     * Don't use shadow DOM
-     */
-
-  }, {
-    key: "noshadow",
-    get: function get() {
-      return this._noshadow;
-    },
-    set: function set(val) {
-      this.attr(noshadow, val, '');
-    }
   }], [{
     key: "is",
     get: function get() {
@@ -266,10 +147,9 @@ function (_XtallatX) {
   }, {
     key: "observedAttributes",
     get: function get() {
-      return [copy, from, noshadow];
+      return [copy, from];
     }
   }]);
   return BCC;
 }(XtallatX(HTMLElement));
-BCC.registering = {};
 define(BCC); //# sourceMappingURL=b-c-c.js.map
