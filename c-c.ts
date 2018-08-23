@@ -119,7 +119,7 @@ export class CC extends BCC {
             if(child.tagName.toLowerCase() === activeCEName){
                 child.style.display = (<any>child).cc_orgD || 'block';
             }else{
-                (<any>child).cc_orgD = child.style.display;
+                if(!(<any>child).cc_orgD) (<any>child).cc_orgD = child.style.display;
                 child.style.display = 'none';
             }
         }

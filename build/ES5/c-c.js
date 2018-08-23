@@ -124,7 +124,7 @@ function (_BCC) {
         if (child.tagName.toLowerCase() === activeCEName) {
           child.style.display = child.cc_orgD || 'block';
         } else {
-          child.cc_orgD = child.style.display;
+          if (!child.cc_orgD) child.cc_orgD = child.style.display;
           child.style.display = 'none';
         }
       }
