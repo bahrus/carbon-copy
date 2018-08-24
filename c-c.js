@@ -107,20 +107,20 @@ export class CC extends BCC {
         const activeCEName = this.gn();
         for (let i = 0, ii = t.children.length; i < ii; i++) {
             const child = t.children[i];
-            if (child.tagName.toLowerCase() === activeCEName) {
-                child.style.display = child.cc_orgD || 'block';
+            const style = child.style;
+            if (child.localName === activeCEName) {
+                style.display = child.cc_orgD || 'block';
             }
-            else {
+            else if (style.display !== 'none') {
                 if (!child.cc_orgD)
                     child.cc_orgD = child.style.display;
                 child.style.display = 'none';
             }
         }
     }
-    onPropsChange() {
+    opc() {
         if (!this._from || !this._connected || this.disabled)
             return;
-        //this._alreadyRegistered = true;
         const newCEName = this.gn();
         if (!customElements.get(newCEName)) {
             if (!CC.registering[newCEName]) {

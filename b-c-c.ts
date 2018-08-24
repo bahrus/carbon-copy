@@ -59,7 +59,7 @@ export class BCC extends XtallatX(HTMLElement) {
                 break;
             
         }
-        this.onPropsChange();
+        this.opc();
     }
 
     _connected!: boolean;
@@ -72,7 +72,7 @@ export class BCC extends XtallatX(HTMLElement) {
         })
         this.innerHTML = '';
         this._connected = true;
-        this.onPropsChange();
+        this.opc();
     }
 
 
@@ -117,7 +117,7 @@ export class BCC extends XtallatX(HTMLElement) {
     _originalChildren  = [] as HTMLElement[];
     //_prevId!: string;
 
-    onPropsChange() {
+    opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);

@@ -147,7 +147,7 @@
             break;
         }
 
-        this.onPropsChange();
+        this.opc();
       }
     }, {
       key: "connectedCallback",
@@ -162,7 +162,7 @@
         });
         this.innerHTML = '';
         this._connected = true;
-        this.onPropsChange();
+        this.opc();
       }
     }, {
       key: "getHost",
@@ -212,8 +212,8 @@
       } //_prevId!: string;
 
     }, {
-      key: "onPropsChange",
-      value: function onPropsChange() {
+      key: "opc",
+      value: function opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
         var template = this.getSrcTempl();
         var clone = template.content.cloneNode(true);

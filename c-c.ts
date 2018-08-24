@@ -116,17 +116,17 @@ export class CC extends BCC {
         const activeCEName = this.gn();
         for(let i = 0, ii = t.children.length; i < ii; i++){
             const child = t.children[i] as HTMLElement;
-            if(child.tagName.toLowerCase() === activeCEName){
-                child.style.display = (<any>child).cc_orgD || 'block';
-            }else{
+            const style = child.style;
+            if(child.localName === activeCEName){
+                style.display = (<any>child).cc_orgD || 'block';
+            }else if(style.display !== 'none'){
                 if(!(<any>child).cc_orgD) (<any>child).cc_orgD = child.style.display;
                 child.style.display = 'none';
             }
         }
     }
-    onPropsChange() {
+    opc() { //onPropsChange
         if (!this._from || !this._connected || this.disabled) return;
-        //this._alreadyRegistered = true;
         const newCEName = this.gn();
         
         if (!customElements.get(newCEName)) {
@@ -207,9 +207,7 @@ export class CC extends BCC {
                     this._upgradeProperties(allProps);
                 }
                 static get observedAttributes(){return allProps;}
-                // attributeChangedCallback(name: string, oldVal: string, newVal: string){
-                //     this['_' + name] = newVal;
-                // }
+                
             }
             this.dP(ceName, template, newClass, parsedStrProps, false);
             this.dP(ceName, template, newClass, parsedObjProps, true);

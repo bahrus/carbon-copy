@@ -123,7 +123,7 @@ class BCC extends XtallatX(HTMLElement) {
                 this._from = newValue;
                 break;
         }
-        this.onPropsChange();
+        this.opc();
     }
     connectedCallback() {
         this._upgradeProperties([copy, from]);
@@ -133,7 +133,7 @@ class BCC extends XtallatX(HTMLElement) {
         });
         this.innerHTML = '';
         this._connected = true;
-        this.onPropsChange();
+        this.opc();
     }
     getHost(el, level, maxLevel) {
         let parent = el;
@@ -175,7 +175,7 @@ class BCC extends XtallatX(HTMLElement) {
         return template;
     }
     //_prevId!: string;
-    onPropsChange() {
+    opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy)
             return;
         const template = this.getSrcTempl();
