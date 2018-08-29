@@ -1,7 +1,6 @@
 import { XtallatX } from 'xtal-latx/xtal-latx.js';
 import { BCC } from './b-c-c.js';
 import { define } from 'xtal-latx/define.js';
-const noshadow = 'noshadow';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -13,30 +12,17 @@ const noshadow = 'noshadow';
 */
 export class CC extends BCC {
     static get is() { return 'c-c'; }
-    static get observedAttributes() {
-        return super.observedAttributes.concat([noshadow]);
-    }
-    /**
-     * Don't use shadow DOM
-     */
-    get noshadow() {
-        return this._noshadow;
-    }
-    set noshadow(val) {
-        this.attr(noshadow, val, '');
-    }
     getCEName(templateId) {
         if (templateId.indexOf('-') > -1)
             return templateId;
         return 'c-c-' + templateId.split('_').join('-');
     }
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case noshadow:
-                this._noshadow = newValue !== null;
-                break;
-        }
-        super.attributeChangedCallback(name, oldValue, newValue);
+    connectedCallback() {
+        this.childNodes.forEach((node) => {
+            this._originalChildren.push(node.cloneNode(true));
+        });
+        this.innerHTML = '';
+        super.connectedCallback();
     }
     dP(name, template, newClass, props, isObj) {
         if (isObj) {

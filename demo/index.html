@@ -12,13 +12,17 @@
   </head>
   <body>
     <div>
+        <!-- Polyfill needed for re(dge)tro browsers -->
+        <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+        <!-- End Polyfills -->
+
+        <script type="module" src="https://unpkg.com/carbon-copy@0.1.35/carbon-copy.js"></script>
         <style>
             div {
               background-color:cornsilk;
             }
           </style>
-        <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-        <script type="module" src="https://unpkg.com/carbon-copy@0.1.30/carbon-copy.js"></script>
+        
       <h3><a href="https://www.youtube.com/watch?v=eAfyFTzZDMM" target="_blank">Beautiful</a></h3>
       <h4>Christina Aguilera</h4>
       <template id="no-matter">
@@ -32,18 +36,7 @@
         </style>
         No matter what we <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
       </template>
-      <script nomodule data-methods="true">
-        ({
-          fn: function(){
-            console.log(this);
-            return this;
-          },
-          onPropsChange: function(name, oldVal, newVal){
-            debugger;
-          }
-        })
-      </script>
-      <template id="beautiful" data-str-props="a,b,c" data-obj-props="d,e">
+      <template id="beautiful">
         <style>
           div{
             background-color:burlywood;
@@ -70,21 +63,21 @@
                 background-color:paleturquoise;
               }
             </style>
-        <c-c copy from="/beautiful">
+        <b-c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs1"></slot>
           </span>
-        </c-c>
+        </b-c-c>
         <div>No matter what they say</div>
         <div prop-pronoun>Words
           <slot name="verb1"></slot> bring
           <slot name="pronoun1"></slot> down</div>
         <div>Oh no</div>
-        <c-c copy from="/beautiful">
+        <b-c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs2"></slot>
           </span>
-        </c-c>
+        </b-c-c>
         <div>In every single way</div>
         <div prop-pronoun>Yes words
           <slot name="verb2"></slot> bring

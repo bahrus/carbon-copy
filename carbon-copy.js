@@ -74,6 +74,7 @@ function XtallatX(superClass) {
 }
 const from = 'from';
 const copy = 'copy';
+const noshadow = 'noshadow';
 /**
 * `b-c-c`
 * Dependency free web component that allows basic copying of templates.
@@ -90,7 +91,16 @@ class BCC extends XtallatX(HTMLElement) {
     }
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
-        return [copy, from];
+        return [copy, from, noshadow];
+    }
+    /**
+     * Don't use shadow DOM
+     */
+    get noshadow() {
+        return this._noshadow;
+    }
+    set noshadow(val) {
+        this.attr(noshadow, val, '');
     }
     /**
      * Id of template to import.
@@ -122,16 +132,15 @@ class BCC extends XtallatX(HTMLElement) {
                 //this._prevId = oldValue;
                 this._from = newValue;
                 break;
+            case noshadow:
+                this._noshadow = newValue !== null;
+                break;
         }
         this.opc();
     }
     connectedCallback() {
-        this._upgradeProperties([copy, from]);
+        this._upgradeProperties([copy, from, noshadow]);
         //this._originalChildren = this.childNodes;
-        this.childNodes.forEach((node) => {
-            this._originalChildren.push(node.cloneNode(true));
-        });
-        this.innerHTML = '';
         this._connected = true;
         this.opc();
     }
@@ -180,11 +189,16 @@ class BCC extends XtallatX(HTMLElement) {
             return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);
-        this.appendChild(clone);
+        if (this._noshadow) {
+            this.appendChild(clone);
+        }
+        else {
+            this.attachShadow({ mode: 'open' });
+            this.shadowRoot.appendChild(clone);
+        }
     }
 }
 define(BCC);
-const noshadow = 'noshadow';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -196,30 +210,17 @@ const noshadow = 'noshadow';
 */
 class CC extends BCC {
     static get is() { return 'c-c'; }
-    static get observedAttributes() {
-        return super.observedAttributes.concat([noshadow]);
-    }
-    /**
-     * Don't use shadow DOM
-     */
-    get noshadow() {
-        return this._noshadow;
-    }
-    set noshadow(val) {
-        this.attr(noshadow, val, '');
-    }
     getCEName(templateId) {
         if (templateId.indexOf('-') > -1)
             return templateId;
         return 'c-c-' + templateId.split('_').join('-');
     }
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case noshadow:
-                this._noshadow = newValue !== null;
-                break;
-        }
-        super.attributeChangedCallback(name, oldValue, newValue);
+    connectedCallback() {
+        this.childNodes.forEach((node) => {
+            this._originalChildren.push(node.cloneNode(true));
+        });
+        this.innerHTML = '';
+        super.connectedCallback();
     }
     dP(name, template, newClass, props, isObj) {
         if (isObj) {

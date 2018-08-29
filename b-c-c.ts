@@ -3,7 +3,7 @@ import {define} from 'xtal-latx/define.js';
 
 const from = 'from';
 const copy = 'copy';
-
+const noshadow = 'noshadow';
 
 /**
 * `b-c-c`
@@ -17,13 +17,21 @@ const copy = 'copy';
 export class BCC extends XtallatX(HTMLElement) {
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
-        return [copy, from];
+        return [copy, from, noshadow];
     }
 
-    
+    _noshadow!: boolean;
+    /**
+     * Don't use shadow DOM 
+     */
+    get noshadow() {
+        return this._noshadow;
+    }
+    set noshadow(val) {
+        this.attr(noshadow, val, '');
+    }
 
     _from!: string;
-
     /**
      * Id of template to import.
      * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  
@@ -57,7 +65,9 @@ export class BCC extends XtallatX(HTMLElement) {
                 //this._prevId = oldValue;
                 this._from = newValue;
                 break;
-            
+            case noshadow:
+                this._noshadow = newValue !== null;
+                break;
         }
         this.opc();
     }
@@ -65,12 +75,8 @@ export class BCC extends XtallatX(HTMLElement) {
     _connected!: boolean;
 
     connectedCallback() {
-        this._upgradeProperties([copy, from]);
+        this._upgradeProperties([copy, from, noshadow]);
         //this._originalChildren = this.childNodes;
-        this.childNodes.forEach((node : Element) => {
-            this._originalChildren.push(node.cloneNode(true) as HTMLElement);
-        })
-        this.innerHTML = '';
         this._connected = true;
         this.opc();
     }
@@ -121,7 +127,13 @@ export class BCC extends XtallatX(HTMLElement) {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);
-        this.appendChild(clone);
+        if(this._noshadow){
+            this.appendChild(clone);
+        }else{
+            this.attachShadow({ mode: 'open' });
+            this.shadowRoot.appendChild(clone);
+        }
+        
     }
 
 

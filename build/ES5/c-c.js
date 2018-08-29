@@ -1,7 +1,6 @@
 import { XtallatX } from "./node_modules/xtal-latx/xtal-latx.js";
 import { BCC } from './b-c-c.js';
 import { define } from "./node_modules/xtal-latx/define.js";
-var noshadow = 'noshadow';
 /**
 * `c-c`
 * Dependency free web component that allows copying templates.
@@ -29,15 +28,15 @@ function (_BCC) {
       return 'c-c-' + templateId.split('_').join('-');
     }
   }, {
-    key: "attributeChangedCallback",
-    value: function attributeChangedCallback(name, oldValue, newValue) {
-      switch (name) {
-        case noshadow:
-          this._noshadow = newValue !== null;
-          break;
-      }
+    key: "connectedCallback",
+    value: function connectedCallback() {
+      var _this = this;
 
-      babelHelpers.get(CC.prototype.__proto__ || Object.getPrototypeOf(CC.prototype), "attributeChangedCallback", this).call(this, name, oldValue, newValue);
+      this.childNodes.forEach(function (node) {
+        _this._originalChildren.push(node.cloneNode(true));
+      });
+      this.innerHTML = '';
+      babelHelpers.get(CC.prototype.__proto__ || Object.getPrototypeOf(CC.prototype), "connectedCallback", this).call(this);
     }
   }, {
     key: "dP",
@@ -133,7 +132,7 @@ function (_BCC) {
   }, {
     key: "opc",
     value: function opc() {
-      var _this = this;
+      var _this2 = this;
 
       if (!this._from || !this._connected || this.disabled) return;
       var newCEName = this.gn();
@@ -149,7 +148,7 @@ function (_BCC) {
               attributes: true
             };
             var mutationObserver = new MutationObserver(function (mr) {
-              _this.createCE(template);
+              _this2.createCE(template);
 
               mutationObserver.disconnect();
             });
@@ -162,19 +161,19 @@ function (_BCC) {
 
       if (!this._copy) return;
       customElements.whenDefined(newCEName).then(function () {
-        var newEl = _this.querySelector(newCEName);
+        var newEl = _this2.querySelector(newCEName);
 
         if (!newEl) {
           var ce = document.createElement(newCEName);
 
-          _this._originalChildren.forEach(function (child) {
+          _this2._originalChildren.forEach(function (child) {
             ce.appendChild(child.cloneNode(true));
           });
 
-          _this.appendChild(ce);
+          _this2.appendChild(ce);
         }
 
-        _this.sac();
+        _this2.sac();
       });
     }
   }, {
@@ -247,18 +246,18 @@ function (_BCC) {
           }]);
 
           function _newClass() {
-            var _this2;
+            var _this3;
 
             babelHelpers.classCallCheck(this, _newClass);
-            _this2 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+            _this3 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
 
-            _this2.attachShadow({
+            _this3.attachShadow({
               mode: 'open'
             });
 
-            _this2.shadowRoot.appendChild(template.content.cloneNode(true));
+            _this3.shadowRoot.appendChild(template.content.cloneNode(true));
 
-            return _this2;
+            return _this3;
           }
 
           babelHelpers.createClass(_newClass, [{
@@ -284,27 +283,10 @@ function (_BCC) {
         define(_newClass);
       }
     }
-  }, {
-    key: "noshadow",
-
-    /**
-     * Don't use shadow DOM
-     */
-    get: function get() {
-      return this._noshadow;
-    },
-    set: function set(val) {
-      this.attr(noshadow, val, '');
-    }
   }], [{
     key: "is",
     get: function get() {
       return 'c-c';
-    }
-  }, {
-    key: "observedAttributes",
-    get: function get() {
-      return babelHelpers.get(CC.__proto__ || Object.getPrototypeOf(CC), "observedAttributes", this).concat([noshadow]);
     }
   }]);
   return CC;

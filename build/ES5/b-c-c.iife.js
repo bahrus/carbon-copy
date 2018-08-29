@@ -109,6 +109,7 @@
 
   var from = 'from';
   var copy = 'copy';
+  var noshadow = 'noshadow';
   /**
   * `b-c-c`
   * Dependency free web component that allows basic copying of templates.
@@ -145,6 +146,10 @@
             //this._prevId = oldValue;
             this._from = newValue;
             break;
+
+          case noshadow:
+            this._noshadow = newValue !== null;
+            break;
         }
 
         this.opc();
@@ -152,15 +157,9 @@
     }, {
       key: "connectedCallback",
       value: function connectedCallback() {
-        var _this4 = this;
-
-        this._upgradeProperties([copy, from]); //this._originalChildren = this.childNodes;
+        this._upgradeProperties([copy, from, noshadow]); //this._originalChildren = this.childNodes;
 
 
-        this.childNodes.forEach(function (node) {
-          _this4._originalChildren.push(node.cloneNode(true));
-        });
-        this.innerHTML = '';
         this._connected = true;
         this.opc();
       }
@@ -217,16 +216,36 @@
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
         var template = this.getSrcTempl();
         var clone = template.content.cloneNode(true);
-        this.appendChild(clone);
+
+        if (this._noshadow) {
+          this.appendChild(clone);
+        } else {
+          this.attachShadow({
+            mode: 'open'
+          });
+          this.shadowRoot.appendChild(clone);
+        }
       }
     }, {
-      key: "from",
+      key: "noshadow",
 
+      /**
+       * Don't use shadow DOM
+       */
+      get: function get() {
+        return this._noshadow;
+      },
+      set: function set(val) {
+        this.attr(noshadow, val, '');
+      }
       /**
        * Id of template to import.
        * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.
        * If from starts with "../" then the search is done one level up, etc.
        */
+
+    }, {
+      key: "from",
       get: function get() {
         return this._from;
       },
@@ -254,7 +273,7 @@
     }, {
       key: "observedAttributes",
       get: function get() {
-        return [copy, from];
+        return [copy, from, noshadow];
       }
     }]);
     return BCC;

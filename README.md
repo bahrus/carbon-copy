@@ -8,9 +8,9 @@ Note that there are other client-side include web components you may want to com
 
 Copy a template inside a DOM node. 
 
-For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c  It is ~1.2 kb minified and gzipped.  It just clones the source template into the innerHTML of gthe element.
+For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c  It is ~1.25 kb minified and gzipped.  It just clones the source template into the shadowDOM or innerHTML of the element (depending on the value of the noshadow attribute).
 
-For the full functionality, use element c-c, which is defined by file c-c.js.  carbon-copy.js is an iife version of c-c.js.  It is ~2.2 kb minifed and gzipped.
+For more extended functionality, use element c-c, which is defined by file c-c.js.  The most important difference is that c-c creates a custom element on the fly.  carbon-copy.js is an iife version of (b-)c-c.  It is ~2.2 kb minifed and gzipped.
 
 Syntax:
 
@@ -19,29 +19,29 @@ Syntax:
     <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
 </template>
 ...
-<c-c copy from="/no-matter">
+<b-c-c copy from="/no-matter">
     <span slot="verb1">
         do
     </span>
     <span slot="verb2">
         say
     </span>
-</c-c>
+</b-c-c>
 ```
 
-Note the use of the attribute "copy".  If this is present, you can modify the value of "from" dynamically, and it will clone the contents of the referenced template (based on id).  If an existing template has already been copied, and the from value changes, the existing inner DOM gets hidden via display:none.  If the value of "/from" reverts back, that original DOM will be reshown (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies.
+Note the use of the attribute "copy".  If this is present, you can modify the value of "from" dynamically, and it will clone the contents of the referenced template (based on id).  
 
-Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  If from starts with "../" then the search is done one level up, etc.
+If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and makes it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be reshown (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies.
 
+Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" has no slash, the search for the matching template is done within the shadow DOM of the (b-)c-c element.  If from starts with "../" then the search is done one level up, etc.
 
+By default, b-c-c will copy in the referenced template into a Shadow DOM snippet.  However, if you prefer a copy straight into innerHTML, add attribute / property "noshadow."  Doing so will, of course, eliminate the slot mechanism from functioning.  Hopefully, if template instantiation becomes a thing, that will provide an alternative for this scenario. 
 
-It can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
+b-c-c and c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
 
 ## Codeless Web Components
 
-c-c generates a custom element on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).  
-
-It uses shadow DOM by default, but you can specify not to use shadow DOM with attribute "noshadow."  Doing so will prevent the slot mechanism from working.  Hopefully, if template instantiation becomes a thing, it will provide an alternative for this scenario.
+Unlike b-c-c, c-c actually generates a custom (web) component on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).   
 
 So here are the steps to create a web component using c-c:
 
@@ -126,13 +126,17 @@ Changes to object properties fire events with the name "[name of prop]-changed".
 <custom-element-demo>
   <template>
     <div>
+        <!-- Polyfill needed for re(dge)tro browsers -->
+        <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+        <!-- End Polyfills -->
+
+        <script type="module" src="https://unpkg.com/carbon-copy@0.1.35/carbon-copy.js"></script>
         <style>
             div {
               background-color:cornsilk;
             }
           </style>
-        <script src="https://unpkg.com//@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-        <script type="module" src="https://unpkg.com/carbon-copy@0.1.27/carbon-copy.js"></script>
+        
       <h3><a href="https://www.youtube.com/watch?v=eAfyFTzZDMM" target="_blank">Beautiful</a></h3>
       <h4>Christina Aguilera</h4>
       <template id="no-matter">
@@ -146,18 +150,7 @@ Changes to object properties fire events with the name "[name of prop]-changed".
         </style>
         No matter what we <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
       </template>
-      <script nomodule data-methods="true">
-        ({
-          fn: function(){
-            console.log(this);
-            return this;
-          },
-          onPropsChange: function(name, oldVal, newVal){
-            debugger;
-          }
-        })
-      </script>
-      <template id="beautiful" data-str-props="a,b,c" data-obj-props="d,e">
+      <template id="beautiful">
         <style>
           div{
             background-color:burlywood;
@@ -184,21 +177,21 @@ Changes to object properties fire events with the name "[name of prop]-changed".
                 background-color:paleturquoise;
               }
             </style>
-        <c-c copy from="/beautiful">
+        <b-c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs1"></slot>
           </span>
-        </c-c>
+        </b-c-c>
         <div>No matter what they say</div>
         <div prop-pronoun>Words
           <slot name="verb1"></slot> bring
           <slot name="pronoun1"></slot> down</div>
         <div>Oh no</div>
-        <c-c copy from="/beautiful">
+        <b-c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs2"></slot>
           </span>
-        </c-c>
+        </b-c-c>
         <div>In every single way</div>
         <div prop-pronoun>Yes words
           <slot name="verb2"></slot> bring

@@ -18,7 +18,7 @@
             }
           </style>
         <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-        <script type="module" src="../c-c.js"></script>
+        <script type="module" src="../b-c-c.js"></script>
       <h3><a href="https://www.youtube.com/watch?v=eAfyFTzZDMM" target="_blank">Beautiful</a></h3>
       <h4>Christina Aguilera</h4>
       <template id="no-matter">
@@ -59,27 +59,27 @@
                 background-color:paleturquoise;
               }
             </style>
-        <c-c copy from="/beautiful">
+        <b-c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs1"></slot>
           </span>
-        </c-c>
+        </b-c-c>
         <div>No matter what they say</div>
         <div prop-pronoun>Words
           <slot name="verb1"></slot> bring
           <slot name="pronoun1"></slot> down</div>
         <div>Oh no</div>
-        <c-c copy from="/beautiful">
+        <b-c-c copy from="/beautiful">
           <span slot="subjectIs">
             <slot name="subjectIs2"></slot>
           </span>
-        </c-c>
+        </b-c-c>
         <div>In every single way</div>
         <div prop-pronoun>Yes words
           <slot name="verb2"></slot> bring
           <slot name="pronoun2"></slot> down</div>
         <div>Oh no</div>
-        <c-c copy from="/down"></c-c>
+        <b-c-c copy from="/down"></b-c-c>
       </template>
 
   
@@ -96,7 +96,7 @@
             <div>I'm so ashamed</div>
           </p>
           <p>
-            <c-c copy from="/chorus">
+            <b-c-c copy from="/chorus">
 
               <span slot="verb1">can't</span>
               <span slot="verb2">can't</span>
@@ -104,8 +104,8 @@
               <span slot="pronoun2">me</span>
               <span slot="subjectIs1">I am</span>
               <span slot="subjectIs2">I am</span>
-            </c-c>
-            <!-- <c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></c-c> -->
+            </b-c-c>
+            <!-- <b-c-c href="HTMLReferences/HTMLSnippets.html#chorus" set="subjectIs:I am;pronoun:me;verb1:can't;verb2:can't"></b-c-c> -->
           </p>
           <p>
   
@@ -118,25 +118,25 @@
             <div>Ain't that the way it is</div>
           </p>
           <p>
-            <c-c copy from="/chorus">
+            <b-c-c copy from="/chorus">
               <span slot="verb1">can't</span>
               <span slot="verb2">can't</span>
               <span slot="pronoun1">you</span>
               <span slot="pronoun2">you</span>
               <span slot="subjectIs1">You are</span>
               <span slot="subjectIs2">You are</span>
-            </c-c>
+            </b-c-c>
           </p>
           <br>
-          <c-c copy from="/no-matter">
+          <b-c-c copy from="/no-matter">
             <span slot="verb1">do</span>
             <span slot="verb2">do</span>
-          </c-c>
+          </b-c-c>
           <br>
-          <c-c copy from="/no-matter">
+          <b-c-c copy from="/no-matter">
             <span slot="verb1">say</span>
             <span slot="verb2">say</span>
-          </c-c>
+          </b-c-c>
           <div>We're the song inside the tune (yeah, oh yeah)</div>
           <div>Full of beautiful mistakes</div>
           <p>
@@ -146,14 +146,14 @@
             <div>On the other side</div>
           </p>
           <p>
-            <c-c copy from="/chorus">
+            <b-c-c copy from="/chorus">
               <span slot="verb1">won't</span>
               <span slot="verb2">can't</span>
               <span slot="pronoun1">us</span>
               <span slot="pronoun2">us</span>
               <span slot="subjectIs1">We are</span>
               <span slot="subjectIs2">We are</span>
-            </c-c> 
+            </b-c-c> 
           </p>
           <p>
             <div>Oh, oh</div>
