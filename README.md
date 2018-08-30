@@ -2,6 +2,8 @@
 
 <a href="https://nodei.co/npm/carbon-copy/"><img src="https://nodei.co/npm/carbon-copy.png"></a>
 
+<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.37/build/ES6/carbon-copy.js?compression=gzip">
+
 # \<carbon-copy\>
 
 [Full Screen Demo](https://rawgit.com/bahrus/carbon-copy/master/demo/index.html)
