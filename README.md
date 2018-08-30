@@ -4,6 +4,8 @@
 
 # \<carbon-copy\>
 
+[Full Screen Demo](https://rawgit.com/bahrus/carbon-copy/master/demo/index.html)
+
 Note that there are other client-side include web components you may want to compare this one with -- e.g. github's [include-fragment-element](https://github.com/github/include-fragment-element) and [Juicy's juicy-html](https://www.webcomponents.org/element/Juicy/juicy-html) or [xtal-fetch](https://www.webcomponents.org/element/bahrus/xtal-fetch) if carbon-copy doesn't meet your needs.
 
 Copy a template inside a DOM node. 
