@@ -131,7 +131,7 @@ export class BCC extends XtallatX(HTMLElement) {
             this.appendChild(clone);
         }else{
             this.attachShadow({ mode: 'open' });
-            this.shadowRoot.appendChild(clone);
+            this.shadowRoot!.appendChild(clone);
         }
         
     }

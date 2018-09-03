@@ -152,6 +152,10 @@ export class CC extends BCC {
         const allProps = parsedStrProps.concat(parsedObjProps);
         if (this._noshadow) {
             class newClass extends XtallatX(HTMLElement) {
+                constructor() {
+                    super(...arguments);
+                    this._connected = false;
+                }
                 static get is() { return ceName; }
                 static getObjProps() {
                     return parsedObjProps;
@@ -169,14 +173,15 @@ export class CC extends BCC {
         }
         else {
             class newClass extends XtallatX(HTMLElement) {
+                constructor() {
+                    super();
+                    this._connected = false;
+                    this.attachShadow({ mode: 'open' });
+                    this.shadowRoot.appendChild(template.content.cloneNode(true));
+                }
                 static get is() { return ceName; }
                 static get objProps() {
                     return parsedObjProps;
-                }
-                constructor() {
-                    super();
-                    this.attachShadow({ mode: 'open' });
-                    this.shadowRoot.appendChild(template.content.cloneNode(true));
                 }
                 connectedCallback() {
                     this._connected = true;

@@ -26,7 +26,7 @@ export class CC extends BCC {
     }
 
     connectedCallback(){
-        this.childNodes.forEach((node : Element) => {
+        this.childNodes.forEach((node : Node) => {
             this._originalChildren.push(node.cloneNode(true) as HTMLElement);
         })
         this.innerHTML = '';
@@ -169,6 +169,7 @@ export class CC extends BCC {
                 static getObjProps(){
                     return parsedObjProps;
                 }
+                _connected = false;
                 connectedCallback() {
                     this._upgradeProperties(allProps);
                     this._connected = true;
@@ -185,10 +186,11 @@ export class CC extends BCC {
                 static get objProps(){
                     return parsedObjProps;
                 }
+                _connected = false;
                 constructor() {
                     super();
                     this.attachShadow({ mode: 'open' });
-                    this.shadowRoot.appendChild(template.content.cloneNode(true));
+                    this.shadowRoot!.appendChild(template.content.cloneNode(true));
                 }
                 connectedCallback(){
                     this._connected = true;
