@@ -170,7 +170,8 @@
 
       babelHelpers.classCallCheck(this, BCC);
       _this3 = babelHelpers.possibleConstructorReturn(this, (BCC.__proto__ || Object.getPrototypeOf(BCC)).apply(this, arguments));
-      _this3._originalChildren = [];
+      _this3._origC = []; //original Children
+
       /**
        * original style
        */
@@ -388,11 +389,20 @@
         var _this4 = this;
 
         this.childNodes.forEach(function (node) {
-          _this4._originalChildren.push(node.cloneNode(true));
+          _this4._origC.push(node.cloneNode(true));
         });
         this.innerHTML = '';
         babelHelpers.get(CC.prototype.__proto__ || Object.getPrototypeOf(CC.prototype), "connectedCallback", this).call(this);
       }
+      /**
+       * define props
+       * @param name
+       * @param template
+       * @param newClass
+       * @param props
+       * @param isObj
+       */
+
     }, {
       key: "dP",
       value: function dP(name, template, newClass, props, isObj) {
@@ -427,6 +437,12 @@
           });
         }
       }
+      /**
+       * define Methods
+       * @param newClass
+       * @param template
+       */
+
     }, {
       key: "dM",
       value: function dM(newClass, template) {
@@ -438,6 +454,11 @@
           newClass.prototype[fn] = evalScript[fn];
         }
       }
+      /**
+       * addAttributeChangedCallback
+       * @param newClass
+       */
+
     }, {
       key: "aacc",
       value: function aacc(newClass) {
@@ -458,6 +479,10 @@
           if (this.onPropsChange) this.onPropsChange(name, oldVal, val);
         };
       }
+      /**
+       * get custom element name
+       */
+
     }, {
       key: "gn",
       value: function gn() {
@@ -466,17 +491,21 @@
         var fromName = fromTokens[0] || fromTokens[1];
         return this.getCEName(fromName);
       }
+      /**
+       * set activate component
+       */
+
     }, {
       key: "sac",
       value: function sac() {
         var t = this;
-        var activeCEName = this.gn();
+        var aceN = this.gn();
 
         for (var i = 0, ii = t.children.length; i < ii; i++) {
           var child = t.children[i];
           var style = child.style;
 
-          if (child.localName === activeCEName) {
+          if (child.localName === aceN) {
             style.display = child.cc_orgD || 'block';
           } else if (style.display !== 'none') {
             if (!child.cc_orgD) child.cc_orgD = child.style.display;
@@ -484,6 +513,10 @@
           }
         }
       }
+      /**
+       * onPropsChange
+       */
+
     }, {
       key: "opc",
       value: function opc() {
@@ -502,12 +535,12 @@
                 attributeFilter: ['loaded'],
                 attributes: true
               };
-              var mutationObserver = new MutationObserver(function (mr) {
+              var mO = new MutationObserver(function (mr) {
                 _this5.createCE(template);
 
-                mutationObserver.disconnect();
+                mO.disconnect();
               });
-              mutationObserver.observe(template, config);
+              mO.observe(template, config);
             } else {
               this.createCE(template);
             }
@@ -521,7 +554,7 @@
           if (!newEl) {
             var ce = document.createElement(newCEName);
 
-            _this5._originalChildren.forEach(function (child) {
+            _this5._origC.forEach(function (child) {
               ce.appendChild(child.cloneNode(true));
             });
 

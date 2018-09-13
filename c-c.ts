@@ -27,11 +27,19 @@ export class CC extends BCC {
 
     connectedCallback(){
         this.childNodes.forEach((node : Node) => {
-            this._originalChildren.push(node.cloneNode(true) as HTMLElement);
+            this._origC.push(node.cloneNode(true) as HTMLElement);
         })
         this.innerHTML = '';
         super.connectedCallback();
     }
+    /**
+     * define props
+     * @param name 
+     * @param template 
+     * @param newClass 
+     * @param props 
+     * @param isObj 
+     */
     dP(name: string, template: HTMLTemplateElement, newClass: any, props: string[], isObj: boolean){ //define Props
         if(isObj){
             props.forEach(prop =>{
@@ -67,6 +75,11 @@ export class CC extends BCC {
         
         
     }
+    /**
+     * define Methods
+     * @param newClass 
+     * @param template 
+     */
     dM(newClass: any, template:HTMLTemplateElement){ //define methods
         const prevSibling = template.previousElementSibling as HTMLElement;
         if(!prevSibling || !prevSibling.dataset.methods) return;
@@ -76,7 +89,11 @@ export class CC extends BCC {
         }
     }
 
-    private aacc(newClass: any){ //add attributee changed callback
+    /**
+     * addAttributeChangedCallback
+     * @param newClass 
+     */
+    private aacc(newClass: any){ 
         newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
             let val: any = newVal;
             let isObj = false;
@@ -93,19 +110,24 @@ export class CC extends BCC {
         }
     }
 
-    
+    /**
+     * get custom element name
+     */
     gn(){
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
         return this.getCEName(fromName);
     }
+    /**
+     * set activate component
+     */
     sac(){
         const t = (<any>this) as HTMLElement;
-        const activeCEName = this.gn();
+        const aceN = this.gn();
         for(let i = 0, ii = t.children.length; i < ii; i++){
             const child = t.children[i] as HTMLElement;
             const style = child.style;
-            if(child.localName === activeCEName){
+            if(child.localName === aceN){
                 style.display = (<any>child).cc_orgD || 'block';
             }else if(style.display !== 'none'){
                 if(!(<any>child).cc_orgD) (<any>child).cc_orgD = child.style.display;
@@ -113,7 +135,10 @@ export class CC extends BCC {
             }
         }
     }
-    opc() { //onPropsChange
+    /**
+     * onPropsChange
+     */
+    opc() { 
         if (!this._from || !this._connected || this.disabled) return;
         const newCEName = this.gn();
         
@@ -126,11 +151,11 @@ export class CC extends BCC {
                         attributeFilter: ['loaded'],
                         attributes: true,
                     }
-                    const mutationObserver = new MutationObserver((mr: MutationRecord[]) => {
+                    const mO = new MutationObserver((mr: MutationRecord[]) => {
                         this.createCE(template as HTMLTemplateElement);
-                        mutationObserver.disconnect();
+                        mO.disconnect();
                     });
-                    mutationObserver.observe(template, config);
+                    mO.observe(template, config);
                 } else {
                     this.createCE(template);
                 }
@@ -144,7 +169,7 @@ export class CC extends BCC {
             const newEl = this.querySelector(newCEName) as HTMLElement;
             if (!newEl) {
                 const ce = document.createElement(newCEName);
-                this._originalChildren.forEach(child => {
+                this._origC.forEach(child => {
                     ce.appendChild(child.cloneNode(true));
                 })
                 this.appendChild(ce);

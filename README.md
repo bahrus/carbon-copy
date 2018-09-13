@@ -4,11 +4,11 @@
 
 b-c-c size:
 
-<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.42/build/ES6/b-c-c.iife.js?compression=gzip"/>
+<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.43/build/ES6/b-c-c.iife.js?compression=gzip"/>
 
 c-c size:
 
-<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.42/build/ES6/carbon-copy.js?compression=gzip"/>
+<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.43/build/ES6/carbon-copy.js?compression=gzip"/>
 
 # \<carbon-copy\>
 

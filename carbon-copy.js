@@ -120,7 +120,7 @@ const noshadow = 'noshadow';
 class BCC extends XtallatX(HTMLElement) {
     constructor() {
         super(...arguments);
-        this._originalChildren = [];
+        this._origC = []; //original Children
         /**
          * original style
          */
@@ -281,11 +281,19 @@ class CC extends BCC {
     }
     connectedCallback() {
         this.childNodes.forEach((node) => {
-            this._originalChildren.push(node.cloneNode(true));
+            this._origC.push(node.cloneNode(true));
         });
         this.innerHTML = '';
         super.connectedCallback();
     }
+    /**
+     * define props
+     * @param name
+     * @param template
+     * @param newClass
+     * @param props
+     * @param isObj
+     */
     dP(name, template, newClass, props, isObj) {
         if (isObj) {
             props.forEach(prop => {
@@ -319,6 +327,11 @@ class CC extends BCC {
             });
         }
     }
+    /**
+     * define Methods
+     * @param newClass
+     * @param template
+     */
     dM(newClass, template) {
         const prevSibling = template.previousElementSibling;
         if (!prevSibling || !prevSibling.dataset.methods)
@@ -328,6 +341,10 @@ class CC extends BCC {
             newClass.prototype[fn] = evalScript[fn];
         }
     }
+    /**
+     * addAttributeChangedCallback
+     * @param newClass
+     */
     aacc(newClass) {
         newClass.prototype.attributeChangedCallback = function (name, oldVal, newVal) {
             let val = newVal;
@@ -345,18 +362,24 @@ class CC extends BCC {
                 this.onPropsChange(name, oldVal, val);
         };
     }
+    /**
+     * get custom element name
+     */
     gn() {
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
         return this.getCEName(fromName);
     }
+    /**
+     * set activate component
+     */
     sac() {
         const t = this;
-        const activeCEName = this.gn();
+        const aceN = this.gn();
         for (let i = 0, ii = t.children.length; i < ii; i++) {
             const child = t.children[i];
             const style = child.style;
-            if (child.localName === activeCEName) {
+            if (child.localName === aceN) {
                 style.display = child.cc_orgD || 'block';
             }
             else if (style.display !== 'none') {
@@ -366,6 +389,9 @@ class CC extends BCC {
             }
         }
     }
+    /**
+     * onPropsChange
+     */
     opc() {
         if (!this._from || !this._connected || this.disabled)
             return;
@@ -379,11 +405,11 @@ class CC extends BCC {
                         attributeFilter: ['loaded'],
                         attributes: true,
                     };
-                    const mutationObserver = new MutationObserver((mr) => {
+                    const mO = new MutationObserver((mr) => {
                         this.createCE(template);
-                        mutationObserver.disconnect();
+                        mO.disconnect();
                     });
-                    mutationObserver.observe(template, config);
+                    mO.observe(template, config);
                 }
                 else {
                     this.createCE(template);
@@ -396,7 +422,7 @@ class CC extends BCC {
             const newEl = this.querySelector(newCEName);
             if (!newEl) {
                 const ce = document.createElement(newCEName);
-                this._originalChildren.forEach(child => {
+                this._origC.forEach(child => {
                     ce.appendChild(child.cloneNode(true));
                 });
                 this.appendChild(ce);

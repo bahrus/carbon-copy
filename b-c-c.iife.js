@@ -120,7 +120,7 @@ const noshadow = 'noshadow';
 class BCC extends XtallatX(HTMLElement) {
     constructor() {
         super(...arguments);
-        this._originalChildren = [];
+        this._origC = []; //original Children
         /**
          * original style
          */

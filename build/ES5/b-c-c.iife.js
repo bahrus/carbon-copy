@@ -170,7 +170,8 @@
 
       babelHelpers.classCallCheck(this, BCC);
       _this3 = babelHelpers.possibleConstructorReturn(this, (BCC.__proto__ || Object.getPrototypeOf(BCC)).apply(this, arguments));
-      _this3._originalChildren = [];
+      _this3._origC = []; //original Children
+
       /**
        * original style
        */

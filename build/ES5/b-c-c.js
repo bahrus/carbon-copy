@@ -23,7 +23,8 @@ function (_XtallatX) {
 
     babelHelpers.classCallCheck(this, BCC);
     _this = babelHelpers.possibleConstructorReturn(this, (BCC.__proto__ || Object.getPrototypeOf(BCC)).apply(this, arguments));
-    _this._originalChildren = [];
+    _this._origC = []; //original Children
+
     /**
      * original style
      */

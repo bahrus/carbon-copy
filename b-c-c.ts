@@ -121,7 +121,7 @@ export class BCC extends XtallatX(HTMLElement) {
         return template;
     }
 
-    _originalChildren = [] as HTMLElement[];
+    _origC = [] as HTMLElement[]; //original Children
     //_prevId!: string;
     remAll(root: DocumentFragment | HTMLElement | null) {
         if (root === null) return false;
