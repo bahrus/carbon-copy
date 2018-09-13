@@ -26,12 +26,12 @@ function XtallatX(superClass) {
             this.attr(disabled, val, '');
         }
         attr(name, val, trueVal) {
-            const setOrRemove = val ? 'set' : 'remove';
-            this[setOrRemove + 'Attribute'](name, trueVal || val);
+            const v = val ? 'set' : 'remove'; //verb
+            this[v + 'Attribute'](name, trueVal || val);
         }
-        to$(number) {
-            const mod = number % 2;
-            return (number - mod) / 2 + '-' + mod;
+        to$(n) {
+            const mod = n % 2;
+            return (n - mod) / 2 + '-' + mod;
         }
         incAttr(name) {
             const ec = this._evCount;
@@ -88,6 +88,10 @@ class BCC extends XtallatX(HTMLElement) {
     constructor() {
         super(...arguments);
         this._originalChildren = [];
+        /**
+         * original style
+         */
+        this._origS = '';
     }
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
@@ -131,6 +135,7 @@ class BCC extends XtallatX(HTMLElement) {
             case from:
                 //this._prevId = oldValue;
                 this._from = newValue;
+                this.tFrom(oldValue, newValue);
                 break;
             case noshadow:
                 this._noshadow = newValue !== null;
@@ -184,16 +189,42 @@ class BCC extends XtallatX(HTMLElement) {
         return template;
     }
     //_prevId!: string;
+    remAll(root) {
+        if (root === null)
+            return false;
+        while (root.firstChild) {
+            root.removeChild(root.firstChild);
+        }
+        return true;
+    }
+    /**
+     * toggle From
+     * @param oldVal
+     * @param newVal
+     */
+    tFrom(oldVal, newVal) {
+        if (oldVal) {
+            if (!newVal) {
+                this._origS = this.style.display;
+                this.style.display = 'none';
+            }
+        }
+        else if (newVal && (this.style.display === 'none')) {
+            this.style.display = this._origS;
+        }
+    }
     opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy)
             return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);
         if (this._noshadow) {
+            this.remAll(this);
             this.appendChild(clone);
         }
         else {
-            this.attachShadow({ mode: 'open' });
+            if (!this.remAll(this.shadowRoot))
+                this.attachShadow({ mode: 'open' });
             this.shadowRoot.appendChild(clone);
         }
     }

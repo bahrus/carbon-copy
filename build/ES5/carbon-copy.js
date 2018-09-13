@@ -31,14 +31,15 @@
         babelHelpers.createClass(_class, [{
           key: "attr",
           value: function attr(name, val, trueVal) {
-            var setOrRemove = val ? 'set' : 'remove';
-            this[setOrRemove + 'Attribute'](name, trueVal || val);
+            var v = val ? 'set' : 'remove'; //verb
+
+            this[v + 'Attribute'](name, trueVal || val);
           }
         }, {
           key: "to$",
-          value: function to$(number) {
-            var mod = number % 2;
-            return (number - mod) / 2 + '-' + mod;
+          value: function to$(n) {
+            var mod = n % 2;
+            return (n - mod) / 2 + '-' + mod;
           }
         }, {
           key: "incAttr",
@@ -131,6 +132,11 @@
       babelHelpers.classCallCheck(this, BCC);
       _this3 = babelHelpers.possibleConstructorReturn(this, (BCC.__proto__ || Object.getPrototypeOf(BCC)).apply(this, arguments));
       _this3._originalChildren = [];
+      /**
+       * original style
+       */
+
+      _this3._origS = '';
       return _this3;
     }
 
@@ -145,6 +151,7 @@
           case from:
             //this._prevId = oldValue;
             this._from = newValue;
+            this.tFrom(oldValue, newValue);
             break;
 
           case noshadow:
@@ -211,6 +218,35 @@
       } //_prevId!: string;
 
     }, {
+      key: "remAll",
+      value: function remAll(root) {
+        if (root === null) return false;
+
+        while (root.firstChild) {
+          root.removeChild(root.firstChild);
+        }
+
+        return true;
+      }
+      /**
+       * toggle From
+       * @param oldVal
+       * @param newVal
+       */
+
+    }, {
+      key: "tFrom",
+      value: function tFrom(oldVal, newVal) {
+        if (oldVal) {
+          if (!newVal) {
+            this._origS = this.style.display;
+            this.style.display = 'none';
+          }
+        } else if (newVal && this.style.display === 'none') {
+          this.style.display = this._origS;
+        }
+      }
+    }, {
       key: "opc",
       value: function opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
@@ -218,9 +254,10 @@
         var clone = template.content.cloneNode(true);
 
         if (this._noshadow) {
+          this.remAll(this);
           this.appendChild(clone);
         } else {
-          this.attachShadow({
+          if (!this.remAll(this.shadowRoot)) this.attachShadow({
             mode: 'open'
           });
           this.shadowRoot.appendChild(clone);
@@ -473,8 +510,12 @@
             babelHelpers.inherits(newClass, _XtallatX2);
 
             function newClass() {
+              var _this6;
+
               babelHelpers.classCallCheck(this, newClass);
-              return babelHelpers.possibleConstructorReturn(this, (newClass.__proto__ || Object.getPrototypeOf(newClass)).apply(this, arguments));
+              _this6 = babelHelpers.possibleConstructorReturn(this, (newClass.__proto__ || Object.getPrototypeOf(newClass)).apply(this, arguments));
+              _this6._connected = false;
+              return _this6;
             }
 
             babelHelpers.createClass(newClass, [{
@@ -512,31 +553,21 @@
           /*#__PURE__*/
           function (_XtallatX3) {
             babelHelpers.inherits(_newClass, _XtallatX3);
-            babelHelpers.createClass(_newClass, null, [{
-              key: "is",
-              get: function get() {
-                return ceName;
-              }
-            }, {
-              key: "objProps",
-              get: function get() {
-                return parsedObjProps;
-              }
-            }]);
 
             function _newClass() {
-              var _this6;
+              var _this7;
 
               babelHelpers.classCallCheck(this, _newClass);
-              _this6 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+              _this7 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+              _this7._connected = false;
 
-              _this6.attachShadow({
+              _this7.attachShadow({
                 mode: 'open'
               });
 
-              _this6.shadowRoot.appendChild(template.content.cloneNode(true));
+              _this7.shadowRoot.appendChild(template.content.cloneNode(true));
 
-              return _this6;
+              return _this7;
             }
 
             babelHelpers.createClass(_newClass, [{
@@ -547,6 +578,16 @@
                 this._upgradeProperties(allProps);
               }
             }], [{
+              key: "is",
+              get: function get() {
+                return ceName;
+              }
+            }, {
+              key: "objProps",
+              get: function get() {
+                return parsedObjProps;
+              }
+            }, {
               key: "observedAttributes",
               get: function get() {
                 return allProps;

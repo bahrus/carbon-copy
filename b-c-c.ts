@@ -1,5 +1,5 @@
 import { XtallatX } from 'xtal-latx/xtal-latx.js';
-import {define} from 'xtal-latx/define.js';
+import { define } from 'xtal-latx/define.js';
 
 const from = 'from';
 const copy = 'copy';
@@ -64,6 +64,7 @@ export class BCC extends XtallatX(HTMLElement) {
             case from:
                 //this._prevId = oldValue;
                 this._from = newValue;
+                this.tFrom(oldValue, newValue);
                 break;
             case noshadow:
                 this._noshadow = newValue !== null;
@@ -83,8 +84,8 @@ export class BCC extends XtallatX(HTMLElement) {
 
 
 
-    getHost(el: HTMLElement, level: number, maxLevel: number) : HTMLElement | null {
-        let parent : any = el;
+    getHost(el: HTMLElement, level: number, maxLevel: number): HTMLElement | null {
+        let parent: any = el;
         while (parent = (parent.parentNode)) {
             if (parent.nodeType === 11) {
                 const newLevel = level + 1;
@@ -97,7 +98,7 @@ export class BCC extends XtallatX(HTMLElement) {
         return null;
     }
 
-    getSrcTempl(){
+    getSrcTempl() {
         const fromTokens = this._from.split('/');
         const fromName = fromTokens[0] || fromTokens[1];
         let template: HTMLTemplateElement | null = null;
@@ -116,24 +117,50 @@ export class BCC extends XtallatX(HTMLElement) {
             }
 
         }
-        if(!template) throw '404: ' + fromName;
+        if (!template) throw '404: ' + fromName;
         return template;
     }
 
-    _originalChildren  = [] as HTMLElement[];
+    _originalChildren = [] as HTMLElement[];
     //_prevId!: string;
-
+    remAll(root: DocumentFragment | HTMLElement | null) {
+        if (root === null) return false;
+        while (root.firstChild) {
+            root.removeChild(root.firstChild);
+        }
+        return true;
+    }
+    /**
+     * original style
+     */
+    _origS: string | null = '';
+    /**
+     * toggle From
+     * @param oldVal 
+     * @param newVal 
+     */
+    tFrom(oldVal: string, newVal: string){
+        if(oldVal){
+            if(!newVal){
+                this._origS = this.style.display;
+                this.style.display = 'none';
+            }
+        }else if(newVal && (this.style.display === 'none')){
+            this.style.display = this._origS;
+        }
+    }
+     
     opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);
-        if(this._noshadow){
+        if (this._noshadow) {
+            this.remAll(this);
             this.appendChild(clone);
-        }else{
-            this.attachShadow({ mode: 'open' });
+        } else {
+            if(!this.remAll(this.shadowRoot)) this.attachShadow({ mode: 'open' });
             this.shadowRoot!.appendChild(clone);
         }
-        
     }
 
 

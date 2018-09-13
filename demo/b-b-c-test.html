@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <div>
+            <button data-val="/test1">Test 1</button>
+            <button data-val="/test2">Test 2</button>
+            <button data-val="">Test 3</button>
+        </div>
+        <p-d on="click" skip-init to="b-c-c{from:target.dataset.val}"></p-d>
+        <template id="test1">
+            This is test 1
+        </template>
+        <template id="test2">
+            This is test 2
+        </template>
+        <b-c-c copy></b-c-c>
+        <script type="module" src="../b-c-c.js"></script>
+        <script type="module" src="https://unpkg.com/p-d.p-u@0.0.69/p-d.js?module"></script>
+    </div>
+</body>
+</html>

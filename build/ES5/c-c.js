@@ -194,8 +194,12 @@ function (_BCC) {
           babelHelpers.inherits(newClass, _XtallatX);
 
           function newClass() {
+            var _this3;
+
             babelHelpers.classCallCheck(this, newClass);
-            return babelHelpers.possibleConstructorReturn(this, (newClass.__proto__ || Object.getPrototypeOf(newClass)).apply(this, arguments));
+            _this3 = babelHelpers.possibleConstructorReturn(this, (newClass.__proto__ || Object.getPrototypeOf(newClass)).apply(this, arguments));
+            _this3._connected = false;
+            return _this3;
           }
 
           babelHelpers.createClass(newClass, [{
@@ -233,31 +237,21 @@ function (_BCC) {
         /*#__PURE__*/
         function (_XtallatX2) {
           babelHelpers.inherits(_newClass, _XtallatX2);
-          babelHelpers.createClass(_newClass, null, [{
-            key: "is",
-            get: function get() {
-              return ceName;
-            }
-          }, {
-            key: "objProps",
-            get: function get() {
-              return parsedObjProps;
-            }
-          }]);
 
           function _newClass() {
-            var _this3;
+            var _this4;
 
             babelHelpers.classCallCheck(this, _newClass);
-            _this3 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+            _this4 = babelHelpers.possibleConstructorReturn(this, (_newClass.__proto__ || Object.getPrototypeOf(_newClass)).call(this));
+            _this4._connected = false;
 
-            _this3.attachShadow({
+            _this4.attachShadow({
               mode: 'open'
             });
 
-            _this3.shadowRoot.appendChild(template.content.cloneNode(true));
+            _this4.shadowRoot.appendChild(template.content.cloneNode(true));
 
-            return _this3;
+            return _this4;
           }
 
           babelHelpers.createClass(_newClass, [{
@@ -268,6 +262,16 @@ function (_BCC) {
               this._upgradeProperties(allProps);
             }
           }], [{
+            key: "is",
+            get: function get() {
+              return ceName;
+            }
+          }, {
+            key: "objProps",
+            get: function get() {
+              return parsedObjProps;
+            }
+          }, {
             key: "observedAttributes",
             get: function get() {
               return allProps;

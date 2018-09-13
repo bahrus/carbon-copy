@@ -4,11 +4,11 @@
 
 b-c-c size:
 
-<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.40/build/ES6/b-c-c.iife.js?compression=gzip"/>
+<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.41/build/ES6/b-c-c.iife.js?compression=gzip"/>
 
 c-c size:
 
-<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.40/build/ES6/carbon-copy.js?compression=gzip"/>
+<img src="http://img.badgesize.io/https://unpkg.com/carbon-copy@0.1.41/build/ES6/carbon-copy.js?compression=gzip"/>
 
 # \<carbon-copy\>
 
@@ -18,9 +18,9 @@ Note that there are other client-side include web components you may want to com
 
 Copy a template inside a DOM node. 
 
-For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c  It is ~1.25 kb minified and gzipped.  It just clones the source template into the shadowDOM or innerHTML of the element (depending on the value of the noshadow attribute).
+For basic functionality, use the b-c-c.js (or b-c-c.iife.js), element name:  b-c-c.  It just clones the source template into the shadowDOM or innerHTML of the element (depending on the value of the noshadow attribute).
 
-For more extended functionality, use element c-c, which is defined by file c-c.js.  The most important difference is that c-c creates a custom element on the fly.  carbon-copy.js is an iife version of (b-)c-c.  It is ~2.2 kb minifed and gzipped.
+For more extended functionality, use element c-c, which is defined by file c-c.js.  The most important difference is that c-c creates a custom element on the fly.  carbon-copy.js is an iife version of (b-)c-c.  
 
 Syntax:
 
@@ -41,7 +41,7 @@ Syntax:
 
 Note the use of the attribute "copy".  If this is present, you can modify the value of "from" dynamically, and it will clone the contents of the referenced template (based on id).  
 
-If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and makes it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be reshown (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies.
+If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  Removing the "from" attribute / property will hide the b-c-c element.  c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and makes it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be reshown (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies.
 
 Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" has no slash, the search for the matching template is done within the shadow DOM of the (b-)c-c element.  If from starts with "../" then the search is done one level up, etc.
 

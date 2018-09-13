@@ -24,6 +24,11 @@ function (_XtallatX) {
     babelHelpers.classCallCheck(this, BCC);
     _this = babelHelpers.possibleConstructorReturn(this, (BCC.__proto__ || Object.getPrototypeOf(BCC)).apply(this, arguments));
     _this._originalChildren = [];
+    /**
+     * original style
+     */
+
+    _this._origS = '';
     return _this;
   }
 
@@ -38,6 +43,7 @@ function (_XtallatX) {
         case from:
           //this._prevId = oldValue;
           this._from = newValue;
+          this.tFrom(oldValue, newValue);
           break;
 
         case noshadow:
@@ -104,6 +110,35 @@ function (_XtallatX) {
     } //_prevId!: string;
 
   }, {
+    key: "remAll",
+    value: function remAll(root) {
+      if (root === null) return false;
+
+      while (root.firstChild) {
+        root.removeChild(root.firstChild);
+      }
+
+      return true;
+    }
+    /**
+     * toggle From
+     * @param oldVal
+     * @param newVal
+     */
+
+  }, {
+    key: "tFrom",
+    value: function tFrom(oldVal, newVal) {
+      if (oldVal) {
+        if (!newVal) {
+          this._origS = this.style.display;
+          this.style.display = 'none';
+        }
+      } else if (newVal && this.style.display === 'none') {
+        this.style.display = this._origS;
+      }
+    }
+  }, {
     key: "opc",
     value: function opc() {
       if (!this._from || !this._connected || this.disabled || !this._copy) return;
@@ -111,9 +146,10 @@ function (_XtallatX) {
       var clone = template.content.cloneNode(true);
 
       if (this._noshadow) {
+        this.remAll(this);
         this.appendChild(clone);
       } else {
-        this.attachShadow({
+        if (!this.remAll(this.shadowRoot)) this.attachShadow({
           mode: 'open'
         });
         this.shadowRoot.appendChild(clone);

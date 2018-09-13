@@ -31,14 +31,15 @@
         babelHelpers.createClass(_class, [{
           key: "attr",
           value: function attr(name, val, trueVal) {
-            var setOrRemove = val ? 'set' : 'remove';
-            this[setOrRemove + 'Attribute'](name, trueVal || val);
+            var v = val ? 'set' : 'remove'; //verb
+
+            this[v + 'Attribute'](name, trueVal || val);
           }
         }, {
           key: "to$",
-          value: function to$(number) {
-            var mod = number % 2;
-            return (number - mod) / 2 + '-' + mod;
+          value: function to$(n) {
+            var mod = n % 2;
+            return (n - mod) / 2 + '-' + mod;
           }
         }, {
           key: "incAttr",
@@ -131,6 +132,11 @@
       babelHelpers.classCallCheck(this, BCC);
       _this3 = babelHelpers.possibleConstructorReturn(this, (BCC.__proto__ || Object.getPrototypeOf(BCC)).apply(this, arguments));
       _this3._originalChildren = [];
+      /**
+       * original style
+       */
+
+      _this3._origS = '';
       return _this3;
     }
 
@@ -145,6 +151,7 @@
           case from:
             //this._prevId = oldValue;
             this._from = newValue;
+            this.tFrom(oldValue, newValue);
             break;
 
           case noshadow:
@@ -211,6 +218,35 @@
       } //_prevId!: string;
 
     }, {
+      key: "remAll",
+      value: function remAll(root) {
+        if (root === null) return false;
+
+        while (root.firstChild) {
+          root.removeChild(root.firstChild);
+        }
+
+        return true;
+      }
+      /**
+       * toggle From
+       * @param oldVal
+       * @param newVal
+       */
+
+    }, {
+      key: "tFrom",
+      value: function tFrom(oldVal, newVal) {
+        if (oldVal) {
+          if (!newVal) {
+            this._origS = this.style.display;
+            this.style.display = 'none';
+          }
+        } else if (newVal && this.style.display === 'none') {
+          this.style.display = this._origS;
+        }
+      }
+    }, {
       key: "opc",
       value: function opc() {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
@@ -218,9 +254,10 @@
         var clone = template.content.cloneNode(true);
 
         if (this._noshadow) {
+          this.remAll(this);
           this.appendChild(clone);
         } else {
-          this.attachShadow({
+          if (!this.remAll(this.shadowRoot)) this.attachShadow({
             mode: 'open'
           });
           this.shadowRoot.appendChild(clone);
