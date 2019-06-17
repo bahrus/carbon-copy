@@ -1,5 +1,6 @@
-import { XtallatX } from 'xtal-latx/xtal-latx.js';
-import { define } from 'xtal-latx/define.js';
+import { XtallatX } from 'xtal-element/xtal-latx.js';
+import { define } from 'trans-render/define.js';
+import {hydrate} from 'trans-render/hydrate.js';
 
 const from = 'from';
 const copy = 'copy';
@@ -14,7 +15,7 @@ const noshadow = 'noshadow';
 * @polymer
 * @demo demo/index.html
 */
-export class BCC extends XtallatX(HTMLElement) {
+export class BCC extends XtallatX(hydrate(HTMLElement)) {
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
         return [copy, from, noshadow];
@@ -76,7 +77,7 @@ export class BCC extends XtallatX(HTMLElement) {
     _connected!: boolean;
 
     connectedCallback() {
-        this._upgradeProperties([copy, from, noshadow]);
+        this.propUp([copy, from, noshadow]);
         //this._originalChildren = this.childNodes;
         this._connected = true;
         this.opc();

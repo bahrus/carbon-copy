@@ -1,5 +1,6 @@
-import { XtallatX } from 'xtal-latx/xtal-latx.js';
-import { define } from 'xtal-latx/define.js';
+import { XtallatX } from 'xtal-element/xtal-latx.js';
+import { define } from 'trans-render/define.js';
+import { hydrate } from 'trans-render/hydrate.js';
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
@@ -12,7 +13,7 @@ const noshadow = 'noshadow';
 * @polymer
 * @demo demo/index.html
 */
-export class BCC extends XtallatX(HTMLElement) {
+export class BCC extends XtallatX(hydrate(HTMLElement)) {
     constructor() {
         super(...arguments);
         this._origC = []; //original Children
@@ -72,7 +73,7 @@ export class BCC extends XtallatX(HTMLElement) {
         this.opc();
     }
     connectedCallback() {
-        this._upgradeProperties([copy, from, noshadow]);
+        this.propUp([copy, from, noshadow]);
         //this._originalChildren = this.childNodes;
         this._connected = true;
         this.opc();
@@ -158,4 +159,3 @@ export class BCC extends XtallatX(HTMLElement) {
     }
 }
 define(BCC);
-//# sourceMappingURL=b-c-c.js.map

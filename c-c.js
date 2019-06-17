@@ -225,4 +225,3 @@ export class CC extends BCC {
 }
 CC.registering = {};
 define(CC);
-//# sourceMappingURL=c-c.js.map
