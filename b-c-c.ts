@@ -7,13 +7,9 @@ const copy = 'copy';
 const noshadow = 'noshadow';
 
 /**
-* `b-c-c`
-* Dependency free web component that allows basic copying of templates.
+* Web component that allows basic copying of templates inside Shadow DOM (by default).
+* @element b-c-c
 * 
-*
-* @customElement
-* @polymer
-* @demo demo/index.html
 */
 export class BCC extends XtallatX(hydrate(HTMLElement)) {
     static get is() { return 'b-c-c'; }
@@ -22,36 +18,42 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
     }
 
     _noshadow!: boolean;
-    /**
-     * Don't use shadow DOM 
-     */
+
     get noshadow() {
         return this._noshadow;
     }
+    /**
+    * Don't use shadow DOM 
+    * @attr
+    */
     set noshadow(val) {
         this.attr(noshadow, val, '');
     }
 
     _from!: string;
+
+    get from() {
+        return this._from;
+    }
     /**
      * Id of template to import.
      * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  
      * If from starts with "../" then the search is done one level up, etc.
+     * @attr
      */
-    get from() {
-        return this._from;
-    }
     set from(val) {
         this.attr(from, val);
     }
     _copy!: boolean;
-    /**
-     * @type{boolean}
-     * Must be true / present for template copy to proceed.
-     */
+
     get copy() {
         return this._copy;
     }
+    /**
+     * Must be true / present for template copy to proceed.
+     * @type{boolean}
+     * @attr
+     */
     set copy(val: boolean) {
         this.attr(copy, val, '');
     }

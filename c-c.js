@@ -2,13 +2,9 @@ import { XtallatX } from 'xtal-latx/xtal-latx.js';
 import { BCC } from './b-c-c.js';
 import { define } from 'xtal-latx/define.js';
 /**
-* `c-c`
-* Dependency free web component that allows copying templates.
+*  Dependency free web component that allows copying templates.
+*  @element c-c
 *
-*
-* @customElement
-* @polymer
-* @demo demo/index.html
 */
 export class CC extends BCC {
     static get is() { return 'c-c'; }
