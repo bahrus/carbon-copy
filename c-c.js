@@ -126,7 +126,7 @@ export class CC extends BCC {
     /**
      * onPropsChange
      */
-    opc() {
+    onPropsChange() {
         if (!this._from || !this._connected || this.disabled)
             return;
         const newCEName = this.gn();

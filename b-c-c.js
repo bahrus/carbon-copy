@@ -4,6 +4,7 @@ import { hydrate } from 'trans-render/hydrate.js';
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
+const noclear = 'noclear';
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
 * @element b-c-c
@@ -12,6 +13,7 @@ const noshadow = 'noshadow';
 export class BCC extends XtallatX(hydrate(HTMLElement)) {
     constructor() {
         super(...arguments);
+        this._noclear = false;
         this._origC = []; //original Children
         /**
          * original style
@@ -20,7 +22,17 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
     }
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
-        return [copy, from, noshadow];
+        return [copy, from, noshadow, noclear];
+    }
+    get noclear() {
+        return this._noclear;
+    }
+    /**
+     * Don't clear previous contents with each copy
+     * @attr
+     */
+    set noclear(nv) {
+        this._noclear = true;
     }
     get noshadow() {
         return this._noshadow;
@@ -63,19 +75,20 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
             case from:
                 //this._prevId = oldValue;
                 this._from = newValue;
-                this.tFrom(oldValue, newValue);
+                this.toggleFrom(oldValue, newValue);
                 break;
+            case noclear:
             case noshadow:
-                this._noshadow = newValue !== null;
+                this['_' + name] = newValue !== null;
                 break;
         }
-        this.opc();
+        this.onPropsChange();
     }
     connectedCallback() {
         this.propUp([copy, from, noshadow]);
         //this._originalChildren = this.childNodes;
         this._connected = true;
-        this.opc();
+        this.onPropsChange();
     }
     getHost(el, level, maxLevel) {
         let parent = el;
@@ -116,8 +129,7 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
             throw '404: ' + fromName;
         return template;
     }
-    //_prevId!: string;
-    remAll(root) {
+    removeAll(root) {
         if (root === null)
             return false;
         while (root.firstChild) {
@@ -130,7 +142,7 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
      * @param oldVal
      * @param newVal
      */
-    tFrom(oldVal, newVal) {
+    toggleFrom(oldVal, newVal) {
         if (oldVal) {
             if (!newVal) {
                 this._origS = this.style.display;
@@ -141,18 +153,22 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
             this.style.display = this._origS;
         }
     }
-    opc() {
+    onPropsChange() {
         if (!this._from || !this._connected || this.disabled || !this._copy)
             return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);
         if (this._noshadow) {
-            this.remAll(this);
+            if (this._noclear === false) {
+                this.removeAll(this);
+            }
             this.appendChild(clone);
         }
         else {
-            if (!this.remAll(this.shadowRoot))
-                this.attachShadow({ mode: 'open' });
+            if (this._noclear === false) {
+                if (!this.removeAll(this.shadowRoot))
+                    this.attachShadow({ mode: 'open' });
+            }
             this.shadowRoot.appendChild(clone);
         }
     }

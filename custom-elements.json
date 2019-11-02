@@ -13,6 +13,12 @@
           "type": "boolean"
         },
         {
+          "name": "noclear",
+          "description": "Don't clear previous contents with each copy",
+          "jsDoc": "/**\n     * Don't clear previous contents with each copy\n     * @attr\n     */",
+          "type": "boolean"
+        },
+        {
           "name": "noshadow",
           "description": "Don't use shadow DOM",
           "jsDoc": "/**\n    * Don't use shadow DOM\n    * @attr\n    */",
@@ -53,6 +59,12 @@
           "type": "\"\" | \"-changed\""
         },
         {
+          "name": "noclear",
+          "description": "Don't clear previous contents with each copy",
+          "jsDoc": "/**\n     * Don't clear previous contents with each copy\n     * @attr\n     */",
+          "type": "boolean"
+        },
+        {
           "name": "noshadow",
           "description": "Don't use shadow DOM",
           "jsDoc": "/**\n    * Don't use shadow DOM\n    * @attr\n    */",
@@ -72,7 +84,8 @@
         }
       ],
       "events": [],
-      "slots": []
+      "slots": [],
+      "cssProperties": []
     },
     {
       "name": "c-c",
@@ -83,6 +96,12 @@
           "name": "disabled",
           "description": "Any component that emits events should not do so if it is disabled.\r\nNote that this is not enforced, but the disabled property is made available.\r\nUsers of this mix-in should ensure not to call \"de\" if this property is set to true.",
           "jsDoc": "/**\r\n         * Any component that emits events should not do so if it is disabled.\r\n         * Note that this is not enforced, but the disabled property is made available.\r\n         * Users of this mix-in should ensure not to call \"de\" if this property is set to true.\r\n         * @attr\r\n         */",
+          "type": "boolean"
+        },
+        {
+          "name": "noclear",
+          "description": "Don't clear previous contents with each copy",
+          "jsDoc": "/**\r\n     * Don't clear previous contents with each copy\r\n     * @attr\r\n     */",
           "type": "boolean"
         },
         {
@@ -124,6 +143,12 @@
         {
           "name": "asIs",
           "type": "\"\" | \"-changed\""
+        },
+        {
+          "name": "noclear",
+          "description": "Don't clear previous contents with each copy",
+          "jsDoc": "/**\r\n     * Don't clear previous contents with each copy\r\n     * @attr\r\n     */",
+          "type": "boolean"
         },
         {
           "name": "noshadow",
@@ -153,7 +178,8 @@
         }
       ],
       "events": [],
-      "slots": []
+      "slots": [],
+      "cssProperties": []
     }
   ]
 }

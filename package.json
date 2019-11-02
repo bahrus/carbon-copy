@@ -2,14 +2,16 @@
   "name": "carbon-copy",
   "version": "0.1.45",
   "description": "Copy a template inside a DOM node",
-  "main": "c-c.js",
-  "module": "c-c.js",
+  "type": "module",
+  "main": "b-c-c.js",
+  "module": "b-c-c.js",
+  "types": "typings.d.ts",
   "repository": "https://github.com/bahrus/carbon-copy",
   "author": "bahrus <anderson.bruce.b@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "trans-render": "0.0.135",
-    "xtal-element": "0.0.86"
+    "trans-render": "0.0.136",
+    "xtal-element": "0.0.87"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "2.3.0",

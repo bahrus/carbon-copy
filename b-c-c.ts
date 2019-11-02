@@ -1,24 +1,34 @@
 import { XtallatX } from 'xtal-element/xtal-latx.js';
 import { define } from 'trans-render/define.js';
 import {hydrate} from 'trans-render/hydrate.js';
-
+import {BCC_WC} from './typings.d.js';
 const from = 'from';
 const copy = 'copy';
 const noshadow = 'noshadow';
-
+const noclear = 'noclear';
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
 * @element b-c-c
 * 
 */
-export class BCC extends XtallatX(hydrate(HTMLElement)) {
+export class BCC extends XtallatX(hydrate(HTMLElement)) implements BCC_WC {
     static get is() { return 'b-c-c'; }
     static get observedAttributes() {
-        return [copy, from, noshadow];
+        return [copy, from, noshadow, noclear];
     }
 
+    _noclear = false;
+    get noclear(){
+        return this._noclear;
+    }
+    /**
+     * Don't clear previous contents with each copy
+     * @attr
+     */
+    set noclear(nv){
+        this._noclear = true;
+    }
     _noshadow!: boolean;
-
     get noshadow() {
         return this._noshadow;
     }
@@ -67,13 +77,14 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
             case from:
                 //this._prevId = oldValue;
                 this._from = newValue;
-                this.tFrom(oldValue, newValue);
+                this.toggleFrom(oldValue, newValue);
                 break;
+            case noclear:
             case noshadow:
-                this._noshadow = newValue !== null;
+                (<any>this)['_' + name] = newValue !== null;
                 break;
         }
-        this.opc();
+        this.onPropsChange();
     }
 
     _connected!: boolean;
@@ -82,7 +93,7 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         this.propUp([copy, from, noshadow]);
         //this._originalChildren = this.childNodes;
         this._connected = true;
-        this.opc();
+        this.onPropsChange();
     }
 
 
@@ -125,8 +136,7 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
     }
 
     _origC = [] as HTMLElement[]; //original Children
-    //_prevId!: string;
-    remAll(root: DocumentFragment | HTMLElement | null) {
+    removeAll(root: DocumentFragment | HTMLElement | null) {
         if (root === null) return false;
         while (root.firstChild) {
             root.removeChild(root.firstChild);
@@ -142,7 +152,7 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
      * @param oldVal 
      * @param newVal 
      */
-    tFrom(oldVal: string, newVal: string){
+    toggleFrom(oldVal: string, newVal: string){
         if(oldVal){
             if(!newVal){
                 this._origS = this.style.display;
@@ -153,15 +163,20 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         }
     }
      
-    opc() {
+    onPropsChange() {
         if (!this._from || !this._connected || this.disabled || !this._copy) return;
         const template = this.getSrcTempl();
         const clone = template.content.cloneNode(true);
         if (this._noshadow) {
-            this.remAll(this);
+            if(this._noclear === false){
+                this.removeAll(this);
+            }
+            
             this.appendChild(clone);
         } else {
-            if(!this.remAll(this.shadowRoot)) this.attachShadow({ mode: 'open' });
+            if(this._noclear === false){
+                if(!this.removeAll(this.shadowRoot)) this.attachShadow({ mode: 'open' });
+            }
             this.shadowRoot!.appendChild(clone);
         }
     }
@@ -169,3 +184,9 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
 
 }
 define(BCC);
+
+declare global {
+    interface HTMLElementTagNameMap {
+        'b-c-c': BCC,
+    }
+}
