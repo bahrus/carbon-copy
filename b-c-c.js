@@ -85,7 +85,7 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         this.onPropsChange();
     }
     connectedCallback() {
-        this.propUp([copy, from, noshadow]);
+        this.propUp([copy, from, noshadow, 'renderContext']);
         //this._originalChildren = this.childNodes;
         this._connected = true;
         this.onPropsChange();
