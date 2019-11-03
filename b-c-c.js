@@ -137,6 +137,16 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         }
         return true;
     }
+    get renderContext() {
+        return this._renderContext;
+    }
+    /**
+     * Allow template instantiation using trans-render
+     */
+    set renderContext(nv) {
+        this._renderContext = nv;
+        this.onPropsChange();
+    }
     /**
      * toggle From
      * @param oldVal
@@ -157,19 +167,31 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         if (!this._from || !this._connected || this.disabled || !this._copy)
             return;
         const template = this.getSrcTempl();
-        const clone = template.content.cloneNode(true);
+        //const clone = template.content.cloneNode(true);
+        let target;
         if (this._noshadow) {
             if (this._noclear === false) {
                 this.removeAll(this);
             }
-            this.appendChild(clone);
+            target = this;
+            //this.appendChild(clone);
         }
         else {
             if (this._noclear === false) {
                 if (!this.removeAll(this.shadowRoot))
                     this.attachShadow({ mode: 'open' });
             }
-            this.shadowRoot.appendChild(clone);
+            target = this.shadowRoot;
+            //this.shadowRoot!.appendChild(clone);
+        }
+        const rc = this._renderContext;
+        if (rc !== undefined && rc.init !== undefined) {
+            //if(this._renderContext.update) this._renderContext.update(this._renderContext, clone);
+            rc.init(template, rc, target);
+        }
+        else {
+            const clone = template.content.cloneNode(true);
+            target.appendChild(clone);
         }
     }
 }
