@@ -97,7 +97,18 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) implements BCC_WC {
         this.onPropsChange();
     }
 
-
+    _viewModel!: object;
+    get viewModel(){
+        return this._viewModel;
+    }
+    /**
+     * model to base view on
+     * @attr view-model
+     */
+    set viewModel(nv){
+        this._viewModel = nv;
+        this.onPropsChange();
+    }
 
     getHost(el: HTMLElement, level: number, maxLevel: number): HTMLElement | null {
         let parent: any = el;
@@ -197,6 +208,8 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) implements BCC_WC {
         const rc = this._renderContext;
         if(rc !== undefined && rc.init !== undefined){
             //if(this._renderContext.update) this._renderContext.update(this._renderContext, clone);
+            rc.host = this;
+            rc.viewModel = this._viewModel;
             rc.init(template, rc, target);
         }else{
             const clone = template.content.cloneNode(true);

@@ -90,6 +90,17 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         this._connected = true;
         this.onPropsChange();
     }
+    get viewModel() {
+        return this._viewModel;
+    }
+    /**
+     * model to base view on
+     * @attr view-model
+     */
+    set viewModel(nv) {
+        this._viewModel = nv;
+        this.onPropsChange();
+    }
     getHost(el, level, maxLevel) {
         let parent = el;
         while (parent = (parent.parentNode)) {
@@ -187,6 +198,8 @@ export class BCC extends XtallatX(hydrate(HTMLElement)) {
         const rc = this._renderContext;
         if (rc !== undefined && rc.init !== undefined) {
             //if(this._renderContext.update) this._renderContext.update(this._renderContext, clone);
+            rc.host = this;
+            rc.viewModel = this._viewModel;
             rc.init(template, rc, target);
         }
         else {
