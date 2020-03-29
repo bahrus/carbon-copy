@@ -10,13 +10,13 @@
   "author": "bahrus <anderson.bruce.b@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "trans-render": "0.0.141",
-    "xtal-element": "0.0.90"
+    "trans-render": "0.0.143",
+    "xtal-element": "0.0.101"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "2.4.0",
+    "@webcomponents/webcomponentsjs": "2.4.3",
     "es-module-shims": "0.4.6",
-    "xtal-test": "0.0.31"
+    "xtal-test": "0.0.44"
   },
   "scripts": {
     "serve": "node node_modules/xtal-test/serve.js",
