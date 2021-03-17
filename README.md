@@ -49,6 +49,18 @@ By default, b-c-c will copy in the referenced template into a Shadow DOM snippet
 
 b-c-c and c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
 
+## Slot emulation without shadow dom
+
+```html
+<shadow-fax style="display:none"> <!-- it's taken, of course -->
+  <light-children></light-children>
+</shadow-fax> 
+<target-element></target-element>
+```
+
+https://stackoverflow.com/questions/37016564/how-to-serialize-an-html-dom-including-shadow-dom
+  
+
 ## Codeless Web Components
 
 Unlike b-c-c, c-c actually generates a custom (web) component on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).   
@@ -312,3 +324,5 @@ $ polymer test
 ```
 
 Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+
+
