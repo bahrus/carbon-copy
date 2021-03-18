@@ -21,10 +21,10 @@ export class BCC extends HTMLElement implements ReactiveSurface{
     tr: RenderContext | undefined;
     templateToClone: HTMLTemplateElement | undefined;
     clonedTemplate: DocumentFragment | undefined;
-    /**
-     * Replace the b-c-c tag with this tag
-     */
-    morphInto: string | undefined;
+    // /**
+    //  * Replace the b-c-c tag with this tag
+    //  */
+    // morphInto: string | undefined;
 
     connectedCallback(){
         xc.hydrate(this, slicedPropDefs);
@@ -53,7 +53,9 @@ const onClonedTemplate = ({clonedTemplate, toBeTransformed, tr, self}: BCC) => {
             target = target.shadowRoot;
         }
     }
-    target.innerHTML = '';
+    if(!self.noclear){
+        target.innerHTML = '';
+    }
     if(toBeTransformed && tr === undefined) return;
     if(tr !== undefined){
         tr.transform!(clonedTemplate!, tr, target);
@@ -108,7 +110,7 @@ const propDefMap: PropDefMap<BCC> = {
     tr: obj1,
     templateToClone: obj2,
     clonedTemplate: obj2,
-    morphInto: str1,
+    //morphInto: str1,
 };
 
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);

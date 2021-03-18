@@ -12,6 +12,10 @@ export class BCC extends HTMLElement {
         this.propActions = propActions;
         this.reactor = new xc.Rx(this);
     }
+    // /**
+    //  * Replace the b-c-c tag with this tag
+    //  */
+    // morphInto: string | undefined;
     connectedCallback() {
         xc.hydrate(this, slicedPropDefs);
     }
@@ -38,7 +42,9 @@ const onClonedTemplate = ({ clonedTemplate, toBeTransformed, tr, self }) => {
             target = target.shadowRoot;
         }
     }
-    target.innerHTML = '';
+    if (!self.noclear) {
+        target.innerHTML = '';
+    }
     if (toBeTransformed && tr === undefined)
         return;
     if (tr !== undefined) {
@@ -89,7 +95,6 @@ const propDefMap = {
     tr: obj1,
     templateToClone: obj2,
     clonedTemplate: obj2,
-    morphInto: str1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(BCC, slicedPropDefs, 'onPropChange');
