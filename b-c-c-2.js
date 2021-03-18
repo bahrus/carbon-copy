@@ -1,4 +1,5 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
+import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
 * @element b-c-c
@@ -20,15 +21,30 @@ export class BCC extends HTMLElement {
 }
 BCC.is = 'b-c-c';
 const linkTemplateToClone = ({ from, self }) => {
-    const referencedTemplate = self.getRootNode().querySelector(from);
+    const referencedTemplate = upShadowSearch(self, from);
     if (referencedTemplate !== null)
         self.templateToClone = referencedTemplate;
 };
 const linkClonedTemplate = ({ templateToClone, self }) => {
-    templateToClone.content.cloneNode(true);
+    self.clonedTemplate = templateToClone.content.cloneNode(true);
+};
+const onClonedTemplate = ({ clonedTemplate, toBeTransformed, tr, self }) => {
+    let target = self;
+    if (!self.noshadow) {
+        target = self.attachShadow({ mode: 'open' });
+    }
+    if (toBeTransformed && tr === undefined)
+        return;
+    if (tr !== undefined) {
+        tr.transform(clonedTemplate, tr, target);
+    }
+    else {
+        target.appendChild(clonedTemplate);
+    }
 };
 const propActions = [
-    linkTemplateToClone
+    linkTemplateToClone,
+    linkClonedTemplate
 ];
 const bool1 = {
     type: Boolean,
@@ -58,8 +74,9 @@ const propDefMap = {
     from: str2,
     noshadow: bool1,
     toBeTransformed: bool1,
-    transform: obj1,
+    tr: obj1,
     templateToClone: obj1,
+    clonedTemplate: obj1,
     morphInto: str1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);

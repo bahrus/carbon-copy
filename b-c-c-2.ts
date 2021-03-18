@@ -1,4 +1,6 @@
 import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element/lib/XtalCore.js';
+import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
+import {RenderContext} from 'trans-render/lib/types.d.js';
 
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
@@ -16,9 +18,9 @@ export class BCC extends HTMLElement implements ReactiveSurface{
     copy: boolean | undefined;
     noshadow: boolean | undefined;
     toBeTransformed: boolean | undefined;
-    transform: ((x: Node) => void) | undefined;
+    tr: RenderContext | undefined;
     templateToClone: HTMLTemplateElement | undefined;
-    clonedTemplate: Node | undefined;
+    clonedTemplate: DocumentFragment | undefined;
     /**
      * Replace the b-c-c tag with this tag
      */
@@ -34,17 +36,31 @@ export class BCC extends HTMLElement implements ReactiveSurface{
 }
 
 const linkTemplateToClone = ({from, self}: BCC) => {
-    const referencedTemplate = (self.getRootNode() as DocumentFragment).querySelector(from!) as HTMLTemplateElement;
+    const referencedTemplate = upShadowSearch(self, from!) as HTMLTemplateElement;
     if(referencedTemplate !== null) self.templateToClone = referencedTemplate;
 };
 
 const linkClonedTemplate = ({templateToClone, self}: BCC) => {
-    templateToClone!.content.cloneNode(true);
+    self.clonedTemplate = templateToClone!.content.cloneNode(true) as DocumentFragment;
+}
+
+const onClonedTemplate = ({clonedTemplate, toBeTransformed, tr, self}: BCC) => {
+    let target : ShadowRoot | HTMLElement = self;
+    if(!self.noshadow){
+        target = self.attachShadow({mode: 'open'});
+    }
+    if(toBeTransformed && tr === undefined) return;
+    if(tr !== undefined){
+        tr.transform!(clonedTemplate!, tr, target);
+    }else{
+        target.appendChild(clonedTemplate!);
+    }
 }
 
 
 const propActions = [
-    linkTemplateToClone
+    linkTemplateToClone,
+    linkClonedTemplate
 ] as PropAction[];
 
 const bool1 : PropDef = {
@@ -76,8 +92,9 @@ const propDefMap: PropDefMap<BCC> = {
     from: str2,
     noshadow: bool1,
     toBeTransformed: bool1,
-    transform: obj1,
+    tr: obj1,
     templateToClone: obj1,
+    clonedTemplate: obj1,
     morphInto: str1,
 };
 

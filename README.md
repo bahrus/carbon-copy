@@ -49,16 +49,9 @@ By default, b-c-c will copy in the referenced template into a Shadow DOM snippet
 
 b-c-c and c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
 
-## Slot emulation without shadow dom
 
-```html
-<shadow-fax style="display:none"> <!-- it's taken, of course -->
-  <light-children></light-children>
-</shadow-fax> 
-<target-element></target-element>
-```
 
-https://stackoverflow.com/questions/37016564/how-to-serialize-an-html-dom-including-shadow-dom
+
   
 
 ## Codeless Web Components
