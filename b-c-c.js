@@ -1,211 +1,96 @@
-import { XtallatX } from 'xtal-element/xtal-latx.js';
-import { define } from 'trans-render/define.js';
-import { hydrate } from 'trans-render/hydrate.js';
-const from = 'from';
-const copy = 'copy';
-const noshadow = 'noshadow';
-const noclear = 'noclear';
+import { xc } from 'xtal-element/lib/XtalCore.js';
+import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
 * @element b-c-c
 *
 */
-export class BCC extends XtallatX(hydrate(HTMLElement)) {
+export class BCC extends HTMLElement {
     constructor() {
         super(...arguments);
-        this._noclear = false;
-        this._origC = []; //original Children
-        /**
-         * original style
-         */
-        this._origS = '';
-    }
-    static get is() { return 'b-c-c'; }
-    static get observedAttributes() {
-        return [copy, from, noshadow, noclear];
-    }
-    get noclear() {
-        return this._noclear;
-    }
-    /**
-     * Don't clear previous contents with each copy
-     * @attr
-     */
-    set noclear(nv) {
-        this._noclear = true;
-    }
-    get noshadow() {
-        return this._noshadow;
-    }
-    /**
-    * Don't use shadow DOM
-    * @attr
-    */
-    set noshadow(val) {
-        this.attr(noshadow, val, '');
-    }
-    get from() {
-        return this._from;
-    }
-    /**
-     * Id of template to import.
-     * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.
-     * If from starts with "../" then the search is done one level up, etc.
-     * @attr
-     */
-    set from(val) {
-        this.attr(from, val);
-    }
-    get copy() {
-        return this._copy;
-    }
-    /**
-     * Must be true / present for template copy to proceed.
-     * @type{boolean}
-     * @attr
-     */
-    set copy(val) {
-        this.attr(copy, val, '');
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case copy:
-                this._copy = newValue !== null;
-                break;
-            case from:
-                //this._prevId = oldValue;
-                this._from = newValue;
-                this.toggleFrom(oldValue, newValue);
-                break;
-            case noclear:
-            case noshadow:
-                this['_' + name] = newValue !== null;
-                break;
-        }
-        this.onPropsChange();
+        this.self = this;
+        this.propActions = propActions;
+        this.reactor = new xc.Rx(this);
     }
     connectedCallback() {
-        this.propUp([copy, from, noshadow, 'renderContext']);
-        //this._originalChildren = this.childNodes;
-        this._connected = true;
-        this.onPropsChange();
+        xc.hydrate(this, slicedPropDefs);
     }
-    get viewModel() {
-        return this._viewModel;
-    }
-    /**
-     * model to base view on
-     * @attr view-model
-     */
-    set viewModel(nv) {
-        this._viewModel = nv;
-        this.onPropsChange();
-    }
-    getHost(el, level, maxLevel) {
-        let parent = el;
-        while (parent = (parent.parentNode)) {
-            if (parent.nodeType === 11) {
-                const newLevel = level + 1;
-                if (newLevel === maxLevel)
-                    return parent['host'];
-                return this.getHost(parent['host'], newLevel, maxLevel);
-            }
-            else if (parent.tagName === 'HTML') {
-                return parent;
-            }
-        }
-        return null;
-    }
-    getSrcTempl() {
-        const fromTokens = this._from.split('/');
-        const fromName = fromTokens[0] || fromTokens[1];
-        let template = null;
-        if (!fromTokens[0]) {
-            template = self[fromName];
-        }
-        else {
-            //const path = this._from.split('/');
-            //const id = path[path.length - 1];
-            const host = this.getHost(this, 0, fromTokens.length);
-            if (host) {
-                const cssSelector = '#' + fromName;
-                if (host.shadowRoot) {
-                    template = host.shadowRoot.querySelector(cssSelector);
-                }
-                if (!template)
-                    template = host.querySelector(cssSelector);
-            }
-        }
-        if (!template)
-            throw '404: ' + fromName;
-        return template;
-    }
-    removeAll(root) {
-        if (root === null)
-            return false;
-        while (root.firstChild) {
-            root.removeChild(root.firstChild);
-        }
-        return true;
-    }
-    get renderContext() {
-        return this._renderContext;
-    }
-    /**
-     * Allow template instantiation using trans-render
-     */
-    set renderContext(nv) {
-        this._renderContext = nv;
-        this.onPropsChange();
-    }
-    /**
-     * toggle From
-     * @param oldVal
-     * @param newVal
-     */
-    toggleFrom(oldVal, newVal) {
-        if (oldVal) {
-            if (!newVal) {
-                this._origS = this.style.display;
-                this.style.display = 'none';
-            }
-        }
-        else if (newVal && (this.style.display === 'none')) {
-            this.style.display = this._origS;
-        }
-    }
-    onPropsChange() {
-        if (!this._from || !this._connected || this.disabled || !this._copy)
-            return;
-        const template = this.getSrcTempl();
-        //const clone = template.content.cloneNode(true);
-        let target;
-        if (this._noshadow) {
-            if (this._noclear === false) {
-                this.removeAll(this);
-            }
-            target = this;
-            //this.appendChild(clone);
-        }
-        else {
-            if (this._noclear === false) {
-                if (!this.removeAll(this.shadowRoot))
-                    this.attachShadow({ mode: 'open' });
-            }
-            target = this.shadowRoot;
-            //this.shadowRoot!.appendChild(clone);
-        }
-        const rc = this._renderContext;
-        if (rc !== undefined && rc.init !== undefined) {
-            //if(this._renderContext.update) this._renderContext.update(this._renderContext, clone);
-            rc.host = this;
-            rc.viewModel = this._viewModel;
-            rc.init(template, rc, target);
-        }
-        else {
-            const clone = template.content.cloneNode(true);
-            target.appendChild(clone);
-        }
+    onPropChange(name, propDef, newVal) {
+        this.reactor.addToQueue(propDef, newVal);
     }
 }
-define(BCC);
+BCC.is = 'b-c-c';
+const linkTemplateToClone = ({ copy, from, self }) => {
+    const referencedTemplate = upShadowSearch(self, from);
+    if (referencedTemplate !== null)
+        self.templateToClone = referencedTemplate;
+};
+const linkClonedTemplate = ({ templateToClone, self }) => {
+    self.clonedTemplate = templateToClone.content.cloneNode(true);
+};
+const onClonedTemplate = ({ clonedTemplate, toBeTransformed, tr, self }) => {
+    let target = self;
+    if (!self.noshadow) {
+        if (target.shadowRoot == null) {
+            target = self.attachShadow({ mode: 'open' });
+        }
+        else {
+            target = target.shadowRoot;
+        }
+    }
+    target.innerHTML = '';
+    if (toBeTransformed && tr === undefined)
+        return;
+    if (tr !== undefined) {
+        tr.transform(clonedTemplate, tr, target);
+    }
+    else {
+        target.appendChild(clonedTemplate);
+    }
+};
+const propActions = [
+    linkTemplateToClone,
+    linkClonedTemplate,
+    onClonedTemplate
+];
+const bool1 = {
+    type: Boolean,
+    dry: true,
+    async: true,
+};
+const bool2 = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+};
+const str1 = {
+    type: String,
+    dry: true,
+    async: true,
+};
+const str2 = {
+    ...str1,
+    stopReactionsIfFalsy: true,
+};
+const obj1 = {
+    type: Object,
+    dry: true,
+    async: true,
+};
+const obj2 = {
+    ...obj1,
+    stopReactionsIfFalsy: true,
+};
+const propDefMap = {
+    noclear: bool1,
+    copy: bool2,
+    from: str2,
+    noshadow: bool1,
+    toBeTransformed: bool1,
+    tr: obj1,
+    templateToClone: obj2,
+    clonedTemplate: obj2,
+    morphInto: str1,
+};
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(BCC, slicedPropDefs, 'onPropChange');
+xc.define(BCC);
