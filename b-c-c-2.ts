@@ -35,7 +35,7 @@ export class BCC extends HTMLElement implements ReactiveSurface{
     }
 }
 
-const linkTemplateToClone = ({from, self}: BCC) => {
+const linkTemplateToClone = ({copy, from, self}: BCC) => {
     const referencedTemplate = upShadowSearch(self, from!) as HTMLTemplateElement;
     if(referencedTemplate !== null) self.templateToClone = referencedTemplate;
 };
@@ -74,33 +74,40 @@ const bool1 : PropDef = {
     dry: true,
     async: true,
 };
+const bool2: PropDef = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+}
 const str1: PropDef = {
     type: String,
     dry: true,
     async: true,
 };
 const str2: PropDef = {
-    type: String,
-    dry: true,
-    async: true,
+    ...str1,
     stopReactionsIfFalsy: true,
 };
+
 const obj1: PropDef = {
     type: Object,
     dry: true,
     async: true,
+};
+const obj2: PropDef = {
+    ...obj1,
     stopReactionsIfFalsy: true,
 };
 
+
 const propDefMap: PropDefMap<BCC> = {
     noclear: bool1,
-    copy: bool1,
+    copy: bool2,
     from: str2,
     noshadow: bool1,
     toBeTransformed: bool1,
     tr: obj1,
-    templateToClone: obj1,
-    clonedTemplate: obj1,
+    templateToClone: obj2,
+    clonedTemplate: obj2,
     morphInto: str1,
 };
 

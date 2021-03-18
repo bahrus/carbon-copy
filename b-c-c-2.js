@@ -20,7 +20,7 @@ export class BCC extends HTMLElement {
     }
 }
 BCC.is = 'b-c-c';
-const linkTemplateToClone = ({ from, self }) => {
+const linkTemplateToClone = ({ copy, from, self }) => {
     const referencedTemplate = upShadowSearch(self, from);
     if (referencedTemplate !== null)
         self.templateToClone = referencedTemplate;
@@ -58,32 +58,37 @@ const bool1 = {
     dry: true,
     async: true,
 };
+const bool2 = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+};
 const str1 = {
     type: String,
     dry: true,
     async: true,
 };
 const str2 = {
-    type: String,
-    dry: true,
-    async: true,
+    ...str1,
     stopReactionsIfFalsy: true,
 };
 const obj1 = {
     type: Object,
     dry: true,
     async: true,
+};
+const obj2 = {
+    ...obj1,
     stopReactionsIfFalsy: true,
 };
 const propDefMap = {
     noclear: bool1,
-    copy: bool1,
+    copy: bool2,
     from: str2,
     noshadow: bool1,
     toBeTransformed: bool1,
     tr: obj1,
-    templateToClone: obj1,
-    clonedTemplate: obj1,
+    templateToClone: obj2,
+    clonedTemplate: obj2,
     morphInto: str1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
