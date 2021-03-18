@@ -31,8 +31,14 @@ const linkClonedTemplate = ({ templateToClone, self }) => {
 const onClonedTemplate = ({ clonedTemplate, toBeTransformed, tr, self }) => {
     let target = self;
     if (!self.noshadow) {
-        target = self.attachShadow({ mode: 'open' });
+        if (target.shadowRoot == null) {
+            target = self.attachShadow({ mode: 'open' });
+        }
+        else {
+            target = target.shadowRoot;
+        }
     }
+    target.innerHTML = '';
     if (toBeTransformed && tr === undefined)
         return;
     if (tr !== undefined) {
@@ -44,7 +50,8 @@ const onClonedTemplate = ({ clonedTemplate, toBeTransformed, tr, self }) => {
 };
 const propActions = [
     linkTemplateToClone,
-    linkClonedTemplate
+    linkClonedTemplate,
+    onClonedTemplate
 ];
 const bool1 = {
     type: Boolean,

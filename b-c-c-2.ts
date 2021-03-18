@@ -47,8 +47,13 @@ const linkClonedTemplate = ({templateToClone, self}: BCC) => {
 const onClonedTemplate = ({clonedTemplate, toBeTransformed, tr, self}: BCC) => {
     let target : ShadowRoot | HTMLElement = self;
     if(!self.noshadow){
-        target = self.attachShadow({mode: 'open'});
+        if(target.shadowRoot == null){
+            target = self.attachShadow({mode: 'open'});
+        }else{
+            target = target.shadowRoot;
+        }
     }
+    target.innerHTML = '';
     if(toBeTransformed && tr === undefined) return;
     if(tr !== undefined){
         tr.transform!(clonedTemplate!, tr, target);
@@ -60,7 +65,8 @@ const onClonedTemplate = ({clonedTemplate, toBeTransformed, tr, self}: BCC) => {
 
 const propActions = [
     linkTemplateToClone,
-    linkClonedTemplate
+    linkClonedTemplate,
+    onClonedTemplate
 ] as PropAction[];
 
 const bool1 : PropDef = {
