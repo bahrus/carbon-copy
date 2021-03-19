@@ -43,18 +43,14 @@ Note the use of the attribute "copy".  If this is present, you can modify the va
 
 If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  Removing the "from" attribute / property will hide the b-c-c element.  c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and makes it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be reshown (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies.
 
-Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" has no slash, the search for the matching template is done within the shadow DOM of the (b-)c-c element.  If from starts with "../" then the search is done one level up, etc.
+Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" starts with "./", the search for the matching template is done within the shadow DOM of the (b-)c-c element (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
 
 By default, b-c-c will copy in the referenced template into a Shadow DOM snippet.  However, if you prefer a copy straight into innerHTML, add attribute / property "noshadow."  Doing so will, of course, eliminate the slot mechanism from functioning.  Hopefully, if template instantiation becomes a thing, that will provide an alternative for this scenario. 
 
-b-c-c and c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's dom-if.
+b-c-c and c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's [dom-if](https://polymer-library.polymer-project.org/2.0/docs/devguide/templates#dom-if).
 
 
-
-
-  
-
-## Codeless Web Components
+## Codeless Web Components [TODO]
 
 Unlike b-c-c, c-c actually generates a custom (web) component on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).   
 
@@ -78,49 +74,38 @@ Step 3.  Add your web component to the page
 
 ```html
 <body>
+  ...
     <hello-world></hello-world>
+  ...
 </body>
 ```
 
 Step 4.  Stare into the abyss. 
 
-### Adding string properties
+### Adding string/numeric/bool properties to your declarative web component [TODO]
 
 The template can specify a list of string properties to add to the automatically generated web component:
 
 ```html
-<template id="pow" data-str-props="name,rank,serial_number">
+<template id="pow" data-str-props="name,rank,serial_number" data-num-props="age,weight" data-bool-props="mia">
     <div>
         <slot name="subjectIs"></slot> 
     </div>
 </template>
 ```
 
-If the web component's property is set, it will reflect to an attribute with the same name.
+These properties can be read via attributes on the c-c-pow element instances, or passed in as properties.  They will reflect to [custom psuedo states](https://www.chromestatus.com/feature/6537562418053120) when the browser allows it.
 
-### Attaching methods to the generated custom element
 
-```html
-      <script nomodule data-methods="true">
-        ({
-          fn: function(){
-            console.log(this);
-            return this;
-          },
-          onPropsChange: function(name, oldVal, newVal){
-              ...
-          }
-        })
-      </script>
-      <template id="beautiful" data-str-props="a,b,c">
-        <div>
-          <slot name="subjectIs"></slot> beautiful</div>
-      </template>
-```
+### Bind to the properties [TODO]
 
-All attribute changes call onPropsChange if it is defined.
+c-c (or carbon-copy) supports binding to the UI using Github's [Template-Parts library](https://github.com/github/template-parts/).
 
-### Adding Object Properties
+### Attaching event handlers
+
+Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahrus/pass-down) [other](https://github.com/bahrus/p-et-alia) declarative vocabulary libraries.
+
+### Adding Object Properties [TODO]
 
 ```html
 <template id="beautiful" data-obj-props="d,e">
@@ -132,190 +117,7 @@ All attribute changes call onPropsChange if it is defined.
 
 Object properties also observe attribute changes with the same name as the property, and also calls onPropsChange.
 
-If you set the attribute value for an object property, it will assume the string is JSON, and will parse it.
+If you set the attribute value for an object property, it will assume the string is JSON (surronded by single quotes), and will parse it.
 
 Changes to object properties fire events with the name "[name of prop]-changed".
-
-<!--
-```
-<custom-element-demo>
-  <template>
-    <div>
-        <!-- Polyfill needed for re(dge)tro browsers -->
-        <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-        <!-- End Polyfills -->
-
-        <script type="module" src="https://unpkg.com/carbon-copy@0.1.35/carbon-copy.js"></script>
-        <style>
-            div {
-              background-color:cornsilk;
-            }
-          </style>
-        
-      <h3><a href="https://www.youtube.com/watch?v=eAfyFTzZDMM" target="_blank">Beautiful</a></h3>
-      <h4>Christina Aguilera</h4>
-      <template id="no-matter">
-        <style>
-          :host{
-            background-color:pink;
-          }
-          ::slotted(*){
-            background-color:mediumspringgreen;
-          }
-        </style>
-        No matter what we <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
-      </template>
-      <template id="beautiful">
-        <style>
-          div{
-            background-color:burlywood;
-          }
-          ::slotted(*){
-            color:orchid;
-          }
-        </style>
-        <div>
-          <slot name="subjectIs"></slot> beautiful
-        </div>
-      </template>
-      <template id="down">
-        <style>
-          div{
-            background-color:olivedrab;
-          }
-        </style>
-        <div>So don't you bring me down today</div>
-      </template>
-      <template id="chorus">
-          <style>
-              div {
-                background-color:paleturquoise;
-              }
-            </style>
-        <b-c-c copy from="/beautiful">
-          <span slot="subjectIs">
-            <slot name="subjectIs1"></slot>
-          </span>
-        </b-c-c>
-        <div>No matter what they say</div>
-        <div prop-pronoun>Words
-          <slot name="verb1"></slot> bring
-          <slot name="pronoun1"></slot> down</div>
-        <div>Oh no</div>
-        <b-c-c copy from="/beautiful">
-          <span slot="subjectIs">
-            <slot name="subjectIs2"></slot>
-          </span>
-        </b-c-c>
-        <div>In every single way</div>
-        <div prop-pronoun>Yes words
-          <slot name="verb2"></slot> bring
-          <slot name="pronoun2"></slot> down</div>
-        <div>Oh no</div>
-        <b-c-c copy from="/down"></b-c-c>
-      </template>
-
-  
-  
-  
-  
-          <p>Don't look at me</p>
-          <p>
-            <div>Everyday is so wonderful</div>
-            <div>Then suddenly</div>
-            <div>It's hard to breathe</div>
-            <div>Now and then I get insecure</div>
-            <div>From all the pain</div>
-            <div>I'm so ashamed</div>
-          </p>
-          <p>
-            <b-c-c copy from="/chorus">
-
-              <span slot="verb1">can't</span>
-              <span slot="verb2">can't</span>
-              <span slot="pronoun1">me</span>
-              <span slot="pronoun2">me</span>
-              <span slot="subjectIs1">I am</span>
-              <span slot="subjectIs2">I am</span>
-            </b-c-c>
-          </p>
-          <p>
-  
-            <div>To all your friends you're delirious</div>
-            <div>So consumed</div>
-            <div>In all your doom, ooh</div>
-            <div>Trying hard to fill the emptiness</div>
-            <div>The pieces gone</div>
-            <div>Left the puzzle undone</div>
-            <div>Ain't that the way it is</div>
-          </p>
-          <p>
-            <b-c-c copy from="/chorus">
-              <span slot="verb1">can't</span>
-              <span slot="verb2">can't</span>
-              <span slot="pronoun1">you</span>
-              <span slot="pronoun2">you</span>
-              <span slot="subjectIs1">You are</span>
-              <span slot="subjectIs2">You are</span>
-            </b-c-c>
-          </p>
-          <br>
-          <b-c-c copy from="/no-matter">
-            <span slot="verb1">do</span>
-            <span slot="verb2">do</span>
-          </b-c-c>
-          <br>
-          <b-c-c copy from="/no-matter">
-            <span slot="verb1">say</span>
-            <span slot="verb2">say</span>
-          </b-c-c>
-          <div>We're the song inside the tune (yeah, oh yeah)</div>
-          <div>Full of beautiful mistakes</div>
-          <p>
-            <div>And everywhere we go (and everywhere we go)</div>
-            <div>The sun will always shine (the sun will always, always, shine)</div>
-            <div>And tomorrow we might awake</div>
-            <div>On the other side</div>
-          </p>
-          <p>
-            <b-c-c copy from="/chorus">
-              <span slot="verb1">won't</span>
-              <span slot="verb2">can't</span>
-              <span slot="pronoun1">us</span>
-              <span slot="pronoun2">us</span>
-              <span slot="subjectIs1">We are</span>
-              <span slot="subjectIs2">We are</span>
-            </b-c-c> 
-          </p>
-          <p>
-            <div>Oh, oh</div>
-            <div>Don't you bring me down today</div>
-            <div>Don't you bring me down, ooh</div>
-            <div>Today</div>
-          </p>
-
-    </div>
-    </template>
-</custom-element-demo>
-```
--->
-
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install your element's dependencies, then run `polymer serve` to serve your element locally.
-
-## Viewing Your Element
-
-```
-$ polymer serve
-```
-
-## Running Tests
-
-```
-$ polymer test
-```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
-
 
