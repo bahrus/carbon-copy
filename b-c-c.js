@@ -25,9 +25,13 @@ export class BCC extends HTMLElement {
 }
 BCC.is = 'b-c-c';
 const linkTemplateToClone = ({ copy, from, self }) => {
+    if (from === self._oldFrom)
+        return;
     const referencedTemplate = upShadowSearch(self, from);
-    if (referencedTemplate !== null)
+    if (referencedTemplate !== null) {
+        self._oldFrom = from;
         self.templateToClone = referencedTemplate;
+    }
 };
 const linkClonedTemplate = ({ templateToClone, self }) => {
     self.clonedTemplate = templateToClone.content.cloneNode(true);
@@ -67,6 +71,7 @@ const bool1 = {
 const bool2 = {
     ...bool1,
     stopReactionsIfFalsy: true,
+    reflect: true,
 };
 const str1 = {
     type: String,

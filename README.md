@@ -17,7 +17,7 @@ c-c size:
 
 Copy a template inside a DOM node. 
 
-## b-c-c [TODO]
+## b-c-c
 
 For basic functionality, reference carbon-copy/b-c-c.js and use element name:  b-c-c.  It just clones the source template into the shadowDOM or innerHTML of the element (depending on the value of the noshadow attribute).
 
@@ -38,7 +38,9 @@ Syntax:
 </b-c-c>
 ```
 
-Note the use of the attribute "copy".  This attribute/property makes the tag more readable, but also acts as an "if" logical operator.  If attribute/property "copy" is present/true, only then will it clone the contents of the referenced template (based on id).  Once cloned, removing the "copy" attribute or setting the copy property to false will cause the b-c-c to go into hiding[TODO].  
+Note the use of the attribute "copy".  This attribute/property makes the tag more readable, but also acts as an "if" logical operator.  If attribute/property "copy" is present/true, only then will it clone the contents of the referenced template (based on id).  
+
+The copy property is reflect via the data-copy-is attribute ("true"/"false").  This attribute can be used for styling (soon to be replaced by a pseudostate). 
 
 If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  [c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and make it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be re-rendered (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies. Subject to change]
 
