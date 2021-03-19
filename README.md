@@ -40,7 +40,9 @@ Syntax:
 
 Note the use of the attribute "copy".  This attribute/property makes the tag more readable, but also acts as an "if" logical operator.  If attribute/property "copy" is present/true, only then will it clone the contents of the referenced template (based on id).  
 
-The copy property is reflect via the data-copy-is attribute ("true"/"false").  This attribute can be used for styling (soon to be replaced by a pseudostate). 
+The copy property is reflect via the data-copy-is attribute ("true"/"false").  This attribute can be used for styling (soon to be replaced by a pseudostate).
+
+In short, b-c-c can be used as a kind of basic "Reverse Polish Notation" version of Polymer's [dom-if](https://polymer-library.polymer-project.org/2.0/docs/devguide/templates#dom-if).
 
 If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  [c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and make it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be re-rendered (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies. Subject to change]
 
@@ -51,8 +53,6 @@ By default, b-c-c will copy in the referenced template into a Shadow DOM snippet
 In the meantime / in addiction, b-c-c supports two additional properties for adjusting the content dynamically:
 
 If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't append the clone, until a trans-render context object is passed in to property trContext.
-
-b-c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's [dom-if](https://polymer-library.polymer-project.org/2.0/docs/devguide/templates#dom-if).
 
 
 ## Codeless Web Components [TODO]
