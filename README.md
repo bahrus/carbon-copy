@@ -46,7 +46,11 @@ If the attribute "from" changes, b-c-c will blow away what was there before, and
 
 Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" starts with "./", the search for the matching template is done within the shadow DOM of the (b-)c-c element (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
 
-By default, b-c-c will copy in the referenced template into a Shadow DOM snippet.  However, if you prefer a copy straight into innerHTML, add attribute / property "noshadow."  Doing so will, of course, eliminate the slot mechanism from functioning.  Hopefully, if template instantiation becomes a thing, that will provide an alternative for this scenario. 
+By default, b-c-c will copy in the referenced template into a Shadow DOM snippet.  However, if you prefer it copy straight into innerHTML, add attribute / property "noshadow."  Doing so will, of course, eliminate the slot mechanism from functioning.  Hopefully, if template instantiation becomes a thing, that will provide an alternative for this scenario, in terms of declarative support for dynamic content. 
+
+In the meantime / in addiction, b-c-c supports two additional properties for adjusting the content dynically:
+
+If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't append the clone, until a trans-render context object is passed in to property trContext.
 
 b-c-c can also be used in a kind of "Reverse Polish Notation" version of Polymer's [dom-if](https://polymer-library.polymer-project.org/2.0/docs/devguide/templates#dom-if).
 

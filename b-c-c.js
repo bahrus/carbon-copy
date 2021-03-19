@@ -36,7 +36,7 @@ const linkTemplateToClone = ({ copy, from, self }) => {
 const linkClonedTemplate = ({ templateToClone, self }) => {
     self.clonedTemplate = templateToClone.content.cloneNode(true);
 };
-const onClonedTemplate = ({ clonedTemplate, toBeTransformed, tr, self }) => {
+const onClonedTemplate = ({ clonedTemplate, toBeTransformed, trContext: tr, self }) => {
     let target = self;
     if (!self.noshadow) {
         if (target.shadowRoot == null) {
@@ -97,7 +97,7 @@ const propDefMap = {
     from: str2,
     noshadow: bool1,
     toBeTransformed: bool1,
-    tr: obj1,
+    trContext: obj1,
     templateToClone: obj2,
     clonedTemplate: obj2,
 };
