@@ -48,7 +48,7 @@ Templates can come from outside any shadow DOM if the value of "from" starts wit
 
 By default, b-c-c will copy in the referenced template into a Shadow DOM snippet.  However, if you prefer it copy straight into innerHTML, add attribute / property "noshadow."  Doing so will, of course, eliminate the slot mechanism from functioning.  Hopefully, if template instantiation becomes a thing, that will provide an alternative for this scenario, in terms of declarative support for dynamic content. 
 
-In the meantime / in addiction, b-c-c supports two additional properties for adjusting the content dynically:
+In the meantime / in addiction, b-c-c supports two additional properties for adjusting the content dynamically:
 
 If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't append the clone, until a trans-render context object is passed in to property trContext.
 
