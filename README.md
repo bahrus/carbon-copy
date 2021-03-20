@@ -58,7 +58,7 @@ If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't
 
 b-c-c can not only be used to instantiate a template (repeatedly), but also an already materialized DOM element.  It does this by creating a template copy of that DOM element first, and then cloning.  Subsequent copies from the same DOM element will derive from the template copy (so if the DOM element mutates, copies won't see that).
 
-[b-c-c demo](https://jsfiddle.net/bahrus/t0n9eLuo/)
+[b-c-c demo](https://jsfiddle.net/bahrus/t0n9eLuo/2/)
 
 ## Sample Markup of b-c-c
 
@@ -210,34 +210,7 @@ b-c-c can not only be used to instantiate a template (repeatedly), but also an a
         </p>
     
       </div>
-  <!-- ES Module Shims: Import maps polyfill for modules browsers without import maps support (all except Chrome 89+) -->
-  <script async src="https://ga.jspm.io/npm:es-module-shims@0.10.1/dist/es-module-shims.min.js"></script>
-  
-  <!--
-    JSPM Generator Import Map
-    Edit URL: https://generator.jspm.io/#U2VgYGBkDM0rySzJSU1hSE4sSsrP003OL6h0MNAz1DM1BABBU1a8IQA
-  -->
-  <script type="importmap">
-  {
-    "imports": {
-      "carbon-copy": "https://ga.jspm.io/npm:carbon-copy@0.1.51/b-c-c.js"
-    },
-    "scopes": {
-      "https://ga.jspm.io/": {
-        "trans-render/define.js": "https://ga.jspm.io/npm:trans-render@0.0.136/define.js",
-        "trans-render/hydrate.js": "https://ga.jspm.io/npm:trans-render@0.0.136/hydrate.js",
-        "xtal-element/xtal-latx.js": "https://ga.jspm.io/npm:xtal-element@0.0.87/xtal-latx.js"
-      }
-    }
-  }
-  </script>
-  
-  <script type="module">
-    import * as carbonCopy from "carbon-copy";
-  
-    // Write main module code here, or as a separate file with a "src" attribute on the module script.
-    console.log(carbonCopy);
-  </script>
+      <script type=module src="https://unpkg.com/carbon-copy@0.1.53/b-c-c.js?module"></script>
 </body>
 </html>
 ```
@@ -307,6 +280,8 @@ Example:
 
 <hello-world place="mars"></hello-world>
 ```
+
+[Demo](https://jsfiddle.net/bahrus/t0n9eLuo/4/)
 
 ### Attaching event handlers
 
