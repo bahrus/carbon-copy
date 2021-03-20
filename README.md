@@ -12,7 +12,7 @@ c-c size:
 
 # \<carbon-copy\>
 
-[Full Screen Demo](https://rawgit.com/bahrus/carbon-copy/master/demo/index.html)
+
 
 
 Copy a template  inside a DOM node. 
@@ -58,8 +58,189 @@ If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't
 
 b-c-c can not only be used to instantiate a template (repeatedly), but also an already materialized DOM element.  It does this by creating a template copy of that DOM element first, and then cloning.  Subsequent copies from the same DOM element will derive from the template copy (so if the DOM element mutates, copies won't see that).
 
-## Sample Markup of b-c-c [TODO]
+[b-c-c demo](https://jsfiddle.net/bahrus/t0n9eLuo/)
 
+## Sample Markup of b-c-c
+
+<detail>
+    <summary>Markup</summary>
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <style>
+          div {
+            background-color: cornsilk;
+          }
+        </style>
+    
+        <h3><a href="https://www.youtube.com/watch?v=eAfyFTzZDMM" target="_blank">Beautiful</a></h3>
+        <h4>Christina Aguilera</h4>
+        <template id="no-matter">
+          <style>
+            :host {
+              background-color: blanchedalmond;
+            }
+          </style>
+          No matter what we <slot name="verb1"></slot> (no matter what we <slot name="verb2"></slot>)
+        </template>
+        <template id="beautiful">
+          <style>
+            div {
+              background-color: burlywood;
+            }
+          </style>
+          <div>
+            <slot name="subjectIs"></slot> beautiful
+          </div>
+        </template>
+        <template id="down">
+          <div>So don't you bring me down today</div>
+        </template>
+        <template id="chorus">
+          <style>
+            div {
+              background-color: paleturquoise;
+            }
+          </style>
+          <b-c-c copy from="/beautiful">
+            <span slot="subjectIs">
+              <slot name="subjectIs1"></slot>
+            </span>
+          </b-c-c>
+          <div>No matter what they say</div>
+          <div prop-pronoun>Words
+            <slot name="verb1"></slot> bring
+            <slot name="pronoun1"></slot> down</div>
+          <div>Oh no</div>
+          <b-c-c copy from="/beautiful">
+            <span slot="subjectIs">
+              <slot name="subjectIs2"></slot>
+            </span>
+          </b-c-c>
+          <div>In every single way</div>
+          <div prop-pronoun>Yes words
+            <slot name="verb2"></slot> bring
+            <slot name="pronoun2"></slot> down</div>
+          <div>Oh no</div>
+          <b-c-c copy from="/down"></b-c-c>
+        </template>
+
+        <p>Don't look at me</p>
+        <p>
+          <div>Everyday is so wonderful</div>
+          <div>Then suddenly</div>
+          <div>It's hard to breathe</div>
+          <div>Now and then I get insecure</div>
+          <div>From all the pain</div>
+          <div>I'm so ashamed</div>
+        </p>
+        <p>
+          <b-c-c copy from="/chorus">
+    
+            <span slot="verb1">can't</span>
+            <span slot="verb2">can't</span>
+            <span slot="pronoun1">me</span>
+            <span slot="pronoun2">me</span>
+            <span slot="subjectIs1">I am</span>
+            <span slot="subjectIs2">I am</span>
+          </b-c-c>
+        </p>
+        <p>
+    
+          <div>To all your friends you're delirious</div>
+          <div>So consumed</div>
+          <div>In all your doom, ooh</div>
+          <div>Trying hard to fill the emptiness</div>
+          <div>The pieces gone</div>
+          <div>Left the puzzle undone</div>
+          <div>Ain't that the way it is</div>
+        </p>
+        <p>
+          <b-c-c copy from="/chorus">
+            <span slot="verb1">can't</span>
+            <span slot="verb2">can't</span>
+            <span slot="pronoun1">you</span>
+            <span slot="pronoun2">you</span>
+            <span slot="subjectIs1">You are</span>
+            <span slot="subjectIs2">You are</span>
+          </b-c-c>
+        </p>
+        <br>
+        <b-c-c copy from="/no-matter">
+          <span slot="verb1">do</span>
+          <span slot="verb2">do</span>
+        </b-c-c>
+        <br>
+        <b-c-c copy from="/no-matter">
+          <span slot="verb1">say</span>
+          <span slot="verb2">say</span>
+        </b-c-c>
+        <div>We're the song inside the tune (yeah, oh yeah)</div>
+        <div>Full of beautiful mistakes</div>
+        <p>
+          <div>And everywhere we go (and everywhere we go)</div>
+          <div>The sun will always shine (the sun will always, always, shine)</div>
+          <div>And tomorrow we might awake</div>
+          <div>On the other side</div>
+        </p>
+        <p>
+          <b-c-c copy from="/chorus">
+            <span slot="verb1">won't</span>
+            <span slot="verb2">can't</span>
+            <span slot="pronoun1">us</span>
+            <span slot="pronoun2">us</span>
+            <span slot="subjectIs1">We are</span>
+            <span slot="subjectIs2">We are</span>
+          </b-c-c>
+        </p>
+        <p>
+          <div>Oh, oh</div>
+          <div>Don't you bring me down today</div>
+          <div>Don't you bring me down, ooh</div>
+          <div>Today</div>
+        </p>
+    
+      </div>
+  <!-- ES Module Shims: Import maps polyfill for modules browsers without import maps support (all except Chrome 89+) -->
+  <script async src="https://ga.jspm.io/npm:es-module-shims@0.10.1/dist/es-module-shims.min.js"></script>
+  
+  <!--
+    JSPM Generator Import Map
+    Edit URL: https://generator.jspm.io/#U2VgYGBkDM0rySzJSU1hSE4sSsrP003OL6h0MNAz1DM1BABBU1a8IQA
+  -->
+  <script type="importmap">
+  {
+    "imports": {
+      "carbon-copy": "https://ga.jspm.io/npm:carbon-copy@0.1.51/b-c-c.js"
+    },
+    "scopes": {
+      "https://ga.jspm.io/": {
+        "trans-render/define.js": "https://ga.jspm.io/npm:trans-render@0.0.136/define.js",
+        "trans-render/hydrate.js": "https://ga.jspm.io/npm:trans-render@0.0.136/hydrate.js",
+        "xtal-element/xtal-latx.js": "https://ga.jspm.io/npm:xtal-element@0.0.87/xtal-latx.js"
+      }
+    }
+  }
+  </script>
+  
+  <script type="module">
+    import * as carbonCopy from "carbon-copy";
+  
+    // Write main module code here, or as a separate file with a "src" attribute on the module script.
+    console.log(carbonCopy);
+  </script>
+</body>
+</html>
+```
 
 ## c-c -- Codeless Web Components
 
