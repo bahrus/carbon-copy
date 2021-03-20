@@ -12,10 +12,9 @@ c-c size:
 
 # \<carbon-copy\>
 
+**NB:** These components work best in a [futuristic](https://github.com/bahrus/templ-mount) HTML-friendly world.  In the meantime, they may work best with the help of [one](https://www.npmjs.com/package/html-include-element) [of](https://www.webcomponents.org/element/@github/include-fragment-element) [these](https://www.npmjs.com/package/@vanillawc/wc-include).
 
-Copy a template  inside a DOM node. 
-
-**NB:** These components work best in a HTML-friendly world.
+Copy a template inside a DOM node. 
 
 ## b-c-c
 
