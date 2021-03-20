@@ -12,6 +12,12 @@ export class CC extends HTMLElement {
         this.propActions = propActions;
         this.reactor = new xc.Rx(this);
     }
+    connectedCallback() {
+        xc.hydrate(this, slicedPropDefs);
+    }
+    onPropChange(name, propDef, newVal) {
+        this.reactor.addToQueue(propDef, newVal);
+    }
 }
 CC.is = 'c-c';
 export const linkTemplateToClone = ({ copy, from, self }) => {
@@ -65,9 +71,22 @@ const str2 = {
     ...str1,
     stopReactionsIfFalsy: true,
 };
+const obj1 = {
+    type: Object,
+    dry: true,
+    async: true,
+    stopReactionsIfFalsy: true,
+};
 const propDefMap = {
     copy: bool2,
     from: str2,
-    noshadow: bool1
+    noshadow: bool1,
+    templateToClone: obj1,
 };
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);
+export class CarbonCopy extends CC {
+}
+CarbonCopy.is = 'carbon-copy';
+xc.define(CarbonCopy);

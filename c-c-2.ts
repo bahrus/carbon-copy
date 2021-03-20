@@ -17,6 +17,12 @@ export class CC extends HTMLElement implements ReactiveSurface {
     noshadow: boolean | undefined;
     templateToClone: HTMLTemplateElement | undefined;
     clonedTemplate: DocumentFragment | undefined;
+    connectedCallback(){
+        xc.hydrate(this, slicedPropDefs);
+    }
+    onPropChange(name: string, propDef: PropDef, newVal: any){
+        this.reactor.addToQueue(propDef, newVal);
+    }
 }
 
 export const linkTemplateToClone = ({copy, from, self}: CC) => {
@@ -73,10 +79,36 @@ const str2: PropDef = {
     stopReactionsIfFalsy: true,
 };
 
+const obj1: PropDef = {
+    type: Object,
+    dry: true,
+    async: true,
+    stopReactionsIfFalsy: true,
+};
+
+
 const propDefMap: PropDefMap<CC> = {
     copy: bool2,
     from: str2,
-    noshadow: bool1
+    noshadow: bool1,
+    templateToClone: obj1,
+}
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
+xc.define(CC);
+declare global {
+    interface HTMLElementTagNameMap {
+        "c-c": CC,
+    }
 }
 
-xc.define(CC);
+export class CarbonCopy extends CC{
+    static is = 'carbon-copy';
+}
+
+xc.define(CarbonCopy);
+declare global {
+    interface HTMLElementTagNameMap {
+        "carbon-copy": CarbonCopy,
+    }
+}
