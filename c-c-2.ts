@@ -17,6 +17,9 @@ export class CC extends HTMLElement implements ReactiveSurface {
     noshadow: boolean | undefined;
     templateToClone: HTMLTemplateElement | undefined;
     clonedTemplate: DocumentFragment | undefined;
+    stringProps: string[] | undefined;
+    boolProps: string[] | undefined;
+
     connectedCallback(){
         xc.hydrate(this, slicedPropDefs);
     }
@@ -47,6 +50,9 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             }
         }
     }
+    const propDefMap: PropDefMap<any> = {};
+    const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+    xc.letThereBeProps(newClass, slicedPropDefs);
     xc.define(newClass);
 }
 
@@ -83,15 +89,18 @@ const obj1: PropDef = {
     type: Object,
     dry: true,
     async: true,
-    stopReactionsIfFalsy: true,
 };
 
+const obj2: PropDef = {
+    ...obj1,
+    stopReactionsIfFalsy: true,
+};
 
 const propDefMap: PropDefMap<CC> = {
     copy: bool2,
     from: str2,
     noshadow: bool1,
-    templateToClone: obj1,
+    templateToClone: obj2,
 }
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');

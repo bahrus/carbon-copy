@@ -42,6 +42,9 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
         }
     }
     newClass.is = ceName;
+    const propDefMap = {};
+    const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+    xc.letThereBeProps(newClass, slicedPropDefs);
     xc.define(newClass);
 };
 const propActions = [
@@ -75,13 +78,16 @@ const obj1 = {
     type: Object,
     dry: true,
     async: true,
+};
+const obj2 = {
+    ...obj1,
     stopReactionsIfFalsy: true,
 };
 const propDefMap = {
     copy: bool2,
     from: str2,
     noshadow: bool1,
-    templateToClone: obj1,
+    templateToClone: obj2,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
