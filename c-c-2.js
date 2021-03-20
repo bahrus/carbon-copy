@@ -40,11 +40,46 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 shadowRoot.appendChild(clone);
             }
         }
+        onPropChange() {
+            console.log('onpropchange');
+        }
     }
     newClass.is = ceName;
     const propDefMap = {};
+    const baseProp = {
+        async: true,
+        dry: true,
+        reflect: true
+    };
+    if (self.stringProps !== undefined) {
+        for (const stringProp of self.stringProps) {
+            const prop = {
+                ...baseProp,
+                type: String,
+            };
+            propDefMap[stringProp] = prop;
+        }
+    }
+    if (self.boolProps !== undefined) {
+        for (const boolProp of self.boolProps) {
+            const prop = {
+                ...baseProp,
+                type: Boolean,
+            };
+            propDefMap[boolProp] = prop;
+        }
+    }
+    if (self.numProps !== undefined) {
+        for (const numProp of self.numProps) {
+            const prop = {
+                ...baseProp,
+                type: Number,
+            };
+            propDefMap[numProp] = prop;
+        }
+    }
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
-    xc.letThereBeProps(newClass, slicedPropDefs);
+    xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 };
 const propActions = [
@@ -88,6 +123,9 @@ const propDefMap = {
     from: str2,
     noshadow: bool1,
     templateToClone: obj2,
+    stringProps: obj1,
+    boolProps: obj1,
+    numProps: obj1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');

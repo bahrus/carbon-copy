@@ -95,7 +95,7 @@ Step 3.  Add your web component to the page
 
 Step 4.  Stare into the abyss. 
 
-### Adding string/numeric/bool properties to your declarative web component [TODO]
+### Adding string/numeric/bool properties to your declarative web component
 
 The template can specify a list of string properties to add to the automatically generated web component:
 

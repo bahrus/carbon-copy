@@ -19,7 +19,7 @@ export class CC extends HTMLElement implements ReactiveSurface {
     clonedTemplate: DocumentFragment | undefined;
     stringProps: string[] | undefined;
     boolProps: string[] | undefined;
-
+    numProps: string[] | undefined;
     connectedCallback(){
         xc.hydrate(this, slicedPropDefs);
     }
@@ -49,10 +49,45 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 shadowRoot.appendChild(clone);
             }
         }
+        onPropChange(){
+            console.log('onpropchange');
+        }
     }
     const propDefMap: PropDefMap<any> = {};
+    const baseProp: PropDef = {
+        async: true,
+        dry: true,
+        reflect: true
+    };
+    if(self.stringProps !== undefined){
+        for(const stringProp of self.stringProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: String,
+            };
+            propDefMap[stringProp] = prop;
+        }
+    }
+    if(self.boolProps !== undefined){
+        for(const boolProp of self.boolProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: Boolean,
+            };
+            propDefMap[boolProp] = prop;
+        }        
+    }
+    if(self.numProps !== undefined){
+        for(const numProp of self.numProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: Number,
+            };
+            propDefMap[numProp] = prop;
+        }        
+    }    
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
-    xc.letThereBeProps(newClass, slicedPropDefs);
+    xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 }
 
@@ -101,6 +136,9 @@ const propDefMap: PropDefMap<CC> = {
     from: str2,
     noshadow: bool1,
     templateToClone: obj2,
+    stringProps: obj1,
+    boolProps: obj1,
+    numProps: obj1,
 }
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
