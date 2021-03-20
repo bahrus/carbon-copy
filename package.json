@@ -10,6 +10,7 @@
   "author": "bahrus <anderson.bruce.b@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@github/template-parts": "0.3.2",
     "xtal-element": "0.0.367"
   },
   "devDependencies": {
