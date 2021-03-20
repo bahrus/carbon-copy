@@ -56,10 +56,12 @@ If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't
 
 ## Templatize a materialized DOM element
 
-b-c-c can not only be used to instantiate a template (repeatedly), but also an already materialized DOM element.  It does this by create a template copy of that DOM element first, and then cloning.  Subsequent copies from the same DOM element will derive from the template copy (so if the DOM element mutates, copies won't see that).
+b-c-c can not only be used to instantiate a template (repeatedly), but also an already materialized DOM element.  It does this by creating a template copy of that DOM element first, and then cloning.  Subsequent copies from the same DOM element will derive from the template copy (so if the DOM element mutates, copies won't see that).
+
+## Sample Markup of b-c-c [TODO]
 
 
-## Codeless Web Components [TODO]
+## c-c -- Codeless Web Components
 
 For more extended functionality, use element c-c or carbon-copy (reference:  carbon-copy/c-c.js).  
 
@@ -114,7 +116,7 @@ c-c (or carbon-copy) supports binding to the UI using Github's [Template-Parts l
 
 ### Attaching event handlers
 
-Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahrus/pass-down) [other](https://github.com/bahrus/p-et-alia) declarative vocabulary libraries.
+Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahrus/pass-down) [other](https://github.com/bahrus/p-et-alia) [declarative](https://github.com/bahrus/xtal-decor) vocabulary libraries.
 
 ### Adding Object Properties [TODO]
 
@@ -128,7 +130,7 @@ Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahru
 
 Object properties also observe attribute changes with the same name as the property, and also calls onPropsChange.
 
-If you set the attribute value for an object property, it will assume the string is JSON (surronded by single quotes), and will parse it.
+If you set the attribute value for an object property, it will assume the string is JSON (surrounded by single quotes), and will parse it.
 
 Changes to object properties fire events with the name "[name of prop]-changed".
 
