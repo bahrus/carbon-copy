@@ -1,14 +1,73 @@
-import { BCC } from './b-c-c.js';
+import { xc } from 'xtal-element/lib/XtalCore.js';
+import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
 /**
 *  Codeless web component generator
 *  @element c-c
 *
 */
-export class CC extends BCC {
+export class CC extends HTMLElement {
+    constructor() {
+        super(...arguments);
+        this.self = this;
+        this.propActions = propActions;
+        this.reactor = new xc.Rx(this);
+    }
 }
 CC.is = 'c-c';
+export const linkTemplateToClone = ({ copy, from, self }) => {
+    const referencedTemplate = upShadowSearch(self, from);
+    if (referencedTemplate !== null) {
+        self.templateToClone = referencedTemplate;
+    }
+};
+export const linkClonedTemplate = ({ templateToClone, self }) => {
+    const ceName = getCEName(templateToClone.id);
+    const noshadow = self.noshadow;
+    class newClass extends HTMLElement {
+        connectedCallback() {
+            const clone = templateToClone.content.cloneNode(true);
+            if (noshadow) {
+                this.appendChild(clone);
+            }
+            else {
+                const shadowRoot = this.attachShadow({ mode: 'open' });
+                shadowRoot.appendChild(clone);
+            }
+        }
+    }
+    newClass.is = ceName;
+    xc.define(newClass);
+};
+const propActions = [
+    linkTemplateToClone,
+    linkClonedTemplate,
+];
 function getCEName(templateId) {
     if (templateId.indexOf('-') > -1)
         return templateId;
-    return 'c-c-' + templateId.split('_').join('-');
+    return 'c-c-' + templateId;
 }
+const bool1 = {
+    type: Boolean,
+    dry: true,
+    async: true,
+};
+const bool2 = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+};
+const str1 = {
+    type: String,
+    dry: true,
+    async: true,
+};
+const str2 = {
+    ...str1,
+    stopReactionsIfFalsy: true,
+};
+const propDefMap = {
+    copy: bool2,
+    from: str2,
+    noshadow: bool1
+};
+xc.define(CC);

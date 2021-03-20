@@ -36,7 +36,7 @@ export class BCC extends HTMLElement implements ReactiveSurface{
     }
 }
 
-const linkTemplateToClone = ({copy, from, self}: BCC) => {
+export const linkTemplateToClone = ({copy, from, self}: BCC) => {
     if(from === self._oldFrom) return;
     const referencedTemplate = upShadowSearch(self, from!) as HTMLTemplateElement;
     if(referencedTemplate !== null) {
@@ -45,11 +45,11 @@ const linkTemplateToClone = ({copy, from, self}: BCC) => {
     }
 };
 
-const linkClonedTemplate = ({templateToClone, self}: BCC) => {
+export const linkClonedTemplate = ({templateToClone, self}: BCC) => {
     self.clonedTemplate = templateToClone!.content.cloneNode(true) as DocumentFragment;
 }
 
-const onClonedTemplate = ({clonedTemplate, toBeTransformed, trContext: tr, self}: BCC) => {
+export const onClonedTemplate = ({clonedTemplate, toBeTransformed, trContext: tr, self}: BCC) => {
     let target : ShadowRoot | HTMLElement = self;
     if(!self.noshadow){
         if(target.shadowRoot == null){
@@ -67,6 +67,7 @@ const onClonedTemplate = ({clonedTemplate, toBeTransformed, trContext: tr, self}
     }else{
         target.appendChild(clonedTemplate!);
     }
+    delete self.clonedTemplate;
 }
 
 

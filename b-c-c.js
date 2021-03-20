@@ -24,7 +24,7 @@ export class BCC extends HTMLElement {
     }
 }
 BCC.is = 'b-c-c';
-const linkTemplateToClone = ({ copy, from, self }) => {
+export const linkTemplateToClone = ({ copy, from, self }) => {
     if (from === self._oldFrom)
         return;
     const referencedTemplate = upShadowSearch(self, from);
@@ -33,10 +33,10 @@ const linkTemplateToClone = ({ copy, from, self }) => {
         self.templateToClone = referencedTemplate;
     }
 };
-const linkClonedTemplate = ({ templateToClone, self }) => {
+export const linkClonedTemplate = ({ templateToClone, self }) => {
     self.clonedTemplate = templateToClone.content.cloneNode(true);
 };
-const onClonedTemplate = ({ clonedTemplate, toBeTransformed, trContext: tr, self }) => {
+export const onClonedTemplate = ({ clonedTemplate, toBeTransformed, trContext: tr, self }) => {
     let target = self;
     if (!self.noshadow) {
         if (target.shadowRoot == null) {
@@ -57,6 +57,7 @@ const onClonedTemplate = ({ clonedTemplate, toBeTransformed, trContext: tr, self
     else {
         target.appendChild(clonedTemplate);
     }
+    delete self.clonedTemplate;
 };
 const propActions = [
     linkTemplateToClone,
