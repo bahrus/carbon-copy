@@ -218,7 +218,7 @@ b-c-c can not only be used to instantiate a template (repeatedly), but also an a
 
 ## c-c -- Codeless Web Components
 
-For more extended functionality, use element c-c or carbon-copy (reference:  carbon-copy/c-c.js).  
+For more extended functionality, use element c-c, "codeless component" (reference:  carbon-copy/c-c.js).  
 
 Unlike b-c-c, c-c actually generates a custom (web) component on the fly, based on the id of the template.  If the template is a simple word, like "mytemplate" the generated custom element will have name c-c-mytemplate.  If the id has a dash in it, it will create a custom element with that name (so id's are limited to what is allowed in terms of custom element names).   
 
@@ -291,6 +291,18 @@ The value of place can be manipulated either via the attribute value or the prop
 ### Attaching event handlers
 
 Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahrus/pass-down) [other](https://github.com/bahrus/p-et-alia) [declarative](https://github.com/bahrus/xtal-decor) vocabulary libraries.
+
+## carbon-copy [TODO]
+
+Finally we get to element carbon-copy.  It synthesizes some of the features of both b-c-c and c-c together.
+
+Like b-c-c, it can take a materialized DOM element as its input, not just a template.  Like b-c-c, it can perform a transform on the (materialized) DOM fragment.
+
+This transformed fragment can become the template used for generating the custom element.  The transform can be used to insert dynamic "parts" in the template.
+
+So while c-c encourages a 100% JS-free web component, with not much support for SSR, carbon-copy allows an initial view based on SSR, but then it transforms the initial view into a general template used by web component instances.
+
+
 
 <!--### Adding Object Properties [TODO]
 
