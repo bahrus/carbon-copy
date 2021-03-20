@@ -1,5 +1,6 @@
 import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element/lib/XtalCore.js';
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
+import {TemplateInstance} from '@github/template-parts/lib/index.js';
 
 /**
 *  Codeless web component generator
@@ -20,6 +21,8 @@ export class CC extends HTMLElement implements ReactiveSurface {
     stringProps: string[] | undefined;
     boolProps: string[] | undefined;
     numProps: string[] | undefined;
+    templateInstance: TemplateInstance | undefined;
+
     connectedCallback(){
         xc.hydrate(this, slicedPropDefs);
     }
@@ -41,6 +44,8 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
     class newClass extends HTMLElement{
         static is = ceName;
         connectedCallback(){
+            xc.hydrate(this, slicedPropDefs);
+            this.tpl = new TemplateInstance(templateToClone!, this)
             const clone = templateToClone!.content.cloneNode(true);
             if(noshadow){
                 this.appendChild(clone);
@@ -50,8 +55,9 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             }
         }
         onPropChange(){
-            console.log('onpropchange');
+            this.tpl!.update(this);
         }
+        tpl: TemplateInstance | undefined;
     }
     const propDefMap: PropDefMap<any> = {};
     const baseProp: PropDef = {

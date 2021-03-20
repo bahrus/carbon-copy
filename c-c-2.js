@@ -1,5 +1,6 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
 import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
+import { TemplateInstance } from '@github/template-parts/lib/index.js';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -31,6 +32,8 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
     const noshadow = self.noshadow;
     class newClass extends HTMLElement {
         connectedCallback() {
+            xc.hydrate(this, slicedPropDefs);
+            this.tpl = new TemplateInstance(templateToClone, this);
             const clone = templateToClone.content.cloneNode(true);
             if (noshadow) {
                 this.appendChild(clone);
@@ -41,7 +44,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
             }
         }
         onPropChange() {
-            console.log('onpropchange');
+            this.tpl.update(this);
         }
     }
     newClass.is = ceName;
