@@ -36,11 +36,11 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
             this.tpl = new TemplateInstance(templateToClone, this);
             const clone = templateToClone.content.cloneNode(true);
             if (noshadow) {
-                this.appendChild(clone);
+                this.appendChild(this.tpl);
             }
             else {
                 const shadowRoot = this.attachShadow({ mode: 'open' });
-                shadowRoot.appendChild(clone);
+                shadowRoot.appendChild(this.tpl);
             }
         }
         onPropChange() {
@@ -121,14 +121,18 @@ const obj2 = {
     ...obj1,
     stopReactionsIfFalsy: true,
 };
+const obj3 = {
+    ...obj1,
+    parse: true,
+};
 const propDefMap = {
     copy: bool2,
     from: str2,
     noshadow: bool1,
     templateToClone: obj2,
-    stringProps: obj1,
-    boolProps: obj1,
-    numProps: obj1,
+    stringProps: obj3,
+    boolProps: obj3,
+    numProps: obj3,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');

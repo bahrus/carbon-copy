@@ -8,7 +8,7 @@
 </head>
 <body>
     <template id=hello-world>
-        <div>Hello, world</div>
+        <div>Hello, {{place}}</div>
     </template>
     <c-c copy from="/hello-world" string-props='["place"]'></c-c>
 
@@ -17,7 +17,8 @@
         {
             "imports":{
                 "xtal-element/": "../node_modules/xtal-element/",
-                "trans-render/": "../node_modules/trans-render/"
+                "trans-render/": "../node_modules/trans-render/",
+                "@github/": "../node_modules/@github/"
             }
         }
     </script>

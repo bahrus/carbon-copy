@@ -112,7 +112,7 @@ The template can specify a list of string properties to add to the automatically
 These properties can be read via attributes on the "c-c-pow" element instances (in this example), or passed in as properties.  They will reflect to [custom psuedo states](https://www.chromestatus.com/feature/6537562418053120) when the browser allows it.
 
 
-### Bind to the properties [TODO]
+### Bind to the properties
 
 c-c (or carbon-copy) supports binding to the UI using Github's [Template-Parts library](https://github.com/github/template-parts/).
 
