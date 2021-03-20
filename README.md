@@ -13,9 +13,9 @@ c-c size:
 # \<carbon-copy\>
 
 
-
-
 Copy a template  inside a DOM node. 
+
+**NB:** These components work best in a HTML-friendly world.
 
 ## b-c-c
 
