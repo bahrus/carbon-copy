@@ -100,11 +100,13 @@ Step 4.  Stare into the abyss.
 The template can specify a list of string properties to add to the automatically generated web component:
 
 ```html
-<template id="pow" data-str-props="name,rank,serial_number" data-num-props="age,weight" data-bool-props="mia">
+<template id="pow">
     <div>
         <slot name="subjectIs"></slot> 
     </div>
 </template>
+...
+<c-c from ="/pow" string-props='["name","rank", "serialNumber"]' num-props='["age", "weight"]' bool-props='["mia"]'>
 ```
 
 These properties can be read via attributes on the "c-c-pow" element instances (in this example), or passed in as properties.  They will reflect to [custom psuedo states](https://www.chromestatus.com/feature/6537562418053120) when the browser allows it.
