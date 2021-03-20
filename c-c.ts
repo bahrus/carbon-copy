@@ -1,235 +1,172 @@
-import { XtallatX } from 'xtal-latx/xtal-latx.js';
-import {BCC} from './b-c-c.js';
-import {define} from 'xtal-latx/define.js';
-
+import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element/lib/XtalCore.js';
+import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
+import {TemplateInstance} from '@github/template-parts/lib/index.js';
 
 /**
-*  Dependency free web component that allows copying templates.
+*  Codeless web component generator
 *  @element c-c
 * 
 */
-export class CC extends BCC {
-    static get is() { return 'c-c'; }
-   
+export class CC extends HTMLElement implements ReactiveSurface {
+    static is = 'c-c';
 
-    static registering: { [key: string]: boolean } = {};
-  
-    
-
-    getCEName(templateId: string) {
-        if(templateId.indexOf('-') > -1) return templateId;
-        return 'c-c-' + templateId.split('_').join('-');
-    }
+    self = this;
+    propActions = propActions;
+    reactor = new xc.Rx(this);
+    from: string | undefined;
+    copy: boolean | undefined;
+    noshadow: boolean | undefined;
+    templateToClone: HTMLTemplateElement | undefined;
+    clonedTemplate: DocumentFragment | undefined;
+    stringProps: string[] | undefined;
+    boolProps: string[] | undefined;
+    numProps: string[] | undefined;
+    templateInstance: TemplateInstance | undefined;
 
     connectedCallback(){
-        this.childNodes.forEach((node : Node) => {
-            this._origC.push(node.cloneNode(true) as HTMLElement);
-        })
-        this.innerHTML = '';
-        super.connectedCallback();
+        xc.hydrate(this, slicedPropDefs);
     }
-    /**
-     * define props
-     * @param name 
-     * @param template 
-     * @param newClass 
-     * @param props 
-     * @param isObj 
-     */
-    dP(name: string, template: HTMLTemplateElement, newClass: any, props: string[], isObj: boolean){ //define Props
-        if(isObj){
-            props.forEach(prop =>{
-                Object.defineProperty(newClass.prototype, prop, {
-                    get: function(){ 
-                        return this['_' + prop]; 
-                    },
-                    set: function (val) {
-                        this['_' + prop] = val;
-                        this.de(prop,{
-                            value: val
-                        })
-                    },
-                    enumerable: true,
-                    configurable: true,
-                });            
-            })            
-        }else{
-            props.forEach(prop =>{
-                Object.defineProperty(newClass.prototype, prop, {
-                    get: function(){ 
-                        return this['_' + prop]; 
-                    },
-                    set: function (val) {
-                        this.attr(prop, val);
-                    },
-                    enumerable: true,
-                    configurable: true,
-                });            
-            })
-        }
-
-        
-        
+    onPropChange(name: string, propDef: PropDef, newVal: any){
+        this.reactor.addToQueue(propDef, newVal);
     }
-    /**
-     * define Methods
-     * @param newClass 
-     * @param template 
-     */
-    dM(newClass: any, template:HTMLTemplateElement){ //define methods
-        const prevSibling = template.previousElementSibling as HTMLElement;
-        if(!prevSibling || !prevSibling.dataset.methods) return;
-        const evalScript = eval(prevSibling.innerHTML);
-        for(const fn in evalScript){
-            newClass.prototype[fn] = evalScript[fn];
-        }
-    }
-
-    /**
-     * addAttributeChangedCallback
-     * @param newClass 
-     */
-    private aacc(newClass: any){ 
-        newClass.prototype.attributeChangedCallback = function(name: string, oldVal: string, newVal: string){
-            let val: any = newVal;
-            let isObj = false;
-            const objProps = this.constructor.objProps;
-            if(objProps && objProps.indexOf(name) > -1){
-                val = JSON.parse(newVal);
-                isObj = true;
-            }
-            this['_' + name] = val;
-            this.de(name, {
-                value: val
-            });
-            if(this.onPropsChange) this.onPropsChange(name, oldVal, val);
-        }
-    }
-
-    /**
-     * get custom element name
-     */
-    gn(){
-        const fromTokens = this._from.split('/');
-        const fromName = fromTokens[0] || fromTokens[1];
-        return this.getCEName(fromName);
-    }
-    /**
-     * set activate component
-     */
-    sac(){
-        const t = (<any>this) as HTMLElement;
-        const aceN = this.gn();
-        for(let i = 0, ii = t.children.length; i < ii; i++){
-            const child = t.children[i] as HTMLElement;
-            const style = child.style;
-            if(child.localName === aceN){
-                style.display = (<any>child).cc_orgD || 'block';
-            }else if(style.display !== 'none'){
-                if(!(<any>child).cc_orgD) (<any>child).cc_orgD = child.style.display;
-                child.style.display = 'none';
-            }
-        }
-    }
-    /**
-     * onPropsChange
-     */
-    onPropsChange() { 
-        if (!this._from || !this._connected || this.disabled) return;
-        const newCEName = this.gn();
-        
-        if (!customElements.get(newCEName)) {
-            if (!CC.registering[newCEName]) {
-                CC.registering[newCEName] = true;
-                const template = this.getSrcTempl() as HTMLTemplateElement;
-                if (template.hasAttribute('data-src') && !template.hasAttribute('loaded')) {
-                    const config: MutationObserverInit = {
-                        attributeFilter: ['loaded'],
-                        attributes: true,
-                    }
-                    const mO = new MutationObserver((mr: MutationRecord[]) => {
-                        this.createCE(template as HTMLTemplateElement);
-                        mO.disconnect();
-                    });
-                    mO.observe(template, config);
-                } else {
-                    this.createCE(template);
-                }
-
-            }
-        }
-        if(!this._copy) return;
-        
-        customElements.whenDefined(newCEName).then(() => {
-            
-            const newEl = this.querySelector(newCEName) as HTMLElement;
-            if (!newEl) {
-                const ce = document.createElement(newCEName);
-                this._origC.forEach(child => {
-                    ce.appendChild(child.cloneNode(true));
-                })
-                this.appendChild(ce);
-            }
-            this.sac();
-        })
-
-    }
-
-    createCE(template: HTMLTemplateElement) {
-        const ceName = this.getCEName(template.id);
-        const ds = template.dataset;
-        const strPropsAttr = ds.strProps;
-        const parsedStrProps = strPropsAttr ? strPropsAttr.split(',') : [];
-        const objPropsAttr = ds.objProps;
-        const parsedObjProps = objPropsAttr ? objPropsAttr.split(',') : [];
-        const allProps = parsedStrProps.concat(parsedObjProps);
-        if (this._noshadow) {
-
-            class newClass extends XtallatX(HTMLElement) {
-                static get is(){return ceName;}
-                static getObjProps(){
-                    return parsedObjProps;
-                }
-                _connected = false;
-                connectedCallback() {
-                    this._upgradeProperties(allProps);
-                    this._connected = true;
-                    this.appendChild(template.content.cloneNode(true));
-                }
-                static get observedAttributes(){return allProps;}
-            }
-            this.dP(ceName, template, newClass, parsedStrProps, false);
-            this.dP(ceName, template, newClass, parsedObjProps, true);
-            define(newClass);
-        } else {
-            class newClass extends XtallatX(HTMLElement) {
-                static get is(){return ceName;}
-                static get objProps(){
-                    return parsedObjProps;
-                }
-                _connected = false;
-                constructor() {
-                    super();
-                    this.attachShadow({ mode: 'open' });
-                    this.shadowRoot!.appendChild(template.content.cloneNode(true));
-                }
-                connectedCallback(){
-                    this._connected = true;
-                    this._upgradeProperties(allProps);
-                }
-                static get observedAttributes(){return allProps;}
-                
-            }
-            this.dP(ceName, template, newClass, parsedStrProps, false);
-            this.dP(ceName, template, newClass, parsedObjProps, true);
-            this.dM(newClass, template);
-            this.aacc(newClass);
-            define(newClass);
-        }
-        
-    }
-
-
-
 }
-define(CC);
+
+export const linkTemplateToClone = ({copy, from, self}: CC) => {
+    const referencedTemplate = upShadowSearch(self, from!) as HTMLTemplateElement;
+    if(referencedTemplate !== null) {
+        self.templateToClone = referencedTemplate;
+    }
+};
+
+export const linkClonedTemplate = ({templateToClone, self}: CC) => {
+    const ceName = getCEName(templateToClone!.id);
+    const noshadow = self.noshadow;
+    class newClass extends HTMLElement{
+        static is = ceName;
+        connectedCallback(){
+            xc.hydrate(this, slicedPropDefs);
+            this.tpl = new TemplateInstance(templateToClone!, this)
+            const clone = templateToClone!.content.cloneNode(true);
+            if(noshadow){
+                this.appendChild(this.tpl);
+            }else{
+                const shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(this.tpl);
+            }
+        }
+        onPropChange(){
+            this.tpl!.update(this);
+        }
+        tpl: TemplateInstance | undefined;
+    }
+    const propDefMap: PropDefMap<any> = {};
+    const baseProp: PropDef = {
+        async: true,
+        dry: true,
+        reflect: true
+    };
+    if(self.stringProps !== undefined){
+        for(const stringProp of self.stringProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: String,
+            };
+            propDefMap[stringProp] = prop;
+        }
+    }
+    if(self.boolProps !== undefined){
+        for(const boolProp of self.boolProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: Boolean,
+            };
+            propDefMap[boolProp] = prop;
+        }        
+    }
+    if(self.numProps !== undefined){
+        for(const numProp of self.numProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: Number,
+            };
+            propDefMap[numProp] = prop;
+        }        
+    }    
+    const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+    xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
+    xc.define(newClass);
+}
+
+const propActions = [
+    linkTemplateToClone,
+    linkClonedTemplate,
+] as PropAction[];
+
+function getCEName(templateId: string) {
+    if(templateId.indexOf('-') > -1) return templateId;
+    return 'c-c-' + templateId;
+}
+
+const bool1 : PropDef = {
+    type: Boolean,
+    dry: true,
+    async: true,
+};
+const bool2: PropDef = {
+    ...bool1,
+    stopReactionsIfFalsy: true,
+};
+const str1: PropDef = {
+    type: String,
+    dry: true,
+    async: true,
+};
+const str2: PropDef = {
+    ...str1,
+    stopReactionsIfFalsy: true,
+};
+
+const obj1: PropDef = {
+    type: Object,
+    dry: true,
+    async: true,
+};
+
+const obj2: PropDef = {
+    ...obj1,
+    stopReactionsIfFalsy: true,
+};
+
+const obj3: PropDef = {
+    ...obj1,
+    parse: true,
+}
+
+const propDefMap: PropDefMap<CC> = {
+    copy: bool2,
+    from: str2,
+    noshadow: bool1,
+    templateToClone: obj2,
+    stringProps: obj3,
+    boolProps: obj3,
+    numProps: obj3,
+}
+const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
+xc.define(CC);
+declare global {
+    interface HTMLElementTagNameMap {
+        "c-c": CC,
+    }
+}
+
+export class CarbonCopy extends CC{
+    static is = 'carbon-copy';
+}
+
+xc.define(CarbonCopy);
+declare global {
+    interface HTMLElementTagNameMap {
+        "carbon-copy": CarbonCopy,
+    }
+}

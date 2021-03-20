@@ -14,10 +14,28 @@
     "xtal-element": "0.0.367"
   },
   "devDependencies": {
+    "@skypack/package-check": "0.2.2",
     "xtal-test": "0.0.50"
   },
+  "files": [
+    "*-c-c.*",
+    "types.d.ts"
+  ],
+  "typings": "types.d.ts",
+  "exports": {
+    ".": "./c-c.js",
+    "./c-c.js": "./c-c.js",
+    "./b-c-c.js": "./b-c-c.js"
+  },
+  "keywords": [
+    "webcomponents",
+    "web_components",
+    "codeless_web_components",
+    "templates"
+  ],
   "scripts": {
     "serve": "node node_modules/xtal-test/serve.js",
+    "package-check": "package-check",
     "doc": "wca analyze *c-c.js --outFile custom-elements.json"
   }
 }

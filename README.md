@@ -131,7 +131,7 @@ Example:
 
 Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahrus/pass-down) [other](https://github.com/bahrus/p-et-alia) [declarative](https://github.com/bahrus/xtal-decor) vocabulary libraries.
 
-### Adding Object Properties [TODO]
+<!--### Adding Object Properties [TODO]
 
 ```html
 <template id="beautiful" data-obj-props="d,e">
@@ -145,5 +145,21 @@ Object properties also observe attribute changes with the same name as the prope
 
 If you set the attribute value for an object property, it will assume the string is JSON (surrounded by single quotes), and will parse it.
 
-Changes to object properties fire events with the name "[name of prop]-changed".
+Changes to object properties fire events with the name "[name of prop]-changed".-->
+
+## Viewing Your Element Locally
+
+1.  Install node.
+2.  Clone or for fork this git repo.
+3.  In a command prompt from the folder of this git repo:
+
+```
+$ npm run serve
+```
+
+4.  Open browser to http://localhost/demo.
+
+
+
+
 
