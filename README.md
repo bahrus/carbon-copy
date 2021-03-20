@@ -15,7 +15,7 @@ c-c size:
 [Full Screen Demo](https://rawgit.com/bahrus/carbon-copy/master/demo/index.html)
 
 
-Copy a template inside a DOM node. 
+Copy a template  inside a DOM node. 
 
 ## b-c-c
 
@@ -53,6 +53,10 @@ By default, b-c-c will copy in the referenced template into a Shadow DOM snippet
 In the meantime / in addiction, b-c-c supports two additional properties for adjusting the content dynamically:
 
 If toBeTransformed/to-be-transformed property/attribute is set, then b-c-c won't append the clone, until a trans-render context object is passed in to property trContext.
+
+## Templatize a materialized DOM element
+
+b-c-c can not only be used to instantiate a template (repeatedly), but also an already materialized DOM element.  It does this by create a template copy of that DOM element first, and then cloning.  Subsequent copies from the same DOM element will derive from the template copy (so if the DOM element mutates, copies won't see that).
 
 
 ## Codeless Web Components [TODO]

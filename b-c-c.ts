@@ -2,6 +2,7 @@ import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {RenderContext} from 'trans-render/lib/types.d.js';
 
+const DOMToTemplateMap = new WeakMap<HTMLElement, HTMLTemplateElement>();
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
 * @element b-c-c
@@ -46,7 +47,17 @@ export const linkTemplateToClone = ({copy, from, self}: BCC) => {
 };
 
 export const linkClonedTemplate = ({templateToClone, self}: BCC) => {
-    self.clonedTemplate = templateToClone!.content.cloneNode(true) as DocumentFragment;
+    let realTemplateToClone = templateToClone;
+    if(templateToClone!.localName !== 'template'){
+        if(!DOMToTemplateMap.has(templateToClone!)){
+            const newTemplate = document.createElement('template');
+            const aTemplateToClone = templateToClone! as any;
+            newTemplate.innerHTML = aTemplateToClone.getInnerHTML ? aTemplateToClone.getInnerHTML({includeShadowRoots: true}) : templateToClone!.innerHTML;
+            DOMToTemplateMap.set(templateToClone!, newTemplate);
+        }
+        realTemplateToClone = DOMToTemplateMap.get(templateToClone!);
+    }
+    self.clonedTemplate = realTemplateToClone!.content.cloneNode(true) as DocumentFragment;
 }
 
 export const onClonedTemplate = ({clonedTemplate, toBeTransformed, trContext: tr, self}: BCC) => {

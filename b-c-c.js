@@ -1,5 +1,6 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
 import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
+const DOMToTemplateMap = new WeakMap();
 /**
 * Web component that allows basic copying of templates inside Shadow DOM (by default).
 * @element b-c-c
@@ -34,7 +35,17 @@ export const linkTemplateToClone = ({ copy, from, self }) => {
     }
 };
 export const linkClonedTemplate = ({ templateToClone, self }) => {
-    self.clonedTemplate = templateToClone.content.cloneNode(true);
+    let realTemplateToClone = templateToClone;
+    if (templateToClone.localName !== 'template') {
+        if (!DOMToTemplateMap.has(templateToClone)) {
+            const newTemplate = document.createElement('template');
+            const aTemplateToClone = templateToClone;
+            newTemplate.innerHTML = aTemplateToClone.getInnerHTML ? aTemplateToClone.getInnerHTML({ includeShadowRoots: true }) : templateToClone.innerHTML;
+            DOMToTemplateMap.set(templateToClone, newTemplate);
+        }
+        realTemplateToClone = DOMToTemplateMap.get(templateToClone);
+    }
+    self.clonedTemplate = realTemplateToClone.content.cloneNode(true);
 };
 export const onClonedTemplate = ({ clonedTemplate, toBeTransformed, trContext: tr, self }) => {
     let target = self;
