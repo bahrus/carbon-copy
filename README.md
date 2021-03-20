@@ -62,7 +62,7 @@ b-c-c can not only be used to instantiate a template (repeatedly), but also an a
 
 ## Sample Markup of b-c-c
 
-<detail>
+<details>
     <summary>Markup</summary>
 
 ```html
@@ -214,6 +214,8 @@ b-c-c can not only be used to instantiate a template (repeatedly), but also an a
 </body>
 </html>
 ```
+
+</details>
 
 ## c-c -- Codeless Web Components
 
