@@ -97,7 +97,7 @@ Step 4.  Stare into the abyss.
 
 ### Adding string/numeric/bool properties to your declarative web component
 
-The template can specify a list of string properties to add to the automatically generated web component:
+The template can specify a list of primitive properties to add to the automatically generated web component:
 
 ```html
 <template id="pow">
@@ -115,6 +115,17 @@ These properties can be read via attributes on the "c-c-pow" element instances (
 ### Bind to the properties
 
 c-c (or carbon-copy) supports binding to the UI using Github's [Template-Parts library](https://github.com/github/template-parts/).
+
+Example:
+
+```html
+<template id=hello-world>
+    <div>Hello, {{place}}</div>
+</template>
+<c-c copy from="/hello-world" string-props='["place"]'></c-c>
+
+<hello-world place="mars"></hello-world>
+```
 
 ### Attaching event handlers
 
