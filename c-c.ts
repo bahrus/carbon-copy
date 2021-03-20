@@ -1,7 +1,7 @@
 import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element/lib/XtalCore.js';
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {TemplateInstance} from '@github/template-parts/lib/index.js';
-
+import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -41,24 +41,6 @@ export const linkTemplateToClone = ({copy, from, self}: CC) => {
 export const linkClonedTemplate = ({templateToClone, self}: CC) => {
     const ceName = getCEName(templateToClone!.id);
     const noshadow = self.noshadow;
-    class newClass extends HTMLElement{
-        static is = ceName;
-        connectedCallback(){
-            xc.hydrate(this, slicedPropDefs);
-            this.tpl = new TemplateInstance(templateToClone!, this)
-            const clone = templateToClone!.content.cloneNode(true);
-            if(noshadow){
-                this.appendChild(this.tpl);
-            }else{
-                const shadowRoot = this.attachShadow({mode: 'open'});
-                shadowRoot.appendChild(this.tpl);
-            }
-        }
-        onPropChange(){
-            this.tpl!.update(this);
-        }
-        tpl: TemplateInstance | undefined;
-    }
     const propDefMap: PropDefMap<any> = {};
     const baseProp: PropDef = {
         async: true,
@@ -93,6 +75,29 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
         }        
     }    
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+    class newClass extends HTMLElement{
+        static is = ceName;
+        static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
+        attributeChangedCallback(name: string, oldValue: string, newValue: string){
+            passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
+        }
+        connectedCallback(){
+            xc.hydrate(this, slicedPropDefs);
+            this.tpl = new TemplateInstance(templateToClone!, this)
+            const clone = templateToClone!.content.cloneNode(true);
+            if(noshadow){
+                this.appendChild(this.tpl);
+            }else{
+                const shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(this.tpl);
+            }
+        }
+        onPropChange(){
+            this.tpl!.update(this);
+        }
+        tpl: TemplateInstance | undefined;
+    }
+
     xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 }

@@ -283,6 +283,10 @@ Example:
 <hello-world place="mars"></hello-world>
 ```
 
+Results in displaying "Hello mars".
+
+The value of place can be manipulated either via the attribute value or the property value.  Lisp-case/camelCase is used for attributes/properties.
+
 [Demo](https://jsfiddle.net/bahrus/t0n9eLuo/4/)
 
 ### Attaching event handlers

@@ -1,6 +1,7 @@
 import { xc } from 'xtal-element/lib/XtalCore.js';
 import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
 import { TemplateInstance } from '@github/template-parts/lib/index.js';
+import { passAttrToProp } from 'xtal-element/lib/passAttrToProp.js';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -30,24 +31,6 @@ export const linkTemplateToClone = ({ copy, from, self }) => {
 export const linkClonedTemplate = ({ templateToClone, self }) => {
     const ceName = getCEName(templateToClone.id);
     const noshadow = self.noshadow;
-    class newClass extends HTMLElement {
-        connectedCallback() {
-            xc.hydrate(this, slicedPropDefs);
-            this.tpl = new TemplateInstance(templateToClone, this);
-            const clone = templateToClone.content.cloneNode(true);
-            if (noshadow) {
-                this.appendChild(this.tpl);
-            }
-            else {
-                const shadowRoot = this.attachShadow({ mode: 'open' });
-                shadowRoot.appendChild(this.tpl);
-            }
-        }
-        onPropChange() {
-            this.tpl.update(this);
-        }
-    }
-    newClass.is = ceName;
     const propDefMap = {};
     const baseProp = {
         async: true,
@@ -82,6 +65,28 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
         }
     }
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
+    class newClass extends HTMLElement {
+        attributeChangedCallback(name, oldValue, newValue) {
+            passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
+        }
+        connectedCallback() {
+            xc.hydrate(this, slicedPropDefs);
+            this.tpl = new TemplateInstance(templateToClone, this);
+            const clone = templateToClone.content.cloneNode(true);
+            if (noshadow) {
+                this.appendChild(this.tpl);
+            }
+            else {
+                const shadowRoot = this.attachShadow({ mode: 'open' });
+                shadowRoot.appendChild(this.tpl);
+            }
+        }
+        onPropChange() {
+            this.tpl.update(this);
+        }
+    }
+    newClass.is = ceName;
+    newClass.observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
     xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 };
