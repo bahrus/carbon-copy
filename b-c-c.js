@@ -18,7 +18,7 @@ export class BCC extends HTMLElement {
     //  */
     // morphInto: string | undefined;
     connectedCallback() {
-        xc.hydrate(this, slicedPropDefs);
+        xc.mergeProps(this, slicedPropDefs);
     }
     onPropChange(name, propDef, newVal) {
         this.reactor.addToQueue(propDef, newVal);
@@ -112,6 +112,7 @@ const propDefMap = {
     trContext: obj1,
     templateToClone: obj2,
     clonedTemplate: obj2,
+    //morphInto: str1,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(BCC, slicedPropDefs, 'onPropChange');

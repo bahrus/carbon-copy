@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "@github/template-parts": "0.3.2",
-    "xtal-element": "0.0.367"
+    "xtal-element": "0.0.391"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",

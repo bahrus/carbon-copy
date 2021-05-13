@@ -15,7 +15,7 @@ export class CC extends HTMLElement {
         this.reactor = new xc.Rx(this);
     }
     connectedCallback() {
-        xc.hydrate(this, slicedPropDefs);
+        xc.mergeProps(this, slicedPropDefs);
     }
     onPropChange(name, propDef, newVal) {
         this.reactor.addToQueue(propDef, newVal);
@@ -70,7 +70,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
         connectedCallback() {
-            xc.hydrate(this, slicedPropDefs);
+            xc.mergeProps(this, slicedPropDefs);
             this.tpl = new TemplateInstance(templateToClone, this);
             const clone = templateToClone.content.cloneNode(true);
             if (noshadow) {

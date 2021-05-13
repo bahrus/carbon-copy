@@ -1,4 +1,4 @@
-import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element/lib/XtalCore.js';
+import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xtal-element/lib/XtalCore.js';
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {RenderContext} from 'trans-render/lib/types.d.js';
 
@@ -13,7 +13,7 @@ export class BCC extends HTMLElement implements ReactiveSurface{
 
     self = this;
     propActions = propActions;
-    reactor = new xc.Rx(this);
+    reactor: IReactor = new xc.Rx(this);
     noclear: boolean | undefined;
     from: string | undefined;
     copy: boolean | undefined;
@@ -29,7 +29,7 @@ export class BCC extends HTMLElement implements ReactiveSurface{
     // morphInto: string | undefined;
 
     connectedCallback(){
-        xc.hydrate(this, slicedPropDefs);
+        xc.mergeProps(this, slicedPropDefs);
     }
 
     onPropChange(name: string, propDef: PropDef, newVal: any){

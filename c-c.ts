@@ -1,4 +1,4 @@
-import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface} from 'xtal-element/lib/XtalCore.js';
+import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xtal-element/lib/XtalCore.js';
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {TemplateInstance} from '@github/template-parts/lib/index.js';
 import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
@@ -12,7 +12,7 @@ export class CC extends HTMLElement implements ReactiveSurface {
 
     self = this;
     propActions = propActions;
-    reactor = new xc.Rx(this);
+    reactor: IReactor = new xc.Rx(this);
     from: string | undefined;
     copy: boolean | undefined;
     noshadow: boolean | undefined;
@@ -24,7 +24,7 @@ export class CC extends HTMLElement implements ReactiveSurface {
     templateInstance: TemplateInstance | undefined;
 
     connectedCallback(){
-        xc.hydrate(this, slicedPropDefs);
+        xc.mergeProps(this, slicedPropDefs);
     }
     onPropChange(name: string, propDef: PropDef, newVal: any){
         this.reactor.addToQueue(propDef, newVal);
@@ -82,7 +82,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
         connectedCallback(){
-            xc.hydrate(this, slicedPropDefs);
+            xc.mergeProps(this, slicedPropDefs);
             this.tpl = new TemplateInstance(templateToClone!, this)
             const clone = templateToClone!.content.cloneNode(true);
             if(noshadow){
