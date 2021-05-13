@@ -39,13 +39,15 @@ Syntax:
 
 Note the use of the attribute "copy".  This attribute/property makes the tag more readable, but also acts as an "if" logical operator.  If attribute/property "copy" is present/true, only then will it clone the contents of the referenced template (based on id).  
 
-The copy property is reflect via the data-copy-is attribute ("true"/"false").  This attribute can be used for styling (soon to be replaced by a pseudostate).
+The copy property is reflected via the data-copy-is attribute ("true"/"false"),except on browsers that support custom pseudostate.  This attribute/state can be used for styling.
 
 In short, b-c-c can be used as a kind of basic "Reverse Polish Notation" version of Polymer's [dom-if](https://polymer-library.polymer-project.org/2.0/docs/devguide/templates#dom-if).
 
 If the attribute "from" changes, b-c-c will blow away what was there before, and clone in the new template.  [c-c, on the other hand, will preserve the existing inner (Shadow) DOM, and make it get hidden via display:none.  If the value of "/from" reverts back, that original DOM will be re-rendered (and the last template hidden).  c-c can be used, combined with templ-mount, to provide an alternative to Polymer's iron-pages, with no legacy dependencies. Subject to change]
 
 Templates can come from outside any shadow DOM if the value of "from" starts with a slash.  If "from" starts with "./", the search for the matching template is done within the shadow DOM of the (b-)c-c element (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
+
+At each stage, if a host web component is hosting the shadowDOM, and it has a property with the list case of the id, then that property is assumed to reference an HTMLTemplateElement.  This allows hosting web components to inject the property template dynamically.
 
 By default, b-c-c will copy in the referenced template into a Shadow DOM snippet.  However, if you prefer it copy straight into innerHTML, add attribute / property "noshadow."  Doing so will, of course, eliminate the slot mechanism from functioning.  Hopefully, if template instantiation becomes a thing, that will provide an alternative for this scenario, in terms of declarative support for dynamic content. 
 
