@@ -23,6 +23,7 @@ export class BCC extends HTMLElement implements ReactiveSurface{
     templateToClone: HTMLTemplateElement | undefined;
     clonedTemplate: DocumentFragment | undefined;
     _oldFrom: string | undefined;
+    _retries = 0;
     // /**
     //  * Replace the b-c-c tag with this tag
     //  */
@@ -43,6 +44,11 @@ export const linkTemplateToClone = ({copy, from, self}: BCC) => {
     if(referencedTemplate !== null) {
         self._oldFrom = from;
         self.templateToClone = referencedTemplate;
+    }else if(self._retries === 0){
+        self._retries++;
+        setTimeout(() => linkTemplateToClone(self), 50);
+    }else{
+        console.error('Cannot locate template: ' + from, self);
     }
 };
 
