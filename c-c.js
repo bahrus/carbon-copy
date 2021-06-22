@@ -23,8 +23,8 @@ export class CC extends HTMLElement {
 }
 CC.is = 'c-c';
 export const linkTemplateToClone = ({ copy, from, self }) => {
-    const ceName = from.split('/').pop();
-    if (ceName === undefined || customElements.get(ceName))
+    let ceName = from.split('/').pop();
+    if (ceName === undefined || customElements.get(getCEName(ceName)))
         return;
     const referencedTemplate = upShadowSearch(self, from);
     if (referencedTemplate !== null) {

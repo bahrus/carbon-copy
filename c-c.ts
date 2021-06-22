@@ -32,8 +32,8 @@ export class CC extends HTMLElement implements ReactiveSurface {
 }
 
 export const linkTemplateToClone = ({copy, from, self}: CC) => {
-    const ceName = from!.split('/').pop();
-    if(ceName === undefined || customElements.get(ceName)) return;
+    let ceName = from!.split('/').pop();
+    if(ceName === undefined || customElements.get(getCEName(ceName))) return;
     const referencedTemplate = upShadowSearch(self, from!) as HTMLTemplateElement;
     if(referencedTemplate !== null) {
         self.templateToClone = referencedTemplate;
