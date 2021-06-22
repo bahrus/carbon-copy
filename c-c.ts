@@ -13,14 +13,41 @@ export class CC extends HTMLElement implements ReactiveSurface {
     self = this;
     propActions = propActions;
     reactor: IReactor = new xc.Rx(this);
+    /**
+     * Id of template (with an optional context path in front of the id).  
+     * If "from" starts with "./", the search for the matching template is done within the shadow DOM of the c-c element 
+     * (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
+     */
     from: string | undefined;
+    /**
+     * Get template from previous sibling.
+     */
+    fromPrevSibling: boolean | undefined;
+    /**
+     * Must be set for anything to happen.
+     */
     copy: boolean | undefined;
+    /** No shadow DOM */
     noshadow: boolean | undefined;
+    /** @private */
     templateToClone: HTMLTemplateElement | undefined;
+    /** @private */
     clonedTemplate: DocumentFragment | undefined;
+    /**
+     * List of string properties to add to web component.
+     */
     stringProps: string[] | undefined;
+     /**
+     * List of boolean properties to add to web component.
+     */   
     boolProps: string[] | undefined;
+    /**
+     * List of numeric properties to add to web component.
+     */
     numProps: string[] | undefined;
+    /**
+     * @private
+     */
     templateInstance: TemplateInstance | undefined;
 
     connectedCallback(){
@@ -38,6 +65,10 @@ export const linkTemplateToClone = ({copy, from, self}: CC) => {
     if(referencedTemplate !== null) {
         self.templateToClone = referencedTemplate;
     }
+};
+
+export const linkTemplateToCloneFromPrevSibling = ({copy, fromPrevSibling, self}: CC) => {
+    self.templateToClone = self.previousElementSibling as HTMLTemplateElement;
 };
 
 export const linkClonedTemplate = ({templateToClone, self}: CC) => {
@@ -107,6 +138,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
 const propActions = [
     linkTemplateToClone,
     linkClonedTemplate,
+    linkTemplateToCloneFromPrevSibling,
 ] as PropAction[];
 
 function getCEName(templateId: string) {
@@ -147,7 +179,7 @@ const obj2: PropDef = {
 const obj3: PropDef = {
     ...obj1,
     parse: true,
-}
+};
 
 const propDefMap: PropDefMap<CC> = {
     copy: bool2,
@@ -157,7 +189,8 @@ const propDefMap: PropDefMap<CC> = {
     stringProps: obj3,
     boolProps: obj3,
     numProps: obj3,
-}
+    fromPrevSibling: bool2,
+};
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);

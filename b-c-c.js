@@ -7,13 +7,20 @@ const DOMToTemplateMap = new WeakMap();
 *
 */
 export class BCC extends HTMLElement {
-    constructor() {
-        super(...arguments);
-        this.self = this;
-        this.propActions = propActions;
-        this.reactor = new xc.Rx(this);
-        this._retries = 0;
-    }
+    static is = 'b-c-c';
+    self = this;
+    propActions = propActions;
+    reactor = new xc.Rx(this);
+    noclear;
+    from;
+    copy;
+    noshadow;
+    toBeTransformed;
+    trContext;
+    templateToClone;
+    clonedTemplate;
+    _oldFrom;
+    _retries = 0;
     // /**
     //  * Replace the b-c-c tag with this tag
     //  */
@@ -25,7 +32,6 @@ export class BCC extends HTMLElement {
         this.reactor.addToQueue(propDef, newVal);
     }
 }
-BCC.is = 'b-c-c';
 export const linkTemplateToClone = ({ copy, from, self }) => {
     if (from === self._oldFrom)
         return;

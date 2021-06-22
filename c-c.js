@@ -8,12 +8,46 @@ import { passAttrToProp } from 'xtal-element/lib/passAttrToProp.js';
 *
 */
 export class CC extends HTMLElement {
-    constructor() {
-        super(...arguments);
-        this.self = this;
-        this.propActions = propActions;
-        this.reactor = new xc.Rx(this);
-    }
+    static is = 'c-c';
+    self = this;
+    propActions = propActions;
+    reactor = new xc.Rx(this);
+    /**
+     * Id of template (with an optional context path in front of the id).
+     * If "from" starts with "./", the search for the matching template is done within the shadow DOM of the c-c element
+     * (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
+     */
+    from;
+    /**
+     * Get template from previous sibling.
+     */
+    fromPrevSibling;
+    /**
+     * Must be set for anything to happen.
+     */
+    copy;
+    /** No shadow DOM */
+    noshadow;
+    /** @private */
+    templateToClone;
+    /** @private */
+    clonedTemplate;
+    /**
+     * List of string properties to add to web component.
+     */
+    stringProps;
+    /**
+    * List of boolean properties to add to web component.
+    */
+    boolProps;
+    /**
+     * List of numeric properties to add to web component.
+     */
+    numProps;
+    /**
+     * @private
+     */
+    templateInstance;
     connectedCallback() {
         xc.mergeProps(this, slicedPropDefs);
     }
@@ -21,7 +55,6 @@ export class CC extends HTMLElement {
         this.reactor.addToQueue(propDef, newVal);
     }
 }
-CC.is = 'c-c';
 export const linkTemplateToClone = ({ copy, from, self }) => {
     let ceName = from.split('/').pop();
     if (ceName === undefined || customElements.get(getCEName(ceName)))
@@ -30,6 +63,9 @@ export const linkTemplateToClone = ({ copy, from, self }) => {
     if (referencedTemplate !== null) {
         self.templateToClone = referencedTemplate;
     }
+};
+export const linkTemplateToCloneFromPrevSibling = ({ copy, fromPrevSibling, self }) => {
+    self.templateToClone = self.previousElementSibling;
 };
 export const linkClonedTemplate = ({ templateToClone, self }) => {
     const ceName = getCEName(templateToClone.id);
@@ -69,6 +105,8 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
     }
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
     class newClass extends HTMLElement {
+        static is = ceName;
+        static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
         attributeChangedCallback(name, oldValue, newValue) {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
@@ -87,15 +125,15 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
         onPropChange() {
             this.tpl.update(this);
         }
+        tpl;
     }
-    newClass.is = ceName;
-    newClass.observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
     xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 };
 const propActions = [
     linkTemplateToClone,
     linkClonedTemplate,
+    linkTemplateToCloneFromPrevSibling,
 ];
 function getCEName(templateId) {
     if (templateId.indexOf('-') > -1)
@@ -141,11 +179,12 @@ const propDefMap = {
     stringProps: obj3,
     boolProps: obj3,
     numProps: obj3,
+    fromPrevSibling: bool2,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);
 export class CarbonCopy extends CC {
+    static is = 'carbon-copy';
 }
-CarbonCopy.is = 'carbon-copy';
 xc.define(CarbonCopy);
