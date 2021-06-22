@@ -1,185 +1,920 @@
 {
-  "version": 2,
-  "tags": [
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
     {
-      "name": "b-c-c",
-      "description": "Web component that allows basic copying of templates inside Shadow DOM (by default).",
-      "jsDoc": "/**\n* Web component that allows basic copying of templates inside Shadow DOM (by default).\n* @element b-c-c\n*\n*/",
-      "attributes": [
+      "kind": "javascript-module",
+      "path": "b-c-c.js",
+      "declarations": [
         {
-          "name": "disabled",
-          "description": "Any component that emits events should not do so if it is disabled.\r\nNote that this is not enforced, but the disabled property is made available.\r\nUsers of this mix-in should ensure not to call \"de\" if this property is set to true.",
-          "jsDoc": "/**\r\n         * Any component that emits events should not do so if it is disabled.\r\n         * Note that this is not enforced, but the disabled property is made available.\r\n         * Users of this mix-in should ensure not to call \"de\" if this property is set to true.\r\n         * @attr\r\n         */",
-          "type": "boolean"
+          "kind": "class",
+          "description": "Web component that allows basic copying of templates inside Shadow DOM (by default).",
+          "name": "BCC",
+          "members": [
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "propDef"
+                },
+                {
+                  "name": "newVal"
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "b-c-c",
+          "customElement": true
         },
         {
-          "name": "noclear",
-          "description": "Don't clear previous contents with each copy",
-          "jsDoc": "/**\n     * Don't clear previous contents with each copy\n     * @attr\n     */",
-          "type": "boolean"
+          "kind": "function",
+          "name": "linkTemplateToClone",
+          "parameters": [
+            {
+              "name": "{ copy, from, self }"
+            }
+          ]
         },
         {
-          "name": "noshadow",
-          "description": "Don't use shadow DOM",
-          "jsDoc": "/**\n    * Don't use shadow DOM\n    * @attr\n    */",
-          "type": "boolean | undefined"
+          "kind": "function",
+          "name": "linkClonedTemplate",
+          "parameters": [
+            {
+              "name": "{ templateToClone, self }"
+            }
+          ]
         },
         {
-          "name": "from",
-          "description": "Id of template to import.\nIf from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.\nIf from starts with \"../\" then the search is done one level up, etc.",
-          "jsDoc": "/**\n     * Id of template to import.\n     * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.\n     * If from starts with \"../\" then the search is done one level up, etc.\n     * @attr\n     */",
-          "type": "any"
-        },
-        {
-          "name": "copy",
-          "description": "Must be true / present for template copy to proceed.",
-          "jsDoc": "/**\n     * Must be true / present for template copy to proceed.\n     * @type{boolean}\n     * @attr\n     */",
-          "type": "boolean | undefined"
+          "kind": "function",
+          "name": "onClonedTemplate",
+          "parameters": [
+            {
+              "name": "{ clonedTemplate, toBeTransformed, trContext: tr, self }"
+            }
+          ]
         }
       ],
-      "properties": [
+      "exports": [
         {
-          "name": "val",
-          "type": "\"set\" | \"remove\""
+          "kind": "js",
+          "name": "BCC",
+          "declaration": {
+            "name": "BCC",
+            "module": "b-c-c.js"
+          }
         },
         {
-          "name": "disabled",
-          "description": "Any component that emits events should not do so if it is disabled.\r\nNote that this is not enforced, but the disabled property is made available.\r\nUsers of this mix-in should ensure not to call \"de\" if this property is set to true.",
-          "jsDoc": "/**\r\n         * Any component that emits events should not do so if it is disabled.\r\n         * Note that this is not enforced, but the disabled property is made available.\r\n         * Users of this mix-in should ensure not to call \"de\" if this property is set to true.\r\n         * @attr\r\n         */",
-          "type": "boolean"
+          "kind": "js",
+          "name": "linkTemplateToClone",
+          "declaration": {
+            "name": "linkTemplateToClone",
+            "module": "b-c-c.js"
+          }
         },
         {
-          "name": "evCount",
-          "description": "Tracks how many times each event type was called.",
-          "jsDoc": "/**\r\n         * Tracks how many times each event type was called.\r\n         */",
-          "type": "{ [key: string]: number; }"
+          "kind": "js",
+          "name": "linkClonedTemplate",
+          "declaration": {
+            "name": "linkClonedTemplate",
+            "module": "b-c-c.js"
+          }
         },
         {
-          "name": "asIs",
-          "type": "\"\" | \"-changed\""
-        },
-        {
-          "name": "noclear",
-          "description": "Don't clear previous contents with each copy",
-          "jsDoc": "/**\n     * Don't clear previous contents with each copy\n     * @attr\n     */",
-          "type": "boolean"
-        },
-        {
-          "name": "noshadow",
-          "description": "Don't use shadow DOM",
-          "jsDoc": "/**\n    * Don't use shadow DOM\n    * @attr\n    */",
-          "type": "boolean | undefined"
-        },
-        {
-          "name": "from",
-          "description": "Id of template to import.\nIf from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.\nIf from starts with \"../\" then the search is done one level up, etc.",
-          "jsDoc": "/**\n     * Id of template to import.\n     * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.\n     * If from starts with \"../\" then the search is done one level up, etc.\n     * @attr\n     */",
-          "type": "any"
-        },
-        {
-          "name": "copy",
-          "description": "Must be true / present for template copy to proceed.",
-          "jsDoc": "/**\n     * Must be true / present for template copy to proceed.\n     * @type{boolean}\n     * @attr\n     */",
-          "type": "boolean | undefined"
+          "kind": "js",
+          "name": "onClonedTemplate",
+          "declaration": {
+            "name": "onClonedTemplate",
+            "module": "b-c-c.js"
+          }
         }
-      ],
-      "events": [],
-      "slots": [],
-      "cssProperties": []
+      ]
     },
     {
-      "name": "c-c",
-      "description": "Dependency free web component that allows copying templates.",
-      "jsDoc": "/**\n*  Dependency free web component that allows copying templates.\n*  @element c-c\n*\n*/",
-      "attributes": [
+      "kind": "javascript-module",
+      "path": "b-c-c.ts",
+      "declarations": [
         {
-          "name": "disabled",
-          "description": "Any component that emits events should not do so if it is disabled.\r\nNote that this is not enforced, but the disabled property is made available.\r\nUsers of this mix-in should ensure not to call \"de\" if this property is set to true.",
-          "jsDoc": "/**\r\n         * Any component that emits events should not do so if it is disabled.\r\n         * Note that this is not enforced, but the disabled property is made available.\r\n         * Users of this mix-in should ensure not to call \"de\" if this property is set to true.\r\n         * @attr\r\n         */",
-          "type": "boolean"
+          "kind": "class",
+          "description": "Web component that allows basic copying of templates inside Shadow DOM (by default).",
+          "name": "BCC",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "b-c-c"
+            },
+            {
+              "kind": "field",
+              "name": "self"
+            },
+            {
+              "kind": "field",
+              "name": "propActions"
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "noclear",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "from",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "copy",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "noshadow",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "toBeTransformed",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "trContext",
+              "type": {
+                "text": "RenderContext | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateToClone",
+              "type": {
+                "text": "HTMLTemplateElement | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "clonedTemplate",
+              "type": {
+                "text": "DocumentFragment | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_oldFrom",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_retries",
+              "default": "0"
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "newVal",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "b-c-c",
+          "customElement": true
         },
         {
-          "name": "noclear",
-          "description": "Don't clear previous contents with each copy",
-          "jsDoc": "/**\r\n     * Don't clear previous contents with each copy\r\n     * @attr\r\n     */",
-          "type": "boolean"
+          "kind": "function",
+          "name": "linkTemplateToClone",
+          "parameters": [
+            {
+              "name": "{copy, from, self}",
+              "type": {
+                "text": "BCC"
+              }
+            }
+          ]
         },
         {
-          "name": "noshadow",
-          "description": "Don't use shadow DOM",
-          "jsDoc": "/**\r\n    * Don't use shadow DOM \r\n    * @attr\r\n    */",
-          "type": "boolean"
+          "kind": "function",
+          "name": "linkClonedTemplate",
+          "parameters": [
+            {
+              "name": "{templateToClone, self}",
+              "type": {
+                "text": "BCC"
+              }
+            }
+          ]
         },
         {
-          "name": "from",
-          "description": "Id of template to import.\r\nIf from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  \r\nIf from starts with \"../\" then the search is done one level up, etc.",
-          "jsDoc": "/**\r\n     * Id of template to import.\r\n     * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  \r\n     * If from starts with \"../\" then the search is done one level up, etc.\r\n     * @attr\r\n     */",
-          "type": "string"
-        },
-        {
-          "name": "copy",
-          "description": "Must be true / present for template copy to proceed.",
-          "jsDoc": "/**\r\n     * Must be true / present for template copy to proceed.\r\n     * @type{boolean}\r\n     * @attr\r\n     */",
-          "type": "boolean"
+          "kind": "function",
+          "name": "onClonedTemplate",
+          "parameters": [
+            {
+              "name": "{clonedTemplate, toBeTransformed, trContext: tr, self}",
+              "type": {
+                "text": "BCC"
+              }
+            }
+          ]
         }
       ],
-      "properties": [
+      "exports": [
         {
-          "name": "val",
-          "type": "\"set\" | \"remove\""
+          "kind": "js",
+          "name": "BCC",
+          "declaration": {
+            "name": "BCC",
+            "module": "b-c-c.ts"
+          }
         },
         {
-          "name": "disabled",
-          "description": "Any component that emits events should not do so if it is disabled.\r\nNote that this is not enforced, but the disabled property is made available.\r\nUsers of this mix-in should ensure not to call \"de\" if this property is set to true.",
-          "jsDoc": "/**\r\n         * Any component that emits events should not do so if it is disabled.\r\n         * Note that this is not enforced, but the disabled property is made available.\r\n         * Users of this mix-in should ensure not to call \"de\" if this property is set to true.\r\n         * @attr\r\n         */",
-          "type": "boolean"
+          "kind": "js",
+          "name": "linkTemplateToClone",
+          "declaration": {
+            "name": "linkTemplateToClone",
+            "module": "b-c-c.ts"
+          }
         },
         {
-          "name": "evCount",
-          "description": "Tracks how many times each event type was called.",
-          "jsDoc": "/**\r\n         * Tracks how many times each event type was called.\r\n         */",
-          "type": "{ [key: string]: number; }"
+          "kind": "js",
+          "name": "linkClonedTemplate",
+          "declaration": {
+            "name": "linkClonedTemplate",
+            "module": "b-c-c.ts"
+          }
         },
         {
-          "name": "asIs",
-          "type": "\"\" | \"-changed\""
+          "kind": "js",
+          "name": "onClonedTemplate",
+          "declaration": {
+            "name": "onClonedTemplate",
+            "module": "b-c-c.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "c-c.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Codeless web component generator",
+          "name": "CC",
+          "members": [
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "name"
+                },
+                {
+                  "name": "propDef"
+                },
+                {
+                  "name": "newVal"
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "c-c",
+          "customElement": true
         },
         {
-          "name": "noclear",
-          "description": "Don't clear previous contents with each copy",
-          "jsDoc": "/**\r\n     * Don't clear previous contents with each copy\r\n     * @attr\r\n     */",
-          "type": "boolean"
+          "kind": "function",
+          "name": "linkTemplateToClone",
+          "parameters": [
+            {
+              "name": "{ copy, from, self }"
+            }
+          ]
         },
         {
-          "name": "noshadow",
-          "description": "Don't use shadow DOM",
-          "jsDoc": "/**\r\n    * Don't use shadow DOM \r\n    * @attr\r\n    */",
-          "type": "boolean"
+          "kind": "function",
+          "name": "linkClonedTemplate",
+          "parameters": [
+            {
+              "name": "{ templateToClone, self }"
+            }
+          ]
         },
         {
-          "name": "from",
-          "description": "Id of template to import.\r\nIf from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  \r\nIf from starts with \"../\" then the search is done one level up, etc.",
-          "jsDoc": "/**\r\n     * Id of template to import.\r\n     * If from has no slash, the search for the matching template is done within the shadow DOM of the c-c element.  \r\n     * If from starts with \"../\" then the search is done one level up, etc.\r\n     * @attr\r\n     */",
-          "type": "string"
-        },
-        {
-          "name": "copy",
-          "description": "Must be true / present for template copy to proceed.",
-          "jsDoc": "/**\r\n     * Must be true / present for template copy to proceed.\r\n     * @type{boolean}\r\n     * @attr\r\n     */",
-          "type": "boolean"
-        },
-        {
-          "name": "strPropsAttr",
-          "type": "any"
-        },
-        {
-          "name": "objPropsAttr",
-          "type": "any"
+          "kind": "class",
+          "description": "",
+          "name": "CarbonCopy",
+          "superclass": {
+            "name": "CC"
+          },
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "c-c",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "self",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "propActions",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "from",
+              "type": {
+                "text": "string | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "copy",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "noshadow",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateToClone",
+              "type": {
+                "text": "HTMLTemplateElement | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "clonedTemplate",
+              "type": {
+                "text": "DocumentFragment | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "stringProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "boolProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "numProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateInstance",
+              "type": {
+                "text": "TemplateInstance | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "newVal",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            }
+          ]
         }
       ],
-      "events": [],
-      "slots": [],
-      "cssProperties": []
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CC",
+          "declaration": {
+            "name": "CC",
+            "module": "c-c.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "linkTemplateToClone",
+          "declaration": {
+            "name": "linkTemplateToClone",
+            "module": "c-c.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "linkClonedTemplate",
+          "declaration": {
+            "name": "linkClonedTemplate",
+            "module": "c-c.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CarbonCopy",
+          "declaration": {
+            "name": "CarbonCopy",
+            "module": "c-c.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "c-c.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Codeless web component generator",
+          "name": "CC",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "c-c"
+            },
+            {
+              "kind": "field",
+              "name": "self"
+            },
+            {
+              "kind": "field",
+              "name": "propActions"
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "from",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "copy",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "noshadow",
+              "type": {
+                "text": "boolean | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateToClone",
+              "type": {
+                "text": "HTMLTemplateElement | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "clonedTemplate",
+              "type": {
+                "text": "DocumentFragment | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "stringProps",
+              "type": {
+                "text": "string[] | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "boolProps",
+              "type": {
+                "text": "string[] | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "numProps",
+              "type": {
+                "text": "string[] | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateInstance",
+              "type": {
+                "text": "TemplateInstance | undefined"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "newVal",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "c-c",
+          "customElement": true
+        },
+        {
+          "kind": "function",
+          "name": "linkTemplateToClone",
+          "parameters": [
+            {
+              "name": "{copy, from, self}",
+              "type": {
+                "text": "CC"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "linkClonedTemplate",
+          "parameters": [
+            {
+              "name": "{templateToClone, self}",
+              "type": {
+                "text": "CC"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CarbonCopy",
+          "members": [
+            {
+              "kind": "field",
+              "name": "is",
+              "static": true,
+              "default": "carbon-copy"
+            },
+            {
+              "kind": "field",
+              "name": "self",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "propActions",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "reactor",
+              "type": {
+                "text": "IReactor"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "from",
+              "type": {
+                "text": "string | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "copy",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "noshadow",
+              "type": {
+                "text": "boolean | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateToClone",
+              "type": {
+                "text": "HTMLTemplateElement | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "clonedTemplate",
+              "type": {
+                "text": "DocumentFragment | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "stringProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "boolProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "numProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "templateInstance",
+              "type": {
+                "text": "TemplateInstance | undefined"
+              },
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "onPropChange",
+              "parameters": [
+                {
+                  "name": "name",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "propDef",
+                  "type": {
+                    "text": "PropDef"
+                  }
+                },
+                {
+                  "name": "newVal",
+                  "type": {
+                    "text": "any"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "CC"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CC",
+          "declaration": {
+            "name": "CC",
+            "module": "c-c.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "linkTemplateToClone",
+          "declaration": {
+            "name": "linkTemplateToClone",
+            "module": "c-c.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "linkClonedTemplate",
+          "declaration": {
+            "name": "linkClonedTemplate",
+            "module": "c-c.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "CarbonCopy",
+          "declaration": {
+            "name": "CarbonCopy",
+            "module": "c-c.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "types.d.ts",
+      "declarations": [],
+      "exports": []
     }
   ]
 }
