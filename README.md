@@ -237,7 +237,16 @@ Step 1.  Define a template:
 Step 2.  Register the web component
 
 ```html
-<c-c from="/hello-world"></c-c>
+<c-c copy from="/hello-world"></c-c>
+```
+
+Or, if the c-c element comes right after the template element:
+
+```html
+<template id="hello-world">
+    Hello, world
+</template>
+<c-c copy from-prev-sibling></c-c>
 ```
 
 Step 3.  Add your web component to the page
