@@ -126,7 +126,8 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             }
         }
         onPropChange(){
-            this.tpl!.update(this);
+            if(this.tpl === undefined) return;
+            this.tpl.update(this);
         }
         tpl: TemplateInstance | undefined;
     }

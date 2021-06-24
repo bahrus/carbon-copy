@@ -123,6 +123,8 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
             }
         }
         onPropChange() {
+            if (this.tpl === undefined)
+                return;
             this.tpl.update(this);
         }
         tpl;
