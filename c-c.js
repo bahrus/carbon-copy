@@ -45,6 +45,10 @@ export class CC extends HTMLElement {
      */
     numProps;
     /**
+     * List of object properties to add to web component.
+     */
+    objProps;
+    /**
      * @private
      */
     templateInstance;
@@ -101,6 +105,14 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 type: Number,
             };
             propDefMap[numProp] = prop;
+        }
+    }
+    if (self.objProps !== undefined) {
+        for (const objProp of self.objProps) {
+            const prop = {
+                ...baseProp,
+                type: Object,
+            };
         }
     }
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
@@ -181,6 +193,7 @@ const propDefMap = {
     stringProps: obj3,
     boolProps: obj3,
     numProps: obj3,
+    objProps: obj3,
     fromPrevSibling: bool2,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);

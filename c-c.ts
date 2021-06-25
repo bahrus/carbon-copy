@@ -46,6 +46,10 @@ export class CC extends HTMLElement implements ReactiveSurface {
      */
     numProps: string[] | undefined;
     /**
+     * List of object properties to add to web component.
+     */
+    objProps: string[] | undefined;
+    /**
      * @private
      */
     templateInstance: TemplateInstance | undefined;
@@ -106,7 +110,15 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             };
             propDefMap[numProp] = prop;
         }        
-    }    
+    }
+    if(self.objProps !== undefined){
+        for(const objProp of self.objProps){
+            const prop: PropDef = {
+                ...baseProp,
+                type: Object,
+            };
+        }
+    } 
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
     class newClass extends HTMLElement{
         static is = ceName;
@@ -190,6 +202,7 @@ const propDefMap: PropDefMap<CC> = {
     stringProps: obj3,
     boolProps: obj3,
     numProps: obj3,
+    objProps: obj3,
     fromPrevSibling: bool2,
 };
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
