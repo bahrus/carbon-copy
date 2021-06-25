@@ -117,6 +117,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 ...baseProp,
                 type: Object,
             };
+            propDefMap[objProp] = prop;
         }
     } 
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
