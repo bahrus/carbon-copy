@@ -2,6 +2,7 @@ import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xt
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {TemplateInstance} from '@github/template-parts/lib/index.js';
 import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
+import { Rx } from '../xtal-element/lib/Rx';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -120,9 +121,11 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
         }
     } 
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
-    class newClass extends HTMLElement{
+    class newClass extends HTMLElement implements ReactiveSurface{
         static is = ceName;
         static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
+        propActions = [] as PropAction[];
+        reactor: IReactor = new Rx(self);
         attributeChangedCallback(name: string, oldValue: string, newValue: string){
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
@@ -137,7 +140,8 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 shadowRoot.appendChild(this.tpl);
             }
         }
-        onPropChange(){
+        onPropChange(n: string, prop: PropDef, nv: any){
+            this.reactor.addToQueue(prop, nv);
             if(this.tpl === undefined) return;
             this.tpl.update(this);
         }

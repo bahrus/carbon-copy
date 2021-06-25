@@ -2,6 +2,7 @@ import { xc } from 'xtal-element/lib/XtalCore.js';
 import { upShadowSearch } from 'trans-render/lib/upShadowSearch.js';
 import { TemplateInstance } from '@github/template-parts/lib/index.js';
 import { passAttrToProp } from 'xtal-element/lib/passAttrToProp.js';
+import { Rx } from '../xtal-element/lib/Rx';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -119,6 +120,8 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
     class newClass extends HTMLElement {
         static is = ceName;
         static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
+        propActions = [];
+        reactor = new Rx(self);
         attributeChangedCallback(name, oldValue, newValue) {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
@@ -134,7 +137,8 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 shadowRoot.appendChild(this.tpl);
             }
         }
-        onPropChange() {
+        onPropChange(n, prop, nv) {
+            this.reactor.addToQueue(prop, nv);
             if (this.tpl === undefined)
                 return;
             this.tpl.update(this);
