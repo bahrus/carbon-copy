@@ -2,7 +2,6 @@ import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xt
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {TemplateInstance} from '@github/template-parts/lib/index.js';
 import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
-import { Rx } from '../xtal-element/lib/Rx';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -125,7 +124,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
         static is = ceName;
         static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
         propActions = [] as PropAction[];
-        reactor: IReactor = new Rx(self);
+        reactor: IReactor = new xc.Rx(self);
         attributeChangedCallback(name: string, oldValue: string, newValue: string){
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
