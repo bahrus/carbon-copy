@@ -116,6 +116,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             const prop: PropDef = {
                 ...baseProp,
                 type: Object,
+                reflect: false,
             };
             propDefMap[objProp] = prop;
         }
