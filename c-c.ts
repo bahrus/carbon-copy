@@ -131,9 +131,9 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
         connectedCallback(){
+            if(this.tpl !== undefined) return; //how?!!!
             xc.mergeProps(this, slicedPropDefs);
             this.tpl = new TemplateInstance(templateToClone!, this)
-            const clone = templateToClone!.content.cloneNode(true);
             if(noshadow){
                 this.appendChild(this.tpl);
             }else{
