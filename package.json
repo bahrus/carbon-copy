@@ -11,12 +11,12 @@
   "license": "MIT",
   "dependencies": {
     "templ-arts": "0.0.0",
-    "xtal-element": "0.0.402"
+    "xtal-element": "0.0.411"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
     "xtal-test": "0.0.51",
-    "@custom-elements-manifest/analyzer": "0.3.5"
+    "@custom-elements-manifest/analyzer": "0.4.10"
   },
   "files": [
     "*-c-c.*",
