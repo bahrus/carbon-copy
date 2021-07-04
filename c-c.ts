@@ -1,6 +1,6 @@
 import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xtal-element/lib/XtalCore.js';
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
-import {TemplateInstance} from '@github/template-parts/lib/index.js';
+import {TemplateInstance} from 'templ-arts/lib/index.js';
 import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
 /**
 *  Codeless web component generator
