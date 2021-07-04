@@ -1,6 +1,6 @@
 {
   "name": "carbon-copy",
-  "version": "0.1.66",
+  "version": "0.1.67",
   "description": "Copy a template inside a DOM node",
   "type": "module",
   "main": "c-c.js",
