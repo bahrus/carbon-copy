@@ -10,7 +10,7 @@
   "author": "bahrus <anderson.bruce.b@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "templ-arts": "0.3.2",
+    "templ-arts": "0.0.0",
     "xtal-element": "0.0.402"
   },
   "devDependencies": {

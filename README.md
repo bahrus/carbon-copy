@@ -280,7 +280,7 @@ These properties can be read via attributes on the "c-c-pow" element instances (
 
 ### Bind to the properties
 
-c-c (or carbon-copy) supports binding to the UI using Github's [Template-Parts library](https://github.com/github/template-parts/).
+c-c (or carbon-copy) supports binding to the UI using an [extension](https://www.npmjs.com/package/templ-arts) of Github's [Template-Parts library](https://github.com/github/template-parts/).
 
 Example:
 
