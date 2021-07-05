@@ -14,20 +14,29 @@
             {
               "kind": "field",
               "name": "is",
+              "type": {
+                "text": "string"
+              },
               "static": true,
-              "default": "b-c-c"
+              "default": "'b-c-c'"
             },
             {
               "kind": "field",
-              "name": "self"
+              "name": "self",
+              "default": "this"
             },
             {
               "kind": "field",
-              "name": "propActions"
+              "name": "propActions",
+              "default": "[\n    linkTemplateToClone,\n    linkClonedTemplate,\n    onClonedTemplate\n]",
+              "type": {
+                "text": "array"
+              }
             },
             {
               "kind": "field",
-              "name": "reactor"
+              "name": "reactor",
+              "default": "new xc.Rx(this)"
             },
             {
               "kind": "field",
@@ -68,6 +77,9 @@
             {
               "kind": "field",
               "name": "_retries",
+              "type": {
+                "text": "number"
+              },
               "default": "0"
             },
             {
@@ -167,23 +179,29 @@
             {
               "kind": "field",
               "name": "is",
+              "type": {
+                "text": "string"
+              },
               "static": true,
-              "default": "b-c-c"
+              "default": "'b-c-c'"
             },
             {
               "kind": "field",
-              "name": "self"
+              "name": "self",
+              "default": "this"
             },
             {
               "kind": "field",
-              "name": "propActions"
+              "name": "propActions",
+              "default": "[\r\n    linkTemplateToClone,\r\n    linkClonedTemplate,\r\n    onClonedTemplate\r\n]"
             },
             {
               "kind": "field",
               "name": "reactor",
               "type": {
                 "text": "IReactor"
-              }
+              },
+              "default": "new xc.Rx(this)"
             },
             {
               "kind": "field",
@@ -251,6 +269,9 @@
             {
               "kind": "field",
               "name": "_retries",
+              "type": {
+                "text": "number"
+              },
               "default": "0"
             },
             {
@@ -368,20 +389,29 @@
             {
               "kind": "field",
               "name": "is",
+              "type": {
+                "text": "string"
+              },
               "static": true,
-              "default": "c-c"
+              "default": "'c-c'"
             },
             {
               "kind": "field",
-              "name": "self"
+              "name": "self",
+              "default": "this"
             },
             {
               "kind": "field",
-              "name": "propActions"
+              "name": "propActions",
+              "default": "[\n    linkTemplateToClone,\n    linkClonedTemplate,\n    linkTemplateToCloneFromPrevSibling,\n]",
+              "type": {
+                "text": "array"
+              }
             },
             {
               "kind": "field",
-              "name": "reactor"
+              "name": "reactor",
+              "default": "new xc.Rx(this)"
             },
             {
               "kind": "field",
@@ -427,6 +457,11 @@
               "kind": "field",
               "name": "numProps",
               "description": "List of numeric properties to add to web component."
+            },
+            {
+              "kind": "field",
+              "name": "objProps",
+              "description": "List of object properties to add to web component."
             },
             {
               "kind": "field",
@@ -490,12 +525,20 @@
             {
               "kind": "field",
               "name": "is",
+              "type": {
+                "text": "string"
+              },
               "static": true,
-              "default": "carbon-copy"
+              "default": "'carbon-copy'",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
             },
             {
               "kind": "field",
               "name": "self",
+              "default": "this",
               "inheritedFrom": {
                 "name": "CC",
                 "module": "c-c.ts"
@@ -504,6 +547,7 @@
             {
               "kind": "field",
               "name": "propActions",
+              "default": "[\r\n    linkTemplateToClone,\r\n    linkClonedTemplate,\r\n    linkTemplateToCloneFromPrevSibling,\r\n]",
               "inheritedFrom": {
                 "name": "CC",
                 "module": "c-c.ts"
@@ -515,6 +559,7 @@
               "type": {
                 "text": "IReactor"
               },
+              "default": "new xc.Rx(this)",
               "inheritedFrom": {
                 "name": "CC",
                 "module": "c-c.ts"
@@ -630,6 +675,18 @@
             },
             {
               "kind": "field",
+              "name": "objProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "description": "List of object properties to add to web component.",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
               "name": "templateInstance",
               "type": {
                 "text": "TemplateInstance | undefined"
@@ -670,7 +727,8 @@
             }
           ],
           "superclass": {
-            "name": "CC"
+            "name": "CC",
+            "module": "c-c.js"
           }
         }
       ],
@@ -729,23 +787,29 @@
             {
               "kind": "field",
               "name": "is",
+              "type": {
+                "text": "string"
+              },
               "static": true,
-              "default": "c-c"
+              "default": "'c-c'"
             },
             {
               "kind": "field",
-              "name": "self"
+              "name": "self",
+              "default": "this"
             },
             {
               "kind": "field",
-              "name": "propActions"
+              "name": "propActions",
+              "default": "[\r\n    linkTemplateToClone,\r\n    linkClonedTemplate,\r\n    linkTemplateToCloneFromPrevSibling,\r\n]"
             },
             {
               "kind": "field",
               "name": "reactor",
               "type": {
                 "text": "IReactor"
-              }
+              },
+              "default": "new xc.Rx(this)"
             },
             {
               "kind": "field",
@@ -818,6 +882,14 @@
                 "text": "string[] | undefined"
               },
               "description": "List of numeric properties to add to web component."
+            },
+            {
+              "kind": "field",
+              "name": "objProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "description": "List of object properties to add to web component."
             },
             {
               "kind": "field",
@@ -902,12 +974,20 @@
             {
               "kind": "field",
               "name": "is",
+              "type": {
+                "text": "string"
+              },
               "static": true,
-              "default": "carbon-copy"
+              "default": "'carbon-copy'",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
             },
             {
               "kind": "field",
               "name": "self",
+              "default": "this",
               "inheritedFrom": {
                 "name": "CC",
                 "module": "c-c.ts"
@@ -916,6 +996,7 @@
             {
               "kind": "field",
               "name": "propActions",
+              "default": "[\r\n    linkTemplateToClone,\r\n    linkClonedTemplate,\r\n    linkTemplateToCloneFromPrevSibling,\r\n]",
               "inheritedFrom": {
                 "name": "CC",
                 "module": "c-c.ts"
@@ -927,6 +1008,7 @@
               "type": {
                 "text": "IReactor"
               },
+              "default": "new xc.Rx(this)",
               "inheritedFrom": {
                 "name": "CC",
                 "module": "c-c.ts"
@@ -1042,6 +1124,18 @@
             },
             {
               "kind": "field",
+              "name": "objProps",
+              "type": {
+                "text": "string[] | undefined"
+              },
+              "description": "List of object properties to add to web component.",
+              "inheritedFrom": {
+                "name": "CC",
+                "module": "c-c.ts"
+              }
+            },
+            {
+              "kind": "field",
               "name": "templateInstance",
               "type": {
                 "text": "TemplateInstance | undefined"
@@ -1082,7 +1176,8 @@
             }
           ],
           "superclass": {
-            "name": "CC"
+            "name": "CC",
+            "module": "c-c.ts"
           }
         }
       ],
