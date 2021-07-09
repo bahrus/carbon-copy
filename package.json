@@ -11,7 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "templ-arts": "0.0.6",
-    "xtal-element": "0.0.413"
+    "xtal-element": "0.0.413",
+    "trans-render": "0.0.291"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
