@@ -6,6 +6,7 @@ import { CCProps } from './types';
 /**
 *  Codeless web component generator
 *  @element c-c
+*  @tag c-c
 * 
 */
 export class CC extends HTMLElement implements ReactiveSurface {

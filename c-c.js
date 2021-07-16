@@ -5,6 +5,7 @@ import { passAttrToProp } from 'xtal-element/lib/passAttrToProp.js';
 /**
 *  Codeless web component generator
 *  @element c-c
+*  @tag c-c
 *
 */
 export class CC extends HTMLElement {
