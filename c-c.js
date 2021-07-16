@@ -13,42 +13,6 @@ export class CC extends HTMLElement {
     propActions = propActions;
     reactor = new xc.Rx(this);
     /**
-     * Id of template (with an optional context path in front of the id).
-     * If "from" starts with "./", the search for the matching template is done within the shadow DOM of the c-c element
-     * (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
-     */
-    from;
-    /**
-     * Get template from previous sibling.
-     */
-    fromPrevSibling;
-    /**
-     * Must be set for anything to happen.
-     */
-    copy;
-    /** No shadow DOM */
-    noshadow;
-    /** @private */
-    templateToClone;
-    /** @private */
-    clonedTemplate;
-    /**
-     * List of string properties to add to web component.
-     */
-    stringProps;
-    /**
-    * List of boolean properties to add to web component.
-    */
-    boolProps;
-    /**
-     * List of numeric properties to add to web component.
-     */
-    numProps;
-    /**
-     * List of object properties to add to web component.
-     */
-    objProps;
-    /**
      * @private
      */
     templateInstance;

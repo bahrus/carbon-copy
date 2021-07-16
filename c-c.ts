@@ -2,6 +2,7 @@ import {xc, PropAction, PropDef, PropDefMap, ReactiveSurface, IReactor} from 'xt
 import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {TemplateInstance} from 'templ-arts/lib/index.js';
 import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
+import { CCProps } from './types';
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -13,42 +14,8 @@ export class CC extends HTMLElement implements ReactiveSurface {
     self = this;
     propActions = propActions;
     reactor: IReactor = new xc.Rx(this);
-    /**
-     * Id of template (with an optional context path in front of the id).  
-     * If "from" starts with "./", the search for the matching template is done within the shadow DOM of the c-c element 
-     * (or outside any ShadowDOM if the (b-)c-c element is outside any ShadowDOM).  If from starts with "../" then the search is done one level up, etc.
-     */
-    from: string | undefined;
-    /**
-     * Get template from previous sibling.
-     */
-    fromPrevSibling: boolean | undefined;
-    /**
-     * Must be set for anything to happen.
-     */
-    copy: boolean | undefined;
-    /** No shadow DOM */
-    noshadow: boolean | undefined;
-    /** @private */
-    templateToClone: HTMLTemplateElement | undefined;
-    /** @private */
-    clonedTemplate: DocumentFragment | undefined;
-    /**
-     * List of string properties to add to web component.
-     */
-    stringProps: string[] | undefined;
-     /**
-     * List of boolean properties to add to web component.
-     */   
-    boolProps: string[] | undefined;
-    /**
-     * List of numeric properties to add to web component.
-     */
-    numProps: string[] | undefined;
-    /**
-     * List of object properties to add to web component.
-     */
-    objProps: string[] | undefined;
+
+
     /**
      * @private
      */
@@ -152,6 +119,8 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
     xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 }
+
+export interface CC extends CCProps{}
 
 const propActions = [
     linkTemplateToClone,
