@@ -183,6 +183,16 @@ const propDefMap: PropDefMap<CC> = {
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);
+
+export function define(id: string, template: HTMLTemplateElement, props: CCProps){
+    const cc = document.createElement('c-c') as CCProps;
+    template.id = id;
+    Object.assign(cc, {
+        ...props,
+        templateToClone: template
+    } as CCProps);
+    document.head.appendChild(cc);
+}
 declare global {
     interface HTMLElementTagNameMap {
         "c-c": CC,

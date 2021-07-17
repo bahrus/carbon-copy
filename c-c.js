@@ -170,6 +170,15 @@ const propDefMap = {
 const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);
+export function define(id, template, props) {
+    const cc = document.createElement('c-c');
+    template.id = id;
+    Object.assign(cc, {
+        ...props,
+        templateToClone: template
+    });
+    document.head.appendChild(cc);
+}
 export class CarbonCopy extends CC {
     static is = 'carbon-copy';
 }
