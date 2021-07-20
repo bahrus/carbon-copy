@@ -10,7 +10,7 @@
     <template id=hello-world>
         <div>Hello, {{place}}</div>
     </template>
-    <c-c copy from="/hello-world" string-props='["place"]'></c-c>
+    <c-c copy from="/hello-world" string-props='["place=world"]'></c-c>
 
     <hello-world place="Mars"></hello-world>
     <script type=importmap>
@@ -18,7 +18,7 @@
             "imports":{
                 "xtal-element/": "../node_modules/xtal-element/",
                 "trans-render/": "../node_modules/trans-render/",
-                "@github/": "../node_modules/@github/"
+                "templ-arts/": "../node_modules/templ-arts/"
             }
         }
     </script>

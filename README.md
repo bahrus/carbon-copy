@@ -299,6 +299,17 @@ The value of place can be manipulated either via the attribute value or the prop
 
 [Demo](https://jsfiddle.net/bahrus/t0n9eLuo/4/)
 
+Setting default values
+
+```html
+<template id=hello-world>
+    <div>Hello, {{place}}</div>
+</template>
+<c-c copy from="/hello-world" string-props='["place=World"]'></c-c>
+
+<hello-world place="mars"></hello-world>
+```
+
 ### Attaching event handlers
 
 Use [on-to-me](https://github.com/bahrus/on-to-me) [or](https://github.com/bahrus/pass-down) [other](https://github.com/bahrus/p-et-alia) [declarative](https://github.com/bahrus/xtal-decor) vocabulary libraries.
