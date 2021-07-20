@@ -9,14 +9,12 @@ import { passAttrToProp } from 'xtal-element/lib/passAttrToProp.js';
 *
 */
 export class CC extends HTMLElement {
-    static is = 'c-c';
-    self = this;
-    propActions = propActions;
-    reactor = new xc.Rx(this);
-    /**
-     * @private
-     */
-    templateInstance;
+    constructor() {
+        super(...arguments);
+        this.self = this;
+        this.propActions = propActions;
+        this.reactor = new xc.Rx(this);
+    }
     connectedCallback() {
         xc.mergeProps(this, slicedPropDefs);
     }
@@ -24,6 +22,7 @@ export class CC extends HTMLElement {
         this.reactor.addToQueue(propDef, newVal);
     }
 }
+CC.is = 'c-c';
 export const linkTemplateToClone = ({ copy, from, self }) => {
     let ceName = from.split('/').pop();
     if (ceName === undefined || customElements.get(getCEName(ceName)))
@@ -45,56 +44,74 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
         dry: true,
         reflect: true
     };
+    const defaults = {};
     if (self.stringProps !== undefined) {
         for (const stringProp of self.stringProps) {
+            const split = stringProp.split('=').map(s => s.trim());
             const prop = {
                 ...baseProp,
                 type: String,
             };
-            propDefMap[stringProp] = prop;
+            propDefMap[split[0]] = prop;
+            if (split.length > 1) {
+                defaults[split[0]] = split[1];
+            }
         }
     }
     if (self.boolProps !== undefined) {
         for (const boolProp of self.boolProps) {
+            const split = boolProp.split('=').map(s => s.trim());
             const prop = {
                 ...baseProp,
                 type: Boolean,
             };
             propDefMap[boolProp] = prop;
+            if (split.length > 1) {
+                defaults[split[0]] = JSON.parse('"' + split[1] + '"');
+            }
         }
     }
     if (self.numProps !== undefined) {
         for (const numProp of self.numProps) {
+            const split = numProp.split('=').map(s => s.trim());
             const prop = {
                 ...baseProp,
                 type: Number,
             };
             propDefMap[numProp] = prop;
+            if (split.length > 1) {
+                defaults[split[0]] = JSON.parse('"' + split[1] + '"');
+            }
         }
     }
     if (self.objProps !== undefined) {
         for (const objProp of self.objProps) {
+            const split = objProp.split('=').map(s => s.trim());
             const prop = {
                 ...baseProp,
                 type: Object,
                 reflect: false,
             };
             propDefMap[objProp] = prop;
+            if (split.length > 1) {
+                defaults[split[0]] = JSON.parse(split[1]);
+            }
         }
     }
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
     class newClass extends HTMLElement {
-        static is = ceName;
-        static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
-        propActions = [];
-        reactor = new xc.Rx(self);
+        constructor() {
+            super(...arguments);
+            this.propActions = [];
+            this.reactor = new xc.Rx(self);
+        }
         attributeChangedCallback(name, oldValue, newValue) {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
         connectedCallback() {
             if (this.tpl !== undefined)
                 return; //how?!!!
-            xc.mergeProps(this, slicedPropDefs);
+            xc.mergeProps(this, slicedPropDefs, defaults);
             this.tpl = new TemplateInstance(templateToClone, this);
             if (noshadow) {
                 this.appendChild(this.tpl);
@@ -110,8 +127,9 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 return;
             this.tpl.update(this);
         }
-        tpl;
     }
+    newClass.is = ceName;
+    newClass.observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
     xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 };
@@ -180,6 +198,6 @@ export function define(id, template, props) {
     document.head.appendChild(cc);
 }
 export class CarbonCopy extends CC {
-    static is = 'carbon-copy';
 }
+CarbonCopy.is = 'carbon-copy';
 xc.define(CarbonCopy);

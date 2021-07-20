@@ -52,41 +52,58 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
         dry: true,
         reflect: true
     };
+    const defaults: any = {};
     if(self.stringProps !== undefined){
         for(const stringProp of self.stringProps){
+            const split = stringProp.split('=').map(s => s.trim());
             const prop: PropDef = {
                 ...baseProp,
                 type: String,
             };
-            propDefMap[stringProp] = prop;
+            propDefMap[split[0]] = prop;
+            if(split.length > 1){
+                defaults[split[0]] = split[1];
+            }
         }
     }
     if(self.boolProps !== undefined){
         for(const boolProp of self.boolProps){
+            const split = boolProp.split('=').map(s => s.trim());
             const prop: PropDef = {
                 ...baseProp,
                 type: Boolean,
             };
             propDefMap[boolProp] = prop;
+            if(split.length > 1){
+                defaults[split[0]] = JSON.parse('"' + split[1] + '"');
+            }
         }        
     }
     if(self.numProps !== undefined){
         for(const numProp of self.numProps){
+            const split = numProp.split('=').map(s => s.trim());
             const prop: PropDef = {
                 ...baseProp,
                 type: Number,
             };
             propDefMap[numProp] = prop;
+            if(split.length > 1){
+                defaults[split[0]] = JSON.parse('"' + split[1] + '"');
+            }
         }        
     }
     if(self.objProps !== undefined){
         for(const objProp of self.objProps){
+            const split = objProp.split('=').map(s => s.trim());
             const prop: PropDef = {
                 ...baseProp,
                 type: Object,
                 reflect: false,
             };
             propDefMap[objProp] = prop;
+            if(split.length > 1){
+                defaults[split[0]] = JSON.parse(split[1]);
+            }
         }
     } 
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
@@ -100,7 +117,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
         }
         connectedCallback(){
             if(this.tpl !== undefined) return; //how?!!!
-            xc.mergeProps(this, slicedPropDefs);
+            xc.mergeProps(this, slicedPropDefs, defaults);
             this.tpl = new TemplateInstance(templateToClone!, this)
             if(noshadow){
                 this.appendChild(this.tpl);
