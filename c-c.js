@@ -9,12 +9,14 @@ import { passAttrToProp } from 'xtal-element/lib/passAttrToProp.js';
 *
 */
 export class CC extends HTMLElement {
-    constructor() {
-        super(...arguments);
-        this.self = this;
-        this.propActions = propActions;
-        this.reactor = new xc.Rx(this);
-    }
+    static is = 'c-c';
+    self = this;
+    propActions = propActions;
+    reactor = new xc.Rx(this);
+    /**
+     * @private
+     */
+    templateInstance;
     connectedCallback() {
         xc.mergeProps(this, slicedPropDefs);
     }
@@ -22,7 +24,6 @@ export class CC extends HTMLElement {
         this.reactor.addToQueue(propDef, newVal);
     }
 }
-CC.is = 'c-c';
 export const linkTemplateToClone = ({ copy, from, self }) => {
     let ceName = from.split('/').pop();
     if (ceName === undefined || customElements.get(getCEName(ceName)))
@@ -100,11 +101,10 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
     }
     const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
     class newClass extends HTMLElement {
-        constructor() {
-            super(...arguments);
-            this.propActions = [];
-            this.reactor = new xc.Rx(self);
-        }
+        static is = ceName;
+        static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
+        propActions = [];
+        reactor = new xc.Rx(self);
         attributeChangedCallback(name, oldValue, newValue) {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
@@ -127,9 +127,8 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 return;
             this.tpl.update(this);
         }
+        tpl;
     }
-    newClass.is = ceName;
-    newClass.observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
     xc.letThereBeProps(newClass, slicedPropDefs, 'onPropChange');
     xc.define(newClass);
 };
@@ -198,6 +197,6 @@ export function define(id, template, props) {
     document.head.appendChild(cc);
 }
 export class CarbonCopy extends CC {
+    static is = 'carbon-copy';
 }
-CarbonCopy.is = 'carbon-copy';
 xc.define(CarbonCopy);

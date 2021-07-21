@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "templ-arts": "0.0.6",
-    "xtal-element": "0.0.416",
+    "xtal-element": "0.0.417",
     "trans-render": "0.0.291"
   },
   "devDependencies": {
