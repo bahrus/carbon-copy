@@ -3,6 +3,8 @@ import {upShadowSearch} from 'trans-render/lib/upShadowSearch.js';
 import {TemplateInstance} from 'templ-arts/lib/index.js';
 import {passAttrToProp} from 'xtal-element/lib/passAttrToProp.js';
 import { CCProps } from './types';
+export {CCProps} from './types';
+
 /**
 *  Codeless web component generator
 *  @element c-c
@@ -73,7 +75,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 ...baseProp,
                 type: Boolean,
             };
-            propDefMap[boolProp] = prop;
+            propDefMap[split[0]] = prop;
             if(split.length > 1){
                 defaults[split[0]] = JSON.parse('"' + split[1] + '"');
             }
@@ -86,9 +88,10 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 ...baseProp,
                 type: Number,
             };
-            propDefMap[numProp] = prop;
+            propDefMap[split[0]] = prop;
             if(split.length > 1){
-                defaults[split[0]] = JSON.parse('"' + split[1] + '"');
+                const val = split[1];
+                defaults[split[0]] = val.includes('.') ? parseFloat(val) : parseInt(val);
             }
         }        
     }
@@ -100,7 +103,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 type: Object,
                 reflect: false,
             };
-            propDefMap[objProp] = prop;
+            propDefMap[split[0]] = prop;
             if(split.length > 1){
                 defaults[split[0]] = JSON.parse(split[1]);
             }

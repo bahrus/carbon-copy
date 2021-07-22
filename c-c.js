@@ -66,7 +66,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 ...baseProp,
                 type: Boolean,
             };
-            propDefMap[boolProp] = prop;
+            propDefMap[split[0]] = prop;
             if (split.length > 1) {
                 defaults[split[0]] = JSON.parse('"' + split[1] + '"');
             }
@@ -79,9 +79,10 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 ...baseProp,
                 type: Number,
             };
-            propDefMap[numProp] = prop;
+            propDefMap[split[0]] = prop;
             if (split.length > 1) {
-                defaults[split[0]] = JSON.parse('"' + split[1] + '"');
+                const val = split[1];
+                defaults[split[0]] = val.includes('.') ? parseFloat(val) : parseInt(val);
             }
         }
     }
@@ -93,7 +94,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 type: Object,
                 reflect: false,
             };
-            propDefMap[objProp] = prop;
+            propDefMap[split[0]] = prop;
             if (split.length > 1) {
                 defaults[split[0]] = JSON.parse(split[1]);
             }
