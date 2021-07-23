@@ -11,14 +11,14 @@
   "license": "MIT",
   "dependencies": {
     "templ-arts": "0.0.6",
-    "xtal-element": "0.0.417",
+    "xtal-element": "0.0.418",
     "trans-render": "0.0.291"
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
     "xtal-test": "0.0.51",
     "@custom-elements-manifest/analyzer": "0.4.12",
-    "pass-down": "0.0.71",
+    "pass-down": "0.0.72",
     "aggregator-fn": "0.0.37"
   },
   "files": [
