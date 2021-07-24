@@ -105,7 +105,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
         static is = ceName;
         static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
         propActions = self.propActionsProp || [];
-        reactor = new xc.Rx(self);
+        reactor = new xc.Rx(this);
         attributeChangedCallback(name, oldValue, newValue) {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
