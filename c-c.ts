@@ -113,7 +113,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
     class newClass extends HTMLElement implements ReactiveSurface{
         static is = ceName;
         static observedAttributes = [...slicedPropDefs.boolNames, ...slicedPropDefs.numNames, ...slicedPropDefs.strNames];
-        propActions = [] as PropAction[];
+        propActions = self.propActionsProp || []  as PropAction[];
         reactor: IReactor = new xc.Rx(self);
         attributeChangedCallback(name: string, oldValue: string, newValue: string){
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);

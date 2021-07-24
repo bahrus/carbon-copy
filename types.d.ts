@@ -1,3 +1,5 @@
+import {PropAction} from 'xtal-element/types.d.js';
+
 export interface CCProps extends HTMLElement{
     /**
      * Id of template (with an optional context path in front of the id).  
@@ -36,4 +38,6 @@ export interface CCProps extends HTMLElement{
      * List of object properties to add to web component.
      */
     objProps: string[] | undefined;
+
+    propActionsProp: PropAction[];
 }
