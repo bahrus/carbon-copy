@@ -178,6 +178,7 @@ const propDefMap = {
     copy: bool2,
     from: str2,
     noshadow: bool1,
+    propActionsProp: obj1,
     templateToClone: obj2,
     stringProps: obj3,
     boolProps: obj3,
