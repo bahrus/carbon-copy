@@ -41,7 +41,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
     const noshadow = self.noshadow;
     const propDefMap = {};
     const baseProp = {
-        //async: true,
+        async: true,
         dry: true,
         reflect: true
     };
@@ -115,13 +115,15 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
                 return; //how?!!!
             xc.mergeProps(this, slicedPropDefs, defaults);
             this.tpl = new TemplateInstance(templateToClone, this);
-            if (noshadow) {
-                this.appendChild(this.tpl);
-            }
-            else {
-                const shadowRoot = this.attachShadow({ mode: 'open' });
-                shadowRoot.appendChild(this.tpl);
-            }
+            setTimeout(() => {
+                if (noshadow) {
+                    this.appendChild(this.tpl);
+                }
+                else {
+                    const shadowRoot = this.attachShadow({ mode: 'open' });
+                    shadowRoot.appendChild(this.tpl);
+                }
+            }, 500);
         }
         onPropChange(n, prop, nv) {
             this.reactor.addToQueue(prop, nv);
