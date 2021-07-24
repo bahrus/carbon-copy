@@ -120,18 +120,15 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
             passAttrToProp(this, slicedPropDefs, name, oldValue, newValue);
         }
         connectedCallback(){
-            if(this.tpl !== undefined) return; //how?!!!
+            if(this.tpl !== undefined) return;
             xc.mergeProps(this, slicedPropDefs, defaults);
             this.tpl = new TemplateInstance(templateToClone!, this);
-            setTimeout(() => {
-                if(noshadow){
-                    this.appendChild(this.tpl!);
-                }else{
-                    const shadowRoot = this.attachShadow({mode: 'open'});
-                    shadowRoot.appendChild(this.tpl!);
-                }
-            }, 500);
-
+            if(noshadow){
+                this.appendChild(this.tpl!);
+            }else{
+                const shadowRoot = this.attachShadow({mode: 'open'});
+                shadowRoot.appendChild(this.tpl!);
+            }
         }
         onPropChange(n: string, prop: PropDef, nv: any){
             this.reactor.addToQueue(prop, nv);

@@ -112,18 +112,16 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
         }
         connectedCallback() {
             if (this.tpl !== undefined)
-                return; //how?!!!
+                return;
             xc.mergeProps(this, slicedPropDefs, defaults);
             this.tpl = new TemplateInstance(templateToClone, this);
-            setTimeout(() => {
-                if (noshadow) {
-                    this.appendChild(this.tpl);
-                }
-                else {
-                    const shadowRoot = this.attachShadow({ mode: 'open' });
-                    shadowRoot.appendChild(this.tpl);
-                }
-            }, 500);
+            if (noshadow) {
+                this.appendChild(this.tpl);
+            }
+            else {
+                const shadowRoot = this.attachShadow({ mode: 'open' });
+                shadowRoot.appendChild(this.tpl);
+            }
         }
         onPropChange(n, prop, nv) {
             this.reactor.addToQueue(prop, nv);
