@@ -33,9 +33,8 @@
     "./b-c-c.js": "./b-c-c.js"
   },
   "keywords": [
-    "webcomponents",
-    "web_components",
-    "codeless_web_components",
+    "web-components",
+    "codeless-web-components",
     "templates"
   ],
   "scripts": {
