@@ -50,7 +50,7 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
     const noshadow = self.noshadow;
     const propDefMap: PropDefMap<any> = {};
     const baseProp: PropDef = {
-        async: true,
+        //async: true,
         dry: true,
         reflect: true
     };
@@ -122,7 +122,8 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
         connectedCallback(){
             if(this.tpl !== undefined) return; //how?!!!
             xc.mergeProps(this, slicedPropDefs, defaults);
-            this.tpl = new TemplateInstance(templateToClone!, this)
+            this.tpl = new TemplateInstance(templateToClone!, this);
+
             if(noshadow){
                 this.appendChild(this.tpl);
             }else{

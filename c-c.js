@@ -41,7 +41,7 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
     const noshadow = self.noshadow;
     const propDefMap = {};
     const baseProp = {
-        async: true,
+        //async: true,
         dry: true,
         reflect: true
     };
