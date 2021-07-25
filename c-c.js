@@ -200,6 +200,7 @@ export function define(id, template, props) {
     //template.id = id;
     Object.assign(cc, {
         ...props,
+        ceName: id,
         templateToClone: template
     });
     document.head.appendChild(cc);

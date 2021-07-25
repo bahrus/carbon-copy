@@ -216,6 +216,7 @@ export function define<Props = any>(id: string, template: HTMLTemplateElement, p
     //template.id = id;
     Object.assign(cc, {
         ...props,
+        ceName: id,
         templateToClone: template
     } as CCProps);
     document.head.appendChild(cc);
