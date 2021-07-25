@@ -46,7 +46,7 @@ export const linkTemplateToCloneFromPrevSibling = ({copy, fromPrevSibling, self}
 };
 
 export const linkClonedTemplate = ({templateToClone, self}: CC) => {
-    const ceName = getCEName(templateToClone!.id);
+    const ceName = self.ceName || getCEName(templateToClone!.id);
     const noshadow = self.noshadow;
     const propDefMap: PropDefMap<any> = {};
     const baseProp: PropDef = {
@@ -198,6 +198,7 @@ const propDefMap: PropDefMap<CC> = {
     copy: bool2,
     from: str2,
     noshadow: bool1,
+    ceName: str1,
     propActionsProp: obj1,
     templateToClone: obj2,
     stringProps: obj3,
@@ -212,7 +213,7 @@ xc.define(CC);
 
 export function define<Props = any>(id: string, template: HTMLTemplateElement, props: CCProps){
     const cc = document.createElement('c-c') as CCProps;
-    template.id = id;
+    //template.id = id;
     Object.assign(cc, {
         ...props,
         templateToClone: template

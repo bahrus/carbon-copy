@@ -42,4 +42,6 @@ export interface CCProps extends HTMLElement{
     propActionsProp: PropAction[];
 
     styleTemplate: HTMLTemplateElement | undefined;
+
+    ceName: string | undefined;
 }

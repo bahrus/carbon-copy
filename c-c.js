@@ -37,7 +37,7 @@ export const linkTemplateToCloneFromPrevSibling = ({ copy, fromPrevSibling, self
     self.templateToClone = self.previousElementSibling;
 };
 export const linkClonedTemplate = ({ templateToClone, self }) => {
-    const ceName = getCEName(templateToClone.id);
+    const ceName = self.ceName || getCEName(templateToClone.id);
     const noshadow = self.noshadow;
     const propDefMap = {};
     const baseProp = {
@@ -183,6 +183,7 @@ const propDefMap = {
     copy: bool2,
     from: str2,
     noshadow: bool1,
+    ceName: str1,
     propActionsProp: obj1,
     templateToClone: obj2,
     stringProps: obj3,
@@ -196,7 +197,7 @@ xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);
 export function define(id, template, props) {
     const cc = document.createElement('c-c');
-    template.id = id;
+    //template.id = id;
     Object.assign(cc, {
         ...props,
         templateToClone: template
