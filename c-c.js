@@ -120,6 +120,10 @@ export const linkClonedTemplate = ({ templateToClone, self }) => {
             }
             else {
                 const shadowRoot = this.attachShadow({ mode: 'open' });
+                if (self.styleTemplate !== undefined) {
+                    const clone = self.styleTemplate.content.cloneNode(true);
+                    shadowRoot.appendChild(clone);
+                }
                 shadowRoot.appendChild(this.tpl);
             }
         }

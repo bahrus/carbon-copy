@@ -40,4 +40,6 @@ export interface CCProps extends HTMLElement{
     objProps: string[] | undefined;
 
     propActionsProp: PropAction[];
+
+    styleTemplate: HTMLTemplateElement | undefined;
 }

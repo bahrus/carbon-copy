@@ -127,6 +127,10 @@ export const linkClonedTemplate = ({templateToClone, self}: CC) => {
                 this.appendChild(this.tpl!);
             }else{
                 const shadowRoot = this.attachShadow({mode: 'open'});
+                if(self.styleTemplate !== undefined){
+                    const clone = self.styleTemplate.content.cloneNode(true);
+                    shadowRoot.appendChild(clone);
+                }
                 shadowRoot.appendChild(this.tpl!);
             }
         }
@@ -206,7 +210,7 @@ const slicedPropDefs = xc.getSlicedPropDefs(propDefMap);
 xc.letThereBeProps(CC, slicedPropDefs, 'onPropChange');
 xc.define(CC);
 
-export function define(id: string, template: HTMLTemplateElement, props: CCProps){
+export function define<Props = any>(id: string, template: HTMLTemplateElement, props: CCProps){
     const cc = document.createElement('c-c') as CCProps;
     template.id = id;
     Object.assign(cc, {
