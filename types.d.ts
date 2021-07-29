@@ -19,7 +19,7 @@ export interface CCProps extends HTMLElement{
     /** No shadow DOM */
     noshadow: boolean | undefined;
     /** @private */
-    templateToClone: HTMLTemplateElement | undefined;
+    templOrFragToClone: HTMLTemplateElement | undefined;
     /** @private */
     clonedTemplate: DocumentFragment | undefined;
     /**

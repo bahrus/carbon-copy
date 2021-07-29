@@ -37,16 +37,21 @@ export const linkTemplateToClone = ({copy, from, self}: CC) => {
     if(ceName === undefined || customElements.get(getCEName(ceName))) return;
     const referencedTemplate = upShadowSearch(self, from!) as HTMLTemplateElement;
     if(referencedTemplate !== null) {
-        self.templateToClone = referencedTemplate;
+        self.templOrFragToClone = referencedTemplate;
     }
 };
 
 export const linkTemplateToCloneFromPrevSibling = ({copy, fromPrevSibling, self}: CC) => {
-    self.templateToClone = self.previousElementSibling as HTMLTemplateElement;
+    self.templOrFragToClone = self.previousElementSibling as HTMLTemplateElement;
 };
 
-export const linkClonedTemplate = ({templateToClone, self}: CC) => {
-    const ceName = self.ceName || getCEName(templateToClone!.id);
+export const linkClonedTemplate = ({templOrFragToClone, self}: CC) => {
+    const ceName = self.ceName || getCEName(templOrFragToClone!.id);
+    let templateToClone = templOrFragToClone;
+    if(!(templateToClone instanceof HTMLTemplateElement)){
+        templateToClone = document.createElement('template');
+        templateToClone.innerHTML = templOrFragToClone!.innerHTML;
+    }
     const noshadow = self.noshadow;
     const propDefMap: PropDefMap<any> = {};
     const baseProp: PropDef = {
@@ -200,7 +205,7 @@ const propDefMap: PropDefMap<CC> = {
     noshadow: bool1,
     ceName: str1,
     propActionsProp: obj1,
-    templateToClone: obj2,
+    templOrFragToClone: obj2,
     stringProps: obj3,
     boolProps: obj3,
     numProps: obj3,
@@ -217,7 +222,7 @@ export function define<Props = any>(id: string, template: HTMLTemplateElement, p
     Object.assign(cc, {
         ...props,
         ceName: id,
-        templateToClone: template
+        templOrFragToClone: template
     } as CCProps);
     document.head.appendChild(cc);
 }

@@ -30,14 +30,19 @@ export const linkTemplateToClone = ({ copy, from, self }) => {
         return;
     const referencedTemplate = upShadowSearch(self, from);
     if (referencedTemplate !== null) {
-        self.templateToClone = referencedTemplate;
+        self.templOrFragToClone = referencedTemplate;
     }
 };
 export const linkTemplateToCloneFromPrevSibling = ({ copy, fromPrevSibling, self }) => {
-    self.templateToClone = self.previousElementSibling;
+    self.templOrFragToClone = self.previousElementSibling;
 };
-export const linkClonedTemplate = ({ templateToClone, self }) => {
-    const ceName = self.ceName || getCEName(templateToClone.id);
+export const linkClonedTemplate = ({ templOrFragToClone, self }) => {
+    const ceName = self.ceName || getCEName(templOrFragToClone.id);
+    let templateToClone = templOrFragToClone;
+    if (!(templateToClone instanceof HTMLTemplateElement)) {
+        templateToClone = document.createElement('template');
+        templateToClone.innerHTML = templOrFragToClone.innerHTML;
+    }
     const noshadow = self.noshadow;
     const propDefMap = {};
     const baseProp = {
@@ -185,7 +190,7 @@ const propDefMap = {
     noshadow: bool1,
     ceName: str1,
     propActionsProp: obj1,
-    templateToClone: obj2,
+    templOrFragToClone: obj2,
     stringProps: obj3,
     boolProps: obj3,
     numProps: obj3,
@@ -201,7 +206,7 @@ export function define(id, template, props) {
     Object.assign(cc, {
         ...props,
         ceName: id,
-        templateToClone: template
+        templOrFragToClone: template
     });
     document.head.appendChild(cc);
 }
