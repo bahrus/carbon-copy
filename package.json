@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@skypack/package-check": "0.2.2",
-    "xtal-test": "0.0.51",
+    "xtal-test": "0.0.57",
     "@custom-elements-manifest/analyzer": "0.4.12",
     "pass-down": "0.0.72",
     "aggregator-fn": "0.0.37"
